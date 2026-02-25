@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Server Error</title>
+    <link rel="stylesheet" href="/static/css/error-pages.css">
+</head>
+<body>
+    <div class="ep-error-container">
+        <div class="ep-error-card ep-error-500">
+            <div class="ep-icon">💥</div>
+            <h1 class="ep-error-code">500</h1>
+            <h2 class="ep-error-title">Server Error</h2>
+            <p class="ep-error-message">Oops! Something went wrong on our side. We're working to fix it.</p>
+            <div class="ep-error-actions">
+                <a href="{% url 'home' %}" class="ep-btn ep-btn-primary">
+                    🏠 Go to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

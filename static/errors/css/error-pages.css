@@ -1,0 +1,322 @@
+/* ============================================
+   ERROR PAGES STYLING - Unique Prefix: ep-
+   ============================================ */
+
+.ep-error-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.ep-error-card {
+    background: white;
+    border-radius: 20px;
+    padding: 60px 40px;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: ep-slideUp 0.6s ease-out;
+    box-sizing: border-box;
+}
+
+@keyframes ep-slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Error code: gradient text only here ── */
+.ep-error-code {
+    font-size: 120px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    line-height: 1;
+    animation: ep-pulse 2s ease-in-out infinite;
+    display: block;
+}
+
+@keyframes ep-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.ep-error-title {
+    font-size: 32px;
+    color: #2d3748;
+    margin: 20px 0 10px 0;
+    font-weight: 700;
+}
+
+.ep-error-message {
+    font-size: 18px;
+    color: #718096;
+    margin: 0 0 40px 0;
+    line-height: 1.6;
+}
+
+.ep-error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ep-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+/* ============================================
+   BUTTONS — completely isolated from
+   gradient-text so text is ALWAYS visible
+   ============================================ */
+
+.ep-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 32px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    /* CRITICAL: prevent any ancestor's background-clip:text leaking in */
+    -webkit-text-fill-color: unset !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+}
+
+/* Primary: solid gradient background, WHITE text */
+.ep-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    -webkit-text-fill-color: white !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.ep-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    color: white;
+    -webkit-text-fill-color: white !important;
+}
+
+/* Secondary: white background, colored border + text */
+.ep-btn-secondary {
+    background: white;
+    color: #667eea;
+    -webkit-text-fill-color: #667eea !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    border: 2px solid #667eea;
+}
+
+.ep-btn-secondary:hover {
+    background: #667eea;
+    color: white;
+    -webkit-text-fill-color: white !important;
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .ep-error-card {
+        padding: 40px 24px;
+        border-radius: 16px;
+    }
+
+    .ep-error-code {
+        font-size: 90px;
+    }
+
+    .ep-error-title {
+        font-size: 26px;
+    }
+
+    .ep-error-message {
+        font-size: 15px;
+    }
+
+    .ep-error-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .ep-btn {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 15px;
+        box-sizing: border-box;
+    }
+
+    .ep-icon {
+        font-size: 60px;
+    }
+}
+
+@media (max-width: 400px) {
+    .ep-error-card {
+        padding: 30px 16px;
+    }
+
+    .ep-error-code {
+        font-size: 70px;
+    }
+
+    .ep-error-title {
+        font-size: 22px;
+    }
+
+    .ep-error-message {
+        font-size: 14px;
+    }
+}
+
+/* ============================================
+   PER-ERROR COLOR SCHEMES
+   Only .ep-error-code gets gradient text.
+   Buttons always keep solid bg + white text.
+   ============================================ */
+
+/* 400 */
+.ep-error-400 .ep-error-code {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.ep-error-400 .ep-btn-primary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: white !important;
+    color: white;
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+}
+.ep-error-400 .ep-btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+}
+.ep-error-400 .ep-btn-secondary {
+    color: #f5576c;
+    -webkit-text-fill-color: #f5576c !important;
+    border-color: #f5576c;
+}
+.ep-error-400 .ep-btn-secondary:hover {
+    background: #f5576c;
+    -webkit-text-fill-color: white !important;
+    color: white;
+}
+
+/* 403 */
+.ep-error-403 .ep-error-code {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.ep-error-403 .ep-btn-primary {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: white !important;
+    color: white;
+    box-shadow: 0 4px 15px rgba(250, 112, 154, 0.4);
+}
+.ep-error-403 .ep-btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(250, 112, 154, 0.6);
+}
+.ep-error-403 .ep-btn-secondary {
+    color: #fa709a;
+    -webkit-text-fill-color: #fa709a !important;
+    border-color: #fa709a;
+}
+.ep-error-403 .ep-btn-secondary:hover {
+    background: #fa709a;
+    -webkit-text-fill-color: white !important;
+    color: white;
+}
+
+/* 404 */
+.ep-error-404 .ep-error-code {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.ep-error-404 .ep-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: white !important;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+.ep-error-404 .ep-btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+.ep-error-404 .ep-btn-secondary {
+    color: #667eea;
+    -webkit-text-fill-color: #667eea !important;
+    border-color: #667eea;
+}
+.ep-error-404 .ep-btn-secondary:hover {
+    background: #667eea;
+    -webkit-text-fill-color: white !important;
+    color: white;
+}
+
+/* 500 */
+.ep-error-500 .ep-error-code {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.ep-error-500 .ep-btn-primary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: white !important;
+    color: white;
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+}
+.ep-error-500 .ep-btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+}
+.ep-error-500 .ep-btn-secondary {
+    color: #f5576c;
+    -webkit-text-fill-color: #f5576c !important;
+    border-color: #f5576c;
+}
+.ep-error-500 .ep-btn-secondary:hover {
+    background: #f5576c;
+    -webkit-text-fill-color: white !important;
+    color: white;
+}
