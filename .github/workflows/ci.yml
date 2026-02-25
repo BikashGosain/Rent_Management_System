@@ -17,13 +17,14 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.12'   # must be 3.12+ for Django 6.2+
 
       - name: Upgrade pip, setuptools, wheel
         run: python -m pip install --upgrade pip setuptools wheel
 
-      - name: Install system dependencies for Pillow
-        run: sudo apt-get update && sudo apt-get install -y libjpeg-dev zlib1g-dev libpng-dev
+      - name: Clear pip cache
+        run: pip cache purge   # <-- Add this line here
+
 
       - name: Install Python dependencies
         run: pip install -r requirements/development.txt --index-url https://pypi.org/simple
