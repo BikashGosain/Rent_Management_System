@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Tenant Dashboard — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+    <div class="dashboard-header">
+        <h2>Tenant Dashboard</h2>
+        <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+    </div>
+
+    <div class="dashboard-section">
+        <h3>My Current Property</h3>
+        {% if current_property %}
+            <p>Property details will show here.</p>
+        {% else %}
+            <div class="empty-state">
+                <p>You are not renting any property yet.</p>
+                <a href="#" class="btn btn-primary">Search Properties</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="dashboard-section">
+        <h3>My Booking Status</h3>
+        {% if booking_status %}
+            <p>Booking details will show here.</p>
+        {% else %}
+            <div class="empty-state"><p>No active bookings.</p></div>
+        {% endif %}
+    </div>
+
+    <div class="dashboard-section">
+        <h3>Upcoming Rent Due</h3>
+        {% if upcoming_rent %}
+            <p>Rent details will show here.</p>
+        {% else %}
+            <div class="empty-state"><p>No upcoming rent due.</p></div>
+        {% endif %}
+    </div>
+
+    <div class="dashboard-section">
+        <h3>My Agreements</h3>
+        {% if agreements %}
+            <p>Agreements will show here.</p>
+        {% else %}
+            <div class="empty-state"><p>No agreements yet.</p></div>
+        {% endif %}
+    </div>
+
+    <div class="dashboard-section">
+        <h3>My Complaints</h3>
+        {% if complaints %}
+            <p>Complaints will show here.</p>
+        {% else %}
+            <div class="empty-state">
+                <p>No complaints submitted.</p>
+                <a href="#" class="btn btn-secondary">Submit a Complaint</a>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
