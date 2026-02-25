@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Delete Property — RentMS{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Delete Property</h2>
+        <p>Are you sure you want to delete <strong>{{ property.title }}</strong>? All rooms and photos will also be deleted. This cannot be undone.</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'properties:list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

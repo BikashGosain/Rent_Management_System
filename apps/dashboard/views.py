@@ -52,14 +52,17 @@ def admin_dashboard(request):
     return render(request, 'dashboard/admin.html', context)
 
 
+from apps.properties.models import Property
+
 @owner_required
 def owner_dashboard(request):
+    properties = Property.objects.filter(owner=request.user)
     context = {
-        'properties':        [],  # update when properties app is built
-        'pending_bookings':  [],  # update when bookings app is built
-        'active_tenants':    [],  # update when bookings app is built
-        'recent_payments':   [],  # update when payments app is built
-        'open_complaints':   [],  # update when complaints app is built
+        'properties':       properties,
+        'pending_bookings': [],
+        'active_tenants':   [],
+        'recent_payments':  [],
+        'open_complaints':  [],
     }
     return render(request, 'dashboard/owner.html', context)
 

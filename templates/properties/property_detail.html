@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}{{ property.title }} — RentMS{% endblock %}
+{% block content %}
+<div class="property-detail">
+
+    {% if photos %}
+    <div class="photo-gallery">
+        {% for photo in photos %}
+            <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:property.title }}" class="gallery-img">
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="detail-card">
+        <div class="detail-header">
+            <div>
+                <h2>{{ property.title }}</h2>
+                <p class="property-meta">{{ property.get_type_display }} · {{ property.city }}, {{ property.state }}</p>
+                {% if property.landmark %}<p class="property-meta">📍 Near {{ property.landmark }}</p>{% endif %}
+            </div>
+            <div>
+                {% if property.is_whole %}
+                    <p class="property-price">Rs. {{ property.rent_price }}/month</p>
+                {% else %}
+                    <p class="property-price">{{ property.available_rooms.count }} rooms available</p>
+                {% endif %}
+                <span class="status-badge status-{{ property.status }}">{{ property.get_status_display }}</span>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-item"><span class="detail-label">Type</span><span class="detail-value">{{ property.get_type_display }}</span></div>
+            <div class="detail-item"><span class="detail-label">Floors</span><span class="detail-value">{{ property.total_floors }}</span></div>
+            <div class="detail-item"><span class="detail-label">Rooms</span><span class="detail-value">{{ property.total_rooms }}</span></div>
+            <div class="detail-item"><span class="detail-label">Bedrooms</span><span class="detail-value">{{ property.total_bedrooms }}</span></div>
+            <div class="detail-item"><span class="detail-label">Bathrooms</span><span class="detail-value">{{ property.total_bathrooms }}</span></div>
+            <div class="detail-item"><span class="detail-label">Kitchens</span><span class="detail-value">{{ property.total_kitchens }}</span></div>
+            {% if property.area_sqft %}<div class="detail-item"><span class="detail-label">Area</span><span class="detail-value">{{ property.area_sqft }} sqft</span></div>{% endif %}
+            <div class="detail-item"><span class="detail-label">Furnishing</span><span class="detail-value">{{ property.get_furnishing_display }}</span></div>
+        </div>
+
+        <div class="amenities-grid">
+            <h3>Amenities</h3>
+            <div class="amenities-list">
+                <span class="amenity {% if property.has_parking %}amenity-yes{% else %}amenity-no{% endif %}">🚗 Parking</span>
+                <span class="amenity {% if property.has_water_supply %}amenity-yes{% else %}amenity-no{% endif %}">💧 Water Supply</span>
+                <span class="amenity {% if property.has_electricity_backup %}amenity-yes{% else %}amenity-no{% endif %}">⚡ Electricity Backup</span>
+                <span class="amenity {% if property.has_internet %}amenity-yes{% else %}amenity-no{% endif %}">📶 Internet</span>
+                <span class="amenity {% if property.has_garden %}amenity-yes{% else %}amenity-no{% endif %}">🌿 Garden</span>
+                <span class="amenity {% if property.has_balcony %}amenity-yes{% else %}amenity-no{% endif %}">🏗 Balcony</span>
+            </div>
+        </div>
+
+        {% if property.is_whole %}
+        <div class="detail-section">
+            <h3>Pricing</h3>
+            <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">Rent/month</span><span class="detail-value">Rs. {{ property.rent_price }}</span></div>
+                {% if property.security_deposit %}<div class="detail-item"><span class="detail-label">Security Deposit</span><span class="detail-value">Rs. {{ property.security_deposit }}</span></div>{% endif %}
+                <div class="detail-item"><span class="detail-label">Advance</span><span class="detail-value">{{ property.advance_months }} month(s)</span></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if property.description %}
+        <div class="detail-section">
+            <h3>Description</h3>
+            <p>{{ property.description }}</p>
+        </div>
+        {% endif %}
+
+        <div class="detail-section">
+            <h3>Address</h3>
+            <p>{{ property.address }}, {{ property.city }}, {{ property.state }}</p>
+        </div>
+
+        {% if property.is_rooms %}
+        <div class="detail-section">
+            <div class="section-header">
+                <h3>Rooms</h3>
+                {% if request.user == property.owner %}
+                <a href="{% url 'properties:room_add' property.pk %}" class="btn btn-primary">+ Add Room</a>
+                {% endif %}
+            </div>
+            {% if rooms %}
+            <div class="room-grid">
+                {% for room in rooms %}
+                <div class="room-card">
+                    {% if room.photos.first %}
+                        <img src="{{ room.photos.first.image.url }}" alt="Room {{ room.room_number }}" class="room-img">
+                    {% else %}
+                        <div class="room-img-placeholder">🚪</div>
+                    {% endif %}
+                    <div class="room-card-body">
+                        <h4>Room {{ room.room_number }}</h4>
+                        <p class="property-meta">{{ room.get_room_type_display }} · Floor {{ room.floor_number }}</p>
+                        <p class="property-price">Rs. {{ room.rent_price }}/month</p>
+                        <div class="property-details">
+                            <span>🛏 {{ room.bedrooms }} Bed</span>
+                            <span>🚿 {{ room.get_bathroom_type_display }}</span>
+                            <span>{{ room.get_furnishing_display }}</span>
+                        </div>
+                        <span class="status-badge status-{{ room.status }}">{{ room.get_status_display }}</span>
+                        <div class="property-actions">
+                            <a href="{% url 'properties:room_detail' property.pk room.pk %}" class="btn btn-secondary">View</a>
+                            {% if request.user == property.owner %}
+                            <a href="{% url 'properties:room_edit' property.pk room.pk %}" class="btn btn-primary">Edit</a>
+                            <a href="{% url 'properties:room_delete' property.pk room.pk %}" class="btn btn-danger">Delete</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>No rooms added yet.</p>
+                {% if request.user == property.owner %}
+                <a href="{% url 'properties:room_add' property.pk %}" class="btn btn-primary">Add First Room</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="detail-actions">
+            {% if request.user == property.owner %}
+                <a href="{% url 'properties:edit' property.pk %}" class="btn btn-primary">Edit Property</a>
+                <a href="{% url 'properties:delete' property.pk %}" class="btn btn-danger">Delete Property</a>
+            {% elif request.user.is_tenant %}
+                {% if property.is_whole and property.is_available %}
+                    <a href="#" class="btn btn-primary">Book This Property</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Room {{ room.room_number }} — RentMS{% endblock %}
+{% block content %}
+<div class="property-detail">
+
+    {% if photos %}
+    <div class="photo-gallery">
+        {% for photo in photos %}
+            <img src="{{ photo.image.url }}" alt="Room {{ room.room_number }}" class="gallery-img">
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="detail-card">
+        <div class="detail-header">
+            <div>
+                <h2>Room {{ room.room_number }}</h2>
+                <p class="property-meta">{{ room.get_room_type_display }} · {{ property.title }} · Floor {{ room.floor_number }}</p>
+            </div>
+            <div>
+                <p class="property-price">Rs. {{ room.rent_price }}/month</p>
+                <span class="status-badge status-{{ room.status }}">{{ room.get_status_display }}</span>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-item"><span class="detail-label">Bedrooms</span><span class="detail-value">{{ room.bedrooms }}</span></div>
+            <div class="detail-item"><span class="detail-label">Bathroom</span><span class="detail-value">{{ room.get_bathroom_type_display }}</span></div>
+            <div class="detail-item"><span class="detail-label">Kitchen</span><span class="detail-value">{{ room.get_kitchen_type_display }}</span></div>
+            <div class="detail-item"><span class="detail-label">Furnishing</span><span class="detail-value">{{ room.get_furnishing_display }}</span></div>
+            {% if room.area_sqft %}<div class="detail-item"><span class="detail-label">Area</span><span class="detail-value">{{ room.area_sqft }} sqft</span></div>{% endif %}
+        </div>
+
+        <div class="amenities-grid">
+            <h3>Amenities</h3>
+            <div class="amenities-list">
+                <span class="amenity {% if room.has_ac %}amenity-yes{% else %}amenity-no{% endif %}">❄️ AC</span>
+                <span class="amenity {% if room.has_balcony %}amenity-yes{% else %}amenity-no{% endif %}">🏗 Balcony</span>
+                <span class="amenity {% if room.wifi_included %}amenity-yes{% else %}amenity-no{% endif %}">📶 WiFi</span>
+                <span class="amenity {% if room.water_included %}amenity-yes{% else %}amenity-no{% endif %}">💧 Water</span>
+                <span class="amenity {% if room.electricity_included %}amenity-yes{% else %}amenity-no{% endif %}">⚡ Electricity</span>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Pricing</h3>
+            <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">Rent/month</span><span class="detail-value">Rs. {{ room.rent_price }}</span></div>
+                {% if room.security_deposit %}<div class="detail-item"><span class="detail-label">Security Deposit</span><span class="detail-value">Rs. {{ room.security_deposit }}</span></div>{% endif %}
+                <div class="detail-item"><span class="detail-label">Advance</span><span class="detail-value">{{ room.advance_months }} month(s)</span></div>
+            </div>
+        </div>
+
+        {% if room.description %}
+        <div class="detail-section">
+            <h3>Description</h3>
+            <p>{{ room.description }}</p>
+        </div>
+        {% endif %}
+
+        <div class="detail-actions">
+            <a href="{% url 'properties:detail' property.pk %}" class="btn btn-secondary">← Back to Property</a>
+            {% if request.user == property.owner %}
+                <a href="{% url 'properties:room_edit' property.pk room.pk %}" class="btn btn-primary">Edit Room</a>
+                <a href="{% url 'properties:room_delete' property.pk room.pk %}" class="btn btn-danger">Delete Room</a>
+            {% elif request.user.is_tenant %}
+                {% if room.is_available %}
+                    <a href="#" class="btn btn-primary">Book This Room</a>
+                {% else %}
+                    <span class="btn btn-secondary">Not Available</span>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

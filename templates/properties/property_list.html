@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}My Properties — RentMS{% endblock %}
+{% block content %}
+<div class="dashboard">
+    <div class="section-header">
+        <h2>My Properties</h2>
+        <a href="{% url 'properties:add' %}" class="btn btn-primary">+ Add Property</a>
+    </div>
+
+    {% if properties %}
+    <div class="property-grid">
+        {% for p in properties %}
+        <div class="property-card">
+            {% if p.photos.first %}
+                <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="property-img">
+            {% else %}
+                <div class="property-img-placeholder">🏠</div>
+            {% endif %}
+            <div class="property-card-body">
+                <h3>{{ p.title }}</h3>
+                <p class="property-meta">{{ p.get_type_display }} · {{ p.city }}</p>
+                <p class="property-meta">
+                    {% if p.is_whole %}
+                        Rs. {{ p.rent_price }}/month
+                    {% else %}
+                        {{ p.rooms.count }} rooms · {{ p.available_rooms.count }} available
+                    {% endif %}
+                </p>
+                <span class="status-badge status-{{ p.status }}">{{ p.get_status_display }}</span>
+                <span class="role-badge role-owner">{{ p.get_rent_type_display }}</span>
+                <div class="property-actions">
+                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-secondary">View</a>
+                    <a href="{% url 'properties:edit' p.pk %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'properties:delete' p.pk %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>You have not added any properties yet.</p>
+        <a href="{% url 'properties:add' %}" class="btn btn-primary">Add Your First Property</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

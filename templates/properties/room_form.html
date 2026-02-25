@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Room — {{ property.title }}{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h2>{{ action }} Room — {{ property.title }}</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-card">
+            <h3>Room Information</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Room Number</label>{{ form.room_number }}{% for e in form.room_number.errors %}<small class="error-text">{{ e }}</small>{% endfor %}</div>
+                <div class="form-group"><label>Room Type</label>{{ form.room_type }}</div>
+                <div class="form-group"><label>Floor Number</label>{{ form.floor_number }}</div>
+            </div>
+            <div class="form-group"><label>Description</label>{{ form.description }}</div>
+        </div>
+
+        <div class="form-card">
+            <h3>Room Details</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Bedrooms</label>{{ form.bedrooms }}</div>
+                <div class="form-group"><label>Bathroom</label>{{ form.bathroom_type }}</div>
+                <div class="form-group"><label>Kitchen</label>{{ form.kitchen_type }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Area (sqft)</label>{{ form.area_sqft }}</div>
+                <div class="form-group"><label>Furnishing</label>{{ form.furnishing }}</div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3>Amenities</h3>
+            <div class="checkbox-grid">
+                <label class="checkbox-label">{{ form.has_ac }} AC</label>
+                <label class="checkbox-label">{{ form.has_balcony }} Balcony</label>
+                <label class="checkbox-label">{{ form.wifi_included }} WiFi Included</label>
+                <label class="checkbox-label">{{ form.water_included }} Water Included</label>
+                <label class="checkbox-label">{{ form.electricity_included }} Electricity Included</label>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3>Pricing</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Rent Price/month</label>{{ form.rent_price }}{% for e in form.rent_price.errors %}<small class="error-text">{{ e }}</small>{% endfor %}</div>
+                <div class="form-group"><label>Security Deposit</label>{{ form.security_deposit }}</div>
+                <div class="form-group"><label>Advance Months</label>{{ form.advance_months }}</div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3>Status</h3>
+            <div class="form-group"><label>Status</label>{{ form.status }}</div>
+        </div>
+
+        <div class="form-card">
+            <h3>Room Photos</h3>
+            {{ formset.management_form }}
+            {% for photo_form in formset %}
+            <div class="photo-form-row">
+                {{ photo_form.id }}
+                <div class="form-row">
+                    <div class="form-group"><label>Image</label>{{ photo_form.image }}</div>
+                    <div class="form-group"><label>Caption</label>{{ photo_form.caption }}</div>
+                    <div class="form-group"><label>Cover Photo</label>{{ photo_form.is_cover }}</div>
+                    {% if photo_form.instance.pk %}
+                    <div class="form-group"><label>Delete</label>{{ photo_form.DELETE }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            <hr>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ action }} Room</button>
+        <a href="{% url 'properties:detail' property.pk %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
