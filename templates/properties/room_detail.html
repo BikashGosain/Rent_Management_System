@@ -99,13 +99,13 @@
             {% if request.user == property.owner %}
                 <a href="{% url 'properties:room_edit' property.pk room.pk %}" class="btn btn-primary">Edit Room</a>
                 <a href="{% url 'properties:room_delete' property.pk room.pk %}" class="btn btn-danger">Delete Room</a>
-            {% elif request.user.is_tenant %}
-                {% if room.is_available %}
-                    <a href="#" class="btn btn-primary">Book This Room</a>
-                {% else %}
-                    <span class="btn btn-secondary">Not Available</span>
-                {% endif %}
-            {% endif %}
+{% elif request.user.is_tenant %}
+    {% if room.is_available %}
+        <a href="{% url 'bookings:book_room' property.pk room.pk %}" class="btn btn-primary">Book This Room</a>
+    {% else %}
+        <span class="btn btn-secondary">Not Available</span>
+    {% endif %}
+{% endif %}
         </div>
     </div>
 </div>

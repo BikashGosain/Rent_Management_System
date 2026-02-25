@@ -23,9 +23,16 @@
     </div>
 
     <div class="dashboard-section">
-        <h3>My Booking Status</h3>
+        <div class="section-header">
+            <h3>My Booking Status</h3>
+            <a href="{% url 'bookings:my_bookings' %}" class="btn btn-primary">View All Bookings</a>
+        </div>
         {% if booking_status %}
-            <p>Booking details will show here.</p>
+            <p>Latest: {{ booking_status.get_target_name }} — 
+               <span class="booking-status booking-status-{{ booking_status.status }}">
+                   {{ booking_status.get_status_display }}
+               </span>
+            </p>
         {% else %}
             <div class="empty-state"><p>No active bookings.</p></div>
         {% endif %}

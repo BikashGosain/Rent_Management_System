@@ -28,6 +28,7 @@ urlpatterns = [
     path('dashboard/', include('apps.dashboard.urls')),
     path('properties/',  include('apps.properties.urls')),
     path('search/',     include('apps.search.urls')),
+    path('bookings/',   include('apps.bookings.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/bookings.css' %}">{% endblock %}
+{% block title %}Booking Requests — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Booking Requests</h2>
+
+    {% if bookings %}
+    <div class="bookings-list">
+        {% for booking in bookings %}
+        <div class="booking-item status-border-{{ booking.status }}">
+            <div class="booking-info">
+                <h4>{{ booking.get_target_name }}</h4>
+                <p class="property-meta">Tenant: <strong>{{ booking.tenant.get_full_name|default:booking.tenant.username }}</strong></p>
+                <p class="property-meta">Move in: {{ booking.move_in_date }}</p>
+                {% if booking.move_out_date %}
+                <p class="property-meta">Move out: {{ booking.move_out_date }}</p>
+                {% endif %}
+                <p class="property-meta">Rent: Rs. {{ booking.get_rent_price }}/month</p>
+                {% if booking.message %}
+                <div class="booking-message">
+                    <p>💬 {{ booking.message }}</p>
+                </div>
+                {% endif %}
+            </div>
+            <div class="booking-status-section">
+                <span class="booking-status booking-status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                <p class="property-meta">{{ booking.created_at|date:"d M Y" }}</p>
+                <div class="booking-actions">
+                    <a href="{% url 'bookings:detail' booking.pk %}" class="btn btn-secondary">View</a>
+                    {% if booking.is_pending %}
+                    <a href="{% url 'bookings:accept' booking.pk %}" class="btn btn-primary">Accept</a>
+                    <a href="{% url 'bookings:reject' booking.pk %}" class="btn btn-danger">Reject</a>
+                    {% endif %}
+                    {% if booking.is_accepted %}
+                    <a href="{% url 'bookings:owner_cancel' booking.pk %}" class="btn btn-danger">Cancel</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No booking requests yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

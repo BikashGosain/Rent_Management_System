@@ -5,7 +5,7 @@
 {% block content %}
 <div class="dashboard">
 
-    <div class="dashboard-header">
+    <div class="dashboard-header">       
         <h2>Owner Dashboard</h2>
         <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
     </div>
@@ -44,14 +44,19 @@
         {% endif %}
     </div>
 
-    <div class="dashboard-section">
+<div class="dashboard-section">
+    <div class="section-header">
         <h3>Pending Booking Requests</h3>
-        {% if pending_bookings %}
-            <p>Bookings will show here.</p>
-        {% else %}
-            <div class="empty-state"><p>No pending booking requests.</p></div>
-        {% endif %}
+        <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-primary">View All Bookings</a>
     </div>
+    {% if pending_bookings %}
+        {% for booking in pending_bookings %}
+        <p>{{ booking.get_target_name }} — {{ booking.tenant.get_full_name|default:booking.tenant.username }}</p>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state"><p>No pending booking requests.</p></div>
+    {% endif %}
+</div>
 
     <div class="dashboard-section">
         <h3>Recent Payments Received</h3>

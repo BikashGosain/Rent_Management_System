@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/bookings.css' %}">{% endblock %}
+{% block title %}My Bookings — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="section-header">
+        <h2>My Bookings</h2>
+        <a href="{% url 'search:results' %}" class="btn btn-primary">Search Properties</a>
+    </div>
+
+    {% if bookings %}
+    <div class="bookings-list">
+        {% for booking in bookings %}
+        <div class="booking-item status-border-{{ booking.status }}">
+            <div class="booking-info">
+                <h4>{{ booking.get_target_name }}</h4>
+                <p class="property-meta">Move in: {{ booking.move_in_date }}</p>
+                {% if booking.move_out_date %}
+                <p class="property-meta">Move out: {{ booking.move_out_date }}</p>
+                {% endif %}
+                <p class="property-meta">Rs. {{ booking.get_rent_price }}/month</p>
+                {% if booking.message %}
+                <p class="property-meta">Your message: {{ booking.message }}</p>
+                {% endif %}
+                {% if booking.owner_note %}
+                <p class="property-meta">Owner note: {{ booking.owner_note }}</p>
+                {% endif %}
+            </div>
+            <div class="booking-status-section">
+                <span class="booking-status booking-status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                <p class="property-meta">{{ booking.created_at|date:"d M Y" }}</p>
+                <div class="booking-actions">
+                    <a href="{% url 'bookings:detail' booking.pk %}" class="btn btn-secondary">View</a>
+                    {% if booking.is_pending %}
+                    <a href="{% url 'bookings:cancel' booking.pk %}" class="btn btn-danger">Cancel</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>You have no bookings yet.</p>
+        <a href="{% url 'search:results' %}" class="btn btn-primary">Search Properties</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

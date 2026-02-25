@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/bookings.css' %}">{% endblock %}
+{% block title %}{{ action }} Booking — RentMS{% endblock %}
+
+{% block content %}
+<div class="booking-container">
+    <div class="booking-card">
+        <h2>{{ action }} Booking</h2>
+
+        <div class="booking-target">
+            <p class="booking-target-title">{{ booking.get_target_name }}</p>
+            <p class="booking-target-meta">Tenant: {{ booking.tenant.get_full_name|default:booking.tenant.username }}</p>
+            <p class="booking-target-meta">Move in: {{ booking.move_in_date }}</p>
+            {% if booking.message %}
+            <p class="booking-target-meta">Tenant message: {{ booking.message }}</p>
+            {% endif %}
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Note to Tenant (optional)</label>
+                {{ form.owner_note }}
+            </div>
+            {% if action == 'Accept' %}
+                <button type="submit" class="btn btn-primary">✓ Accept Booking</button>
+            {% else %}
+                <button type="submit" class="btn btn-danger">✗ Reject Booking</button>
+            {% endif %}
+            <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
