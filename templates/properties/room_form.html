@@ -31,15 +31,53 @@
         </div>
 
         <div class="form-card">
-            <h3>Amenities</h3>
-            <div class="checkbox-grid">
-                <label class="checkbox-label">{{ form.has_ac }} AC</label>
-                <label class="checkbox-label">{{ form.has_balcony }} Balcony</label>
-                <label class="checkbox-label">{{ form.wifi_included }} WiFi Included</label>
-                <label class="checkbox-label">{{ form.water_included }} Water Included</label>
-                <label class="checkbox-label">{{ form.electricity_included }} Electricity Included</label>
-            </div>
-        </div>
+    <h3>Facilities</h3>
+
+    <p class="section-subtitle">Utilities</p>
+    <div class="checkbox-grid">
+        <label class="checkbox-label">{{ facility_form.wifi }} WiFi</label>
+        <label class="checkbox-label">{{ facility_form.water_included }} Water Included</label>
+        <label class="checkbox-label">{{ facility_form.electricity_included }} Electricity Included</label>
+        <label class="checkbox-label">{{ facility_form.gas_included }} Gas Included</label>
+    </div>
+
+    <p class="section-subtitle">Appliances</p>
+    <div class="checkbox-grid">
+        <label class="checkbox-label">{{ facility_form.ac }} AC</label>
+        <label class="checkbox-label">{{ facility_form.heater }} Heater</label>
+        <label class="checkbox-label">{{ facility_form.refrigerator }} Refrigerator</label>
+        <label class="checkbox-label">{{ facility_form.washing_machine }} Washing Machine</label>
+        <label class="checkbox-label">{{ facility_form.tv }} TV</label>
+        <label class="checkbox-label">{{ facility_form.microwave }} Microwave</label>
+    </div>
+
+    <p class="section-subtitle">Space</p>
+    <div class="checkbox-grid">
+        <label class="checkbox-label">{{ facility_form.kitchen }} Kitchen</label>
+        <label class="checkbox-label">{{ facility_form.parking }} Parking</label>
+        <label class="checkbox-label">{{ facility_form.balcony }} Balcony</label>
+        <label class="checkbox-label">{{ facility_form.garden }} Garden</label>
+        <label class="checkbox-label">{{ facility_form.storage }} Storage</label>
+    </div>
+
+    <p class="section-subtitle">Services</p>
+    <div class="checkbox-grid">
+        <label class="checkbox-label">{{ facility_form.laundry }} Laundry</label>
+        <label class="checkbox-label">{{ facility_form.security_guard }} Security Guard</label>
+        <label class="checkbox-label">{{ facility_form.cctv }} CCTV</label>
+        <label class="checkbox-label">{{ facility_form.lift }} Lift/Elevator</label>
+        <label class="checkbox-label">{{ facility_form.housekeeping }} Housekeeping</label>
+    </div>
+
+    <p class="section-subtitle">Furnishing</p>
+    <div class="checkbox-grid">
+        <label class="checkbox-label">{{ facility_form.furnished }} Furnished</label>
+        <label class="checkbox-label">{{ facility_form.bed }} Bed</label>
+        <label class="checkbox-label">{{ facility_form.wardrobe }} Wardrobe</label>
+        <label class="checkbox-label">{{ facility_form.study_table }} Study Table</label>
+        <label class="checkbox-label">{{ facility_form.sofa }} Sofa</label>
+    </div>
+</div>
 
         <div class="form-card">
             <h3>Pricing</h3>

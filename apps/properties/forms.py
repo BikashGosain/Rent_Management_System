@@ -1,5 +1,5 @@
 from django import forms
-from .models import Property, PropertyPhoto, Room, RoomPhoto
+from .models import Property, PropertyPhoto, Room, RoomPhoto, RoomFacility
 
 
 class PropertyForm(forms.ModelForm):
@@ -43,8 +43,6 @@ class RoomForm(forms.ModelForm):
             'room_number', 'room_type', 'description',
             'bedrooms', 'bathroom_type', 'kitchen_type',
             'floor_number', 'area_sqft', 'furnishing',
-            'has_ac', 'has_balcony', 'wifi_included',
-            'water_included', 'electricity_included',
             'rent_price', 'security_deposit', 'advance_months',
             'status',
         ]
@@ -52,6 +50,37 @@ class RoomForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 3}),
         }
 
+class RoomFacilityForm(forms.ModelForm):
+    class Meta:
+        model  = RoomFacility
+        exclude = ['room']
+        labels = {
+            'wifi':                'WiFi',
+            'water_included':      'Water Included',
+            'electricity_included':'Electricity Included',
+            'gas_included':        'Gas Included',
+            'ac':                  'AC',
+            'heater':              'Heater',
+            'refrigerator':        'Refrigerator',
+            'washing_machine':     'Washing Machine',
+            'tv':                  'TV',
+            'microwave':           'Microwave',
+            'kitchen':             'Kitchen',
+            'parking':             'Parking',
+            'balcony':             'Balcony',
+            'garden':              'Garden',
+            'storage':             'Storage',
+            'laundry':             'Laundry',
+            'security_guard':      'Security Guard',
+            'cctv':                'CCTV',
+            'lift':                'Lift/Elevator',
+            'housekeeping':        'Housekeeping',
+            'furnished':           'Furnished',
+            'bed':                 'Bed',
+            'wardrobe':            'Wardrobe',
+            'study_table':         'Study Table',
+            'sofa':                'Sofa',
+        }
 
 RoomPhotoFormSet = forms.inlineformset_factory(
     Room, RoomPhoto,
