@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+    <div class="dashboard-header">
+        <h2>Admin Dashboard</h2>
+        <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_users }}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_owners }}</div>
+            <div class="stat-label">House Owners</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_tenants }}</div>
+            <div class="stat-label">Tenants</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_properties }}</div>
+            <div class="stat-label">Properties</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_bookings }}</div>
+            <div class="stat-label">Bookings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_payments }}</div>
+            <div class="stat-label">Payments</div>
+        </div>
+    </div>
+
+    <div class="dashboard-section">
+        <h3>Recent Users</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in recent_users %}
+                <tr>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.email }}</td>
+                    <td><span class="role-badge role-{{ u.role }}">{{ u.get_role_display }}</span></td>
+                    <td>{{ u.date_joined|date:"d M Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No users yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

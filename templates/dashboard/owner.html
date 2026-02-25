@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Owner Dashboard — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+    <div class="dashboard-header">
+        <h2>Owner Dashboard</h2>
+        <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ properties|length }}</div>
+            <div class="stat-label">My Properties</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ pending_bookings|length }}</div>
+            <div class="stat-label">Pending Bookings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ active_tenants|length }}</div>
+            <div class="stat-label">Active Tenants</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ open_complaints|length }}</div>
+            <div class="stat-label">Open Complaints</div>
+        </div>
+    </div>
+
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h3>My Properties</h3>
+            <a href="#" class="btn btn-primary">+ Add Property</a>
+        </div>
+        {% if properties %}
+            <p>Properties will show here.</p>
+        {% else %}
+            <div class="empty-state">
+                <p>You have no properties yet.</p>
+                <a href="#" class="btn btn-primary">Add Your First Property</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="dashboard-section">
+        <h3>Pending Booking Requests</h3>
+        {% if pending_bookings %}
+            <p>Bookings will show here.</p>
+        {% else %}
+            <div class="empty-state"><p>No pending booking requests.</p></div>
+        {% endif %}
+    </div>
+
+    <div class="dashboard-section">
+        <h3>Recent Payments Received</h3>
+        {% if recent_payments %}
+            <p>Payments will show here.</p>
+        {% else %}
+            <div class="empty-state"><p>No payments received yet.</p></div>
+        {% endif %}
+    </div>
+
+    <div class="dashboard-section">
+        <h3>Open Complaints</h3>
+        {% if open_complaints %}
+            <p>Complaints will show here.</p>
+        {% else %}
+            <div class="empty-state"><p>No open complaints.</p></div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
