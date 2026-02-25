@@ -118,7 +118,13 @@
                         <span>🚿 {{ p.total_bathrooms }} Bath</span>
                         <span>{{ p.get_furnishing_display }}</span>
                     </div>
-                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-primary" style="margin-top:0.75rem; display:block; text-align:center;">View Details</a>
+<!-- For whole properties - replace the two buttons with: -->
+<div class="property-actions">
+    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-secondary">View Details</a>
+    {% if request.user.is_authenticated and request.user.role == 'tenant' %}
+        <a href="{% url 'bookings:book_property' p.pk %}" class="btn btn-primary">Book Now</a>
+    {% endif %}
+</div>
                 </div>
             </div>
             {% endfor %}
@@ -150,7 +156,14 @@
                         {% if room.facility.lift %}<span class="amenity amenity-yes">🛗</span>{% endif %}
                     </div>
                     {% endif %}
-                    <a href="{% url 'properties:room_detail' room.property.pk room.pk %}" class="btn btn-primary" style="margin-top:0.75rem; display:block; text-align:center;">View Details</a>
+
+                 <!-- For rooms - replace the two buttons with: -->
+<div class="property-actions">
+    <a href="{% url 'properties:room_detail' room.property.pk room.pk %}" class="btn btn-secondary">View Details</a>
+    {% if request.user.is_authenticated and request.user.role == 'tenant' %}
+        <a href="{% url 'bookings:book_room' room.property.pk room.pk %}" class="btn btn-primary">Book Now</a>
+    {% endif %}
+</div>
                 </div>
             </div>
             {% endfor %}

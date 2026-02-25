@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/bookings.css' %}">{% endblock %}
+{% block title %}Cancel Booking — RentMS{% endblock %}
+
+{% block content %}
+<div class="booking-container">
+    <div class="booking-card">
+        <h2>Cancel Booking</h2>
+        <p>Are you sure you want to cancel the booking for <strong>{{ booking.get_target_name }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Cancel Booking</button>
+            <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

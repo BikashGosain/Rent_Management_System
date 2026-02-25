@@ -128,9 +128,13 @@
                 <a href="{% url 'properties:edit' property.pk %}" class="btn btn-primary">Edit Property</a>
                 <a href="{% url 'properties:delete' property.pk %}" class="btn btn-danger">Delete Property</a>
             {% elif request.user.is_tenant %}
-                {% if property.is_whole and property.is_available %}
-                    <a href="#" class="btn btn-primary">Book This Property</a>
-                {% endif %}
+{% if request.user.is_tenant %}
+    {% if property.is_available %}
+        <a href="{% url 'bookings:book_property' property.pk %}" class="btn btn-primary">Book This Property</a>
+    {% else %}
+        <span class="btn btn-secondary">Not Available</span>
+    {% endif %}
+{% endif %}
             {% endif %}
         </div>
     </div>

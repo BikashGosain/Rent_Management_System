@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/bookings.css' %}">{% endblock %}
+{% block title %}Book {{ target }} — RentMS{% endblock %}
+
+{% block content %}
+<div class="booking-container">
+    <div class="booking-card">
+        <h2>Booking Request</h2>
+
+        <div class="booking-target">
+            {% if target_type == 'room' %}
+                <p class="booking-target-title">Room {{ target.room_number }} — {{ target.property.title }}</p>
+                <p class="booking-target-meta">{{ target.get_room_type_display }} · {{ target.property.city }}</p>
+                <p class="booking-price">Rs. {{ target.rent_price }}/month</p>
+            {% else %}
+                <p class="booking-target-title">{{ target.title }}</p>
+                <p class="booking-target-meta">{{ target.get_type_display }} · {{ target.city }}</p>
+                <p class="booking-price">Rs. {{ target.rent_price }}/month</p>
+            {% endif %}
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                    <small class="error-text">{{ error }}</small>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Send Booking Request</button>
+            <a href="javascript:history.back()" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
