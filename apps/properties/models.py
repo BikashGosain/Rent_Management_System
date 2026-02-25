@@ -161,13 +161,6 @@ class Room(models.Model):
     area_sqft     = models.PositiveIntegerField(null=True, blank=True, help_text='Area in sq ft')
     furnishing    = models.CharField(max_length=20, choices=FURNISHING_CHOICES, default='unfurnished')
 
-    # Amenities
-    has_ac           = models.BooleanField(default=False)
-    has_balcony      = models.BooleanField(default=False)
-    wifi_included    = models.BooleanField(default=False)
-    water_included   = models.BooleanField(default=True)
-    electricity_included = models.BooleanField(default=False)
-
     # Pricing
     rent_price       = models.DecimalField(max_digits=10, decimal_places=2)
     security_deposit = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -189,6 +182,47 @@ class Room(models.Model):
 
     def is_available(self):
         return self.status == 'available'
+    
+class RoomFacility(models.Model):
+    room = models.OneToOneField(Room, on_delete=models.CASCADE, related_name='facility')
+
+    # Utilities
+    wifi               = models.BooleanField(default=False)
+    water_included     = models.BooleanField(default=False)
+    electricity_included = models.BooleanField(default=False)
+    gas_included       = models.BooleanField(default=False)
+
+    # Appliances
+    ac                 = models.BooleanField(default=False)
+    heater             = models.BooleanField(default=False)
+    refrigerator       = models.BooleanField(default=False)
+    washing_machine    = models.BooleanField(default=False)
+    tv                 = models.BooleanField(default=False)
+    microwave          = models.BooleanField(default=False)
+
+    # Space
+    kitchen            = models.BooleanField(default=False)
+    parking            = models.BooleanField(default=False)
+    balcony            = models.BooleanField(default=False)
+    garden             = models.BooleanField(default=False)
+    storage            = models.BooleanField(default=False)
+
+    # Services
+    laundry            = models.BooleanField(default=False)
+    security_guard     = models.BooleanField(default=False)
+    cctv               = models.BooleanField(default=False)
+    lift               = models.BooleanField(default=False)
+    housekeeping       = models.BooleanField(default=False)
+
+    # Furnishing
+    furnished          = models.BooleanField(default=False)
+    bed                = models.BooleanField(default=False)
+    wardrobe           = models.BooleanField(default=False)
+    study_table        = models.BooleanField(default=False)
+    sofa               = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Facilities — Room {self.room.room_number}'
 
 
 class RoomPhoto(models.Model):

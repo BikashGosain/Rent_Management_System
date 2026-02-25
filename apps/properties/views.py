@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Property, Room
-from .forms import PropertyForm, PropertyPhotoFormSet, RoomForm, RoomPhotoFormSet
-
+from .forms import PropertyForm, PropertyPhotoFormSet, RoomForm, RoomPhotoFormSet, RoomFacilityForm
+from .models import Property, PropertyPhoto, Room, RoomPhoto, RoomFacility
 
 # ── Property Views ────────────────────────────────────────────────────────────
 
@@ -95,24 +94,30 @@ def room_add(request, pk):
     prop = get_object_or_404(Property, pk=pk, owner=request.user)
 
     if request.method == 'POST':
-        form    = RoomForm(request.POST)
-        formset = RoomPhotoFormSet(request.POST, request.FILES)
-        if form.is_valid() and formset.is_valid():
+        form          = RoomForm(request.POST)
+        formset       = RoomPhotoFormSet(request.POST, request.FILES)
+        facility_form = RoomFacilityForm(request.POST)
+        if form.is_valid() and formset.is_valid() and facility_form.is_valid():
             room          = form.save(commit=False)
             room.property = prop
             room.save()
             formset.instance = room
             formset.save()
+            facility       = facility_form.save(commit=False)
+            facility.room  = room
+            facility.save()
             messages.success(request, f'Room {room.room_number} added successfully!')
             return redirect('properties:detail', pk=prop.pk)
         else:
             messages.error(request, 'Please fix the errors below.')
     else:
-        form    = RoomForm()
-        formset = RoomPhotoFormSet()
+        form          = RoomForm()
+        formset       = RoomPhotoFormSet()
+        facility_form = RoomFacilityForm()
 
     return render(request, 'properties/room_form.html', {
-        'form': form, 'formset': formset, 'property': prop, 'action': 'Add'
+        'form': form, 'formset': formset,
+        'facility_form': facility_form, 'property': prop, 'action': 'Add'
     })
 
 
@@ -120,25 +125,29 @@ def room_add(request, pk):
 def room_edit(request, pk, room_pk):
     prop = get_object_or_404(Property, pk=pk, owner=request.user)
     room = get_object_or_404(Room, pk=room_pk, property=prop)
+    facility, _ = RoomFacility.objects.get_or_create(room=room)
 
     if request.method == 'POST':
-        form    = RoomForm(request.POST, instance=room)
-        formset = RoomPhotoFormSet(request.POST, request.FILES, instance=room)
-        if form.is_valid() and formset.is_valid():
+        form          = RoomForm(request.POST, instance=room)
+        formset       = RoomPhotoFormSet(request.POST, request.FILES, instance=room)
+        facility_form = RoomFacilityForm(request.POST, instance=facility)
+        if form.is_valid() and formset.is_valid() and facility_form.is_valid():
             form.save()
             formset.save()
+            facility_form.save()
             messages.success(request, f'Room {room.room_number} updated!')
             return redirect('properties:detail', pk=prop.pk)
         else:
             messages.error(request, 'Please fix the errors below.')
     else:
-        form    = RoomForm(instance=room)
-        formset = RoomPhotoFormSet(instance=room)
+        form          = RoomForm(instance=room)
+        formset       = RoomPhotoFormSet(instance=room)
+        facility_form = RoomFacilityForm(instance=facility)
 
     return render(request, 'properties/room_form.html', {
-        'form': form, 'formset': formset, 'property': prop, 'action': 'Edit'
+        'form': form, 'formset': formset,
+        'facility_form': facility_form, 'property': prop, 'action': 'Edit'
     })
-
 
 @login_required
 def room_delete(request, pk, room_pk):

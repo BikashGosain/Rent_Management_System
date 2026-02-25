@@ -32,15 +32,51 @@
         </div>
 
         <div class="amenities-grid">
-            <h3>Amenities</h3>
-            <div class="amenities-list">
-                <span class="amenity {% if room.has_ac %}amenity-yes{% else %}amenity-no{% endif %}">❄️ AC</span>
-                <span class="amenity {% if room.has_balcony %}amenity-yes{% else %}amenity-no{% endif %}">🏗 Balcony</span>
-                <span class="amenity {% if room.wifi_included %}amenity-yes{% else %}amenity-no{% endif %}">📶 WiFi</span>
-                <span class="amenity {% if room.water_included %}amenity-yes{% else %}amenity-no{% endif %}">💧 Water</span>
-                <span class="amenity {% if room.electricity_included %}amenity-yes{% else %}amenity-no{% endif %}">⚡ Electricity</span>
-            </div>
-        </div>
+    <h3>Facilities</h3>
+    {% if room.facility %}
+
+    <p class="section-subtitle">Utilities</p>
+    <div class="amenities-list">
+        <span class="amenity {% if room.facility.wifi %}amenity-yes{% else %}amenity-no{% endif %}">📶 WiFi</span>
+        <span class="amenity {% if room.facility.water_included %}amenity-yes{% else %}amenity-no{% endif %}">💧 Water</span>
+        <span class="amenity {% if room.facility.electricity_included %}amenity-yes{% else %}amenity-no{% endif %}">⚡ Electricity</span>
+        <span class="amenity {% if room.facility.gas_included %}amenity-yes{% else %}amenity-no{% endif %}">🔥 Gas</span>
+    </div>
+
+    <p class="section-subtitle">Appliances</p>
+    <div class="amenities-list">
+        <span class="amenity {% if room.facility.ac %}amenity-yes{% else %}amenity-no{% endif %}">❄️ AC</span>
+        <span class="amenity {% if room.facility.heater %}amenity-yes{% else %}amenity-no{% endif %}">🌡 Heater</span>
+        <span class="amenity {% if room.facility.refrigerator %}amenity-yes{% else %}amenity-no{% endif %}">🧊 Refrigerator</span>
+        <span class="amenity {% if room.facility.washing_machine %}amenity-yes{% else %}amenity-no{% endif %}">🫧 Washing Machine</span>
+        <span class="amenity {% if room.facility.tv %}amenity-yes{% else %}amenity-no{% endif %}">📺 TV</span>
+        <span class="amenity {% if room.facility.microwave %}amenity-yes{% else %}amenity-no{% endif %}">📡 Microwave</span>
+    </div>
+
+    <p class="section-subtitle">Space & Services</p>
+    <div class="amenities-list">
+        <span class="amenity {% if room.facility.kitchen %}amenity-yes{% else %}amenity-no{% endif %}">🍳 Kitchen</span>
+        <span class="amenity {% if room.facility.parking %}amenity-yes{% else %}amenity-no{% endif %}">🚗 Parking</span>
+        <span class="amenity {% if room.facility.balcony %}amenity-yes{% else %}amenity-no{% endif %}">🏗 Balcony</span>
+        <span class="amenity {% if room.facility.laundry %}amenity-yes{% else %}amenity-no{% endif %}">👕 Laundry</span>
+        <span class="amenity {% if room.facility.security_guard %}amenity-yes{% else %}amenity-no{% endif %}">💂 Security</span>
+        <span class="amenity {% if room.facility.cctv %}amenity-yes{% else %}amenity-no{% endif %}">📷 CCTV</span>
+        <span class="amenity {% if room.facility.lift %}amenity-yes{% else %}amenity-no{% endif %}">🛗 Lift</span>
+    </div>
+
+    <p class="section-subtitle">Furnishing</p>
+    <div class="amenities-list">
+        <span class="amenity {% if room.facility.furnished %}amenity-yes{% else %}amenity-no{% endif %}">🛋 Furnished</span>
+        <span class="amenity {% if room.facility.bed %}amenity-yes{% else %}amenity-no{% endif %}">🛏 Bed</span>
+        <span class="amenity {% if room.facility.wardrobe %}amenity-yes{% else %}amenity-no{% endif %}">🚪 Wardrobe</span>
+        <span class="amenity {% if room.facility.study_table %}amenity-yes{% else %}amenity-no{% endif %}">📚 Study Table</span>
+        <span class="amenity {% if room.facility.sofa %}amenity-yes{% else %}amenity-no{% endif %}">🛋 Sofa</span>
+    </div>
+
+    {% else %}
+    <p class="property-meta">No facilities listed.</p>
+    {% endif %}
+</div>
 
         <div class="detail-section">
             <h3>Pricing</h3>
