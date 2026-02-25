@@ -23,6 +23,9 @@
                 {% else %}
                     <a href="{% url 'dashboard:tenant' %}">Dashboard</a>
                 {% endif %}
+                {% if user.is_authenticated and user.role == 'tenant' %}
+    <a href="{% url 'search:results' %}">Search</a>
+{% endif %}
                 <a href="{% url 'accounts:profile' %}">Profile</a>
                 <a href="{% url 'accounts:logout' %}">Logout</a>
             {% else %}

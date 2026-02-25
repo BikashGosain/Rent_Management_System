@@ -27,6 +27,7 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('dashboard/', include('apps.dashboard.urls')),
     path('properties/',  include('apps.properties.urls')),
+    path('search/',     include('apps.search.urls')),
 ]
 
 if settings.DEBUG:
