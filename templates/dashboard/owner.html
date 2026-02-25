@@ -32,14 +32,14 @@
     <div class="dashboard-section">
         <div class="section-header">
             <h3>My Properties</h3>
-            <a href="#" class="btn btn-primary">+ Add Property</a>
+            <a href="{% url 'properties:add' %}" class="btn btn-primary">+ Add Property</a>
         </div>
         {% if properties %}
             <p>Properties will show here.</p>
         {% else %}
             <div class="empty-state">
                 <p>You have no properties yet.</p>
-                <a href="#" class="btn btn-primary">Add Your First Property</a>
+                <a href="{% url 'properties:add' %}" class="btn btn-primary">Add Your First Property</a>
             </div>
         {% endif %}
     </div>

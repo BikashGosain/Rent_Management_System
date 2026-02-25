@@ -26,6 +26,7 @@ urlpatterns = [
     path('', views.home_view, name='home'),
     path('accounts/', include('apps.accounts.urls')),
     path('dashboard/', include('apps.dashboard.urls')),
+    path('properties/',  include('apps.properties.urls')),
 ]
 
 if settings.DEBUG:
