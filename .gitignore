@@ -1,0 +1,54 @@
+# Django-specific files
+*.log 
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Backup files # 
+*.bak 
+
+# Python # 
+*.py[cod] 
+*$py.class 
+
+
+# Virtual Environment
+.env
+venv/
+env/
+ENV/
+
+# PyCharm-specific files
+.idea/
+
+# Other files
+.DS_Store
+Thumbs.db
+.coverage
+.tox/
+.eggs/
+
+# =========================
+# Build / Distribution
+# =========================
+build/
+dist/
+*.egg-info/
+
+# =========================
+# Others
+# =========================
+*.tmp
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =========================
+# folders that i made
+daily_work_log/
