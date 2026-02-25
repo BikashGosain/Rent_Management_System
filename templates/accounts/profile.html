@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile — RentMS{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            {% if user.photo %}
+                <img src="{{ user.photo.url }}" alt="Profile Photo" class="profile-photo">
+            {% else %}
+                <div class="profile-photo-placeholder">{{ user.username|first|upper }}</div>
+            {% endif %}
+            <div>
+                <h2>{{ user.get_full_name|default:user.username }}</h2>
+                <span class="role-badge role-{{ user.role }}">{{ user.get_role_display }}</span>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <small class="error-text">{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+            <a href="{% url 'accounts:password_change' %}" class="btn btn-secondary">Change Password</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
