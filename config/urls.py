@@ -28,3 +28,8 @@ urlpatterns = [
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [path('__debug__/', include(debug_toolbar.urls))] + urlpatterns
+
+handler404 = 'blog_main.views.custom_404'
+handler400 = 'blog_main.views.custom_400'
+handler403 = 'blog_main.views.custom_403'
+handler500 = 'blog_main.views.custom_500'
