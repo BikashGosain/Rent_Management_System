@@ -17,7 +17,7 @@
         {% else %}
             <div class="empty-state">
                 <p>You are not renting any property yet.</p>
-                <a href="#" class="btn btn-primary">Search Properties</a>
+                <a href="{% url 'search:results' %}" class="btn btn-primary">Search Properties</a>
             </div>
         {% endif %}
     </div>

@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% block title %}Search Properties — RentMS{% endblock %}
+
+{% block content %}
+<div class="search-page">
+
+    <!-- ── Search & Filter Panel ── -->
+    <div class="filter-panel">
+        <h3>Search & Filter</h3>
+        <form method="get" action="{% url 'search:results' %}">
+
+            <div class="filter-section">
+                <h4>Location</h4>
+                <div class="form-group">
+                    <input type="text" name="city" placeholder="City (e.g. Kathmandu)"
+                           value="{{ filters.city }}" class="filter-input">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="location" placeholder="Area / Landmark"
+                           value="{{ filters.location }}" class="filter-input">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h4>Property</h4>
+                <div class="form-group">
+                    <select name="type" class="filter-input">
+                        <option value="">All Types</option>
+                        {% for value, label in property_types %}
+                            <option value="{{ value }}" {% if filters.type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="rent_type" class="filter-input">
+                        <option value="">Whole or Rooms</option>
+                        <option value="whole" {% if filters.rent_type == 'whole' %}selected{% endif %}>Whole Property</option>
+                        <option value="rooms" {% if filters.rent_type == 'rooms' %}selected{% endif %}>Individual Rooms</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="furnishing" class="filter-input">
+                        <option value="">Any Furnishing</option>
+                        {% for value, label in furnishing_choices %}
+                            <option value="{{ value }}" {% if filters.furnishing == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="bedrooms" class="filter-input">
+                        <option value="">Any Bedrooms</option>
+                        <option value="1" {% if filters.bedrooms == '1' %}selected{% endif %}>1+</option>
+                        <option value="2" {% if filters.bedrooms == '2' %}selected{% endif %}>2+</option>
+                        <option value="3" {% if filters.bedrooms == '3' %}selected{% endif %}>3+</option>
+                        <option value="4" {% if filters.bedrooms == '4' %}selected{% endif %}>4+</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h4>Price Range (Rs./month)</h4>
+                <div class="form-group">
+                    <input type="number" name="min_price" placeholder="Min price"
+                           value="{{ filters.min_price }}" class="filter-input">
+                </div>
+                <div class="form-group">
+                    <input type="number" name="max_price" placeholder="Max price"
+                           value="{{ filters.max_price }}" class="filter-input">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h4>Amenities</h4>
+                <div class="amenity-checkboxes">
+                    <label class="checkbox-label"><input type="checkbox" name="wifi"    value="1" {% if filters.wifi %}checked{% endif %}> 📶 WiFi</label>
+                    <label class="checkbox-label"><input type="checkbox" name="ac"      value="1" {% if filters.ac %}checked{% endif %}> ❄️ AC</label>
+                    <label class="checkbox-label"><input type="checkbox" name="parking" value="1" {% if filters.parking %}checked{% endif %}> 🚗 Parking</label>
+                    <label class="checkbox-label"><input type="checkbox" name="laundry" value="1" {% if filters.laundry %}checked{% endif %}> 👕 Laundry</label>
+                    <label class="checkbox-label"><input type="checkbox" name="lift"    value="1" {% if filters.lift %}checked{% endif %}> 🛗 Lift</label>
+                    <label class="checkbox-label"><input type="checkbox" name="cctv"    value="1" {% if filters.cctv %}checked{% endif %}> 📷 CCTV</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%">Search</button>
+            <a href="{% url 'search:results' %}" class="btn btn-secondary" style="width:100%; text-align:center; margin-top:0.5rem;">Clear Filters</a>
+        </form>
+    </div>
+
+    <!-- ── Results Panel ── -->
+    <div class="results-panel">
+
+        <div class="results-header">
+            <h3>{{ total_results }} Result{{ total_results|pluralize }} Found</h3>
+            <div class="view-toggle">
+                <button class="toggle-btn active" id="grid-btn" onclick="setView('grid')">⊞ Grid</button>
+                <button class="toggle-btn" id="list-btn" onclick="setView('list')">☰ List</button>
+            </div>
+        </div>
+
+        <div id="results-container" class="property-grid">
+
+            <!-- Whole Properties -->
+            {% for p in whole_properties %}
+            <div class="result-card">
+                {% if p.photos.first %}
+                    <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="result-img">
+                {% else %}
+                    <div class="result-img-placeholder">🏠</div>
+                {% endif %}
+                <div class="result-card-body">
+                    <span class="result-tag">Whole Property</span>
+                    <h4>{{ p.title }}</h4>
+                    <p class="property-meta">{{ p.get_type_display }} · {{ p.city }}</p>
+                    {% if p.landmark %}<p class="property-meta">📍 Near {{ p.landmark }}</p>{% endif %}
+                    <p class="property-price">Rs. {{ p.rent_price }}/month</p>
+                    <div class="property-details">
+                        <span>🛏 {{ p.total_bedrooms }} Bed</span>
+                        <span>🚿 {{ p.total_bathrooms }} Bath</span>
+                        <span>{{ p.get_furnishing_display }}</span>
+                    </div>
+                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-primary" style="margin-top:0.75rem; display:block; text-align:center;">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Individual Rooms -->
+            {% for room in rooms %}
+            <div class="result-card">
+                {% if room.photos.first %}
+                    <img src="{{ room.photos.first.image.url }}" alt="Room {{ room.room_number }}" class="result-img">
+                {% else %}
+                    <div class="result-img-placeholder">🚪</div>
+                {% endif %}
+                <div class="result-card-body">
+                    <span class="result-tag result-tag-room">Room</span>
+                    <h4>Room {{ room.room_number }} — {{ room.property.title }}</h4>
+                    <p class="property-meta">{{ room.get_room_type_display }} · {{ room.property.city }}</p>
+                    {% if room.property.landmark %}<p class="property-meta">📍 Near {{ room.property.landmark }}</p>{% endif %}
+                    <p class="property-price">Rs. {{ room.rent_price }}/month</p>
+                    <div class="property-details">
+                        <span>🛏 {{ room.bedrooms }} Bed</span>
+                        <span>🚿 {{ room.get_bathroom_type_display }}</span>
+                        <span>{{ room.get_furnishing_display }}</span>
+                    </div>
+                    {% if room.facility %}
+                    <div class="mini-amenities">
+                        {% if room.facility.wifi %}<span class="amenity amenity-yes">📶</span>{% endif %}
+                        {% if room.facility.ac %}<span class="amenity amenity-yes">❄️</span>{% endif %}
+                        {% if room.facility.parking %}<span class="amenity amenity-yes">🚗</span>{% endif %}
+                        {% if room.facility.lift %}<span class="amenity amenity-yes">🛗</span>{% endif %}
+                    </div>
+                    {% endif %}
+                    <a href="{% url 'properties:room_detail' room.property.pk room.pk %}" class="btn btn-primary" style="margin-top:0.75rem; display:block; text-align:center;">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if total_results == 0 %}
+            <div class="empty-state" style="grid-column: 1/-1;">
+                <p>No properties found matching your filters.</p>
+                <a href="{% url 'search:results' %}" class="btn btn-secondary">Clear Filters</a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script>
+function setView(view) {
+    const container = document.getElementById('results-container');
+    const gridBtn   = document.getElementById('grid-btn');
+    const listBtn   = document.getElementById('list-btn');
+    if (view === 'grid') {
+        container.className = 'property-grid';
+        gridBtn.classList.add('active');
+        listBtn.classList.remove('active');
+    } else {
+        container.className = 'property-list-view';
+        listBtn.classList.add('active');
+        gridBtn.classList.remove('active');
+    }
+    localStorage.setItem('searchView', view);
+}
+// Restore last view preference
+const savedView = localStorage.getItem('searchView');
+if (savedView) setView(savedView);
+</script>
+{% endblock %}
