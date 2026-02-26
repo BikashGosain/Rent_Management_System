@@ -81,13 +81,14 @@ def book_room(request, property_pk, room_pk):
 
 @login_required
 def my_bookings(request):
-    """Tenant sees all their bookings."""
+    """Tenant sees their bookings, but not ones cancelled by owner."""
     if not request.user.is_tenant():
         return redirect('dashboard:owner')
 
     bookings = Booking.objects.filter(tenant=request.user).select_related(
         'property', 'room', 'room__property'
-    )
+    ).order_by('-created_at')
+
     return render(request, 'bookings/my_bookings.html', {'bookings': bookings})
 
 
@@ -102,6 +103,7 @@ def cancel_booking(request, pk):
 
     if request.method == 'POST':
         booking.status = 'cancelled'
+        booking.cancelled_by = 'tenant'
         booking.save()
         messages.success(request, 'Booking cancelled successfully.')
         return redirect('bookings:my_bookings')
@@ -140,8 +142,16 @@ def booking_detail(request, pk):
     if not (is_owner or is_tenant):
         return HttpResponseForbidden('Access denied.')
 
+    # Determine cancel info
+    cancelled_by_owner  = booking.status == 'cancelled' and booking.cancelled_by == 'owner'
+    cancelled_by_tenant = booking.status == 'cancelled' and booking.cancelled_by == 'tenant'
+
     return render(request, 'bookings/booking_detail.html', {
-        'booking': booking, 'is_owner': is_owner, 'is_tenant': is_tenant
+        'booking': booking,
+        'is_owner': is_owner,
+        'is_tenant': is_tenant,
+        'cancelled_by_owner': cancelled_by_owner,
+        'cancelled_by_tenant': cancelled_by_tenant,
     })
 
 
@@ -199,6 +209,7 @@ def reject_booking(request, pk):
         if form.is_valid():
             booking        = form.save(commit=False)
             booking.status = 'rejected'
+            booking.cancelled_by = 'owner'
             booking.save()
             messages.success(request, 'Booking rejected.')
             return redirect('bookings:owner_bookings')
@@ -220,6 +231,7 @@ def owner_cancel_booking(request, pk):
 
     if request.method == 'POST':
         booking.status = 'cancelled'
+        booking.cancelled_by = 'owner'
         booking.save()
 
         # Mark property/room back to available

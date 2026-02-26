@@ -29,7 +29,20 @@
                 {% endif %}
             </div>
             <div class="booking-status-section">
-                <span class="booking-status booking-status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                <span class="booking-status booking-status-{{ booking.status }}"><div>
+            <strong>Status:</strong>
+          {% if booking.status == 'cancelled' %}
+    {% if booking.cancelled_by == 'owner' %}
+        Cancelled by Owner
+    {% elif booking.cancelled_by == 'tenant' %}
+        Cancelled by Tenant
+    {% else %}
+        Cancelled
+    {% endif %}
+{% else %}
+    {{ booking.get_status_display }}
+{% endif %}
+        </div></span>
                 <p class="property-meta">{{ booking.created_at|date:"d M Y" }}</p>
                 <div class="booking-actions">
                     <a href="{% url 'bookings:detail' booking.pk %}" class="btn btn-secondary">View</a>
