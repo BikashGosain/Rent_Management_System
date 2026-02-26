@@ -39,6 +39,13 @@ class Booking(models.Model):
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
 
+    cancelled_by = models.CharField(
+        max_length=10,
+        choices=[('tenant', 'Tenant'), ('owner', 'Owner')],
+        null=True,
+        blank=True
+    )
+
     class Meta:
         ordering = ['-created_at']
 

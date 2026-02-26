@@ -10,6 +10,17 @@
             <h2>Booking Detail</h2>
             <span class="booking-status booking-status-{{ booking.status }}">{{ booking.get_status_display }}</span>
         </div>
+{% if booking.status == 'cancelled' %}
+    {% if booking.cancelled_by == 'owner' %}
+        Cancelled by Owner
+    {% elif booking.cancelled_by == 'tenant' %}
+        Cancelled by Tenant
+    {% else %}
+        Cancelled
+    {% endif %}
+{% else %}
+    {{ booking.get_status_display }}
+{% endif %}
 
         <div class="detail-grid">
             <div class="detail-item"><span class="detail-label">Property/Room</span><span class="detail-value">{{ booking.get_target_name }}</span></div>
