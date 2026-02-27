@@ -28,21 +28,27 @@
             <div class="booking-status-section">
                 <span class="booking-status booking-status-{{ booking.status }}">{{ booking.get_status_display }}</span>
                 <p class="property-meta">{{ booking.created_at|date:"d M Y" }}</p>
-                <div class="booking-actions">
-                    <a href="{% url 'bookings:detail' booking.pk %}" class="btn btn-secondary">View</a>
-                    {% if booking.is_pending %}
-                    <a href="{% url 'bookings:accept' booking.pk %}" class="btn btn-primary">Accept</a>
-                    <a href="{% url 'bookings:reject' booking.pk %}" class="btn btn-danger">Reject</a>
-                    {% endif %}
-                    {% if booking.is_accepted %}
-                    <a href="{% url 'bookings:owner_cancel' booking.pk %}" class="btn btn-danger">Cancel</a>
-                    {% endif %}
-{% if booking.is_accepted and not booking.agreement %}
-    <a href="{% url 'agreements:create' booking.pk %}" class="btn btn-primary">Create Agreement</a>
-{% elif booking.is_accepted and booking.agreement %}
-    <a href="{% url 'agreements:detail' booking.agreement.pk %}" class="btn btn-secondary">View Agreement</a>
-{% endif %}                   
-                </div>
+<div class="booking-actions">
+    <a href="{% url 'bookings:detail' booking.pk %}" class="btn btn-secondary">View</a>
+    {% if booking.is_pending %}
+        <a href="{% url 'bookings:accept' booking.pk %}" class="btn btn-primary">Accept</a>
+        <a href="{% url 'bookings:reject' booking.pk %}" class="btn btn-danger">Reject</a>
+    {% endif %}
+    {% if booking.is_accepted %}
+        <a href="{% url 'bookings:owner_cancel' booking.pk %}" class="btn btn-danger">Cancel</a>
+    {% endif %}
+    {% with agreement=booking.agreements.last %}
+        {% if booking.is_accepted %}
+            {% if not agreement or agreement.status == 'terminated' %}
+                <a href="{% url 'agreements:create' booking.pk %}" class="btn btn-primary">
+                    {% if agreement and agreement.status == 'terminated' %}Create New Agreement{% else %}Create Agreement{% endif %}
+                </a>
+            {% else %}
+                <a href="{% url 'agreements:detail' agreement.pk %}" class="btn btn-secondary">View Agreement</a>
+            {% endif %}
+        {% endif %}
+    {% endwith %}
+</div>
             </div>
         </div>
         {% endfor %}

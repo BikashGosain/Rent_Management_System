@@ -79,8 +79,14 @@ def property_delete(request, pk):
 
 @login_required
 def property_detail(request, pk):
-    prop  = get_object_or_404(Property, pk=pk)
-    rooms = prop.rooms.all() if prop.is_rooms() else None
+    prop = get_object_or_404(Property, pk=pk)
+    
+    # Owners see all rooms, tenants see only available rooms
+    if request.user.is_owner() and prop.owner == request.user:
+        rooms = prop.rooms.all()
+    else:
+        rooms = prop.rooms.filter(status='available')
+    
     photos = prop.photos.all()
     return render(request, 'properties/property_detail.html', {
         'property': prop, 'rooms': rooms, 'photos': photos

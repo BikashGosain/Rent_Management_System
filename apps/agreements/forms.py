@@ -8,7 +8,7 @@ DEFAULT_TERMS = """1. The tenant agrees to pay rent on or before the 5th of ever
 3. The tenant shall maintain the property in good condition.
 4. The tenant shall not cause any disturbance to neighbors.
 5. Any damage to the property beyond normal wear and tear shall be charged to the tenant.
-6. The tenant must give {notice_period} days notice before vacating the property.
+6. The tenant must give 30 days notice before vacating the property.
 7. The security deposit will be refunded within 30 days of vacating, after deducting any dues.
 8. The owner reserves the right to inspect the property with prior notice.
 9. This agreement is governed by the laws of Nepal."""

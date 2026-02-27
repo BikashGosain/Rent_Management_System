@@ -26,9 +26,10 @@ def create_agreement(request, booking_pk):
         return redirect('bookings:owner_bookings')
 
     # Prevent duplicate agreement
-    if hasattr(booking, 'agreement'):
+    last_agreement = booking.agreements.last()
+    if last_agreement and last_agreement.status != 'terminated':
         messages.warning(request, 'Agreement already exists for this booking.')
-        return redirect('agreements:detail', pk=booking.agreement.pk)
+        return redirect('agreements:detail', pk=last_agreement.pk)
 
     if request.method == 'POST':
         form = AgreementForm(request.POST, request.FILES)
@@ -108,9 +109,7 @@ def agreement_detail(request, pk):
 
 @login_required
 def sign_agreement(request, pk):
-    """Owner or tenant digitally signs the agreement."""
     agreement = get_object_or_404(Agreement, pk=pk)
-
     is_owner  = agreement.owner  == request.user
     is_tenant = agreement.tenant == request.user
 
@@ -123,32 +122,34 @@ def sign_agreement(request, pk):
         if is_owner and not agreement.owner_signed:
             agreement.owner_signed    = True
             agreement.owner_signed_at = now
-            agreement.status          = 'pending_tenant'
-            messages.success(request, 'You have signed the agreement. Waiting for tenant signature.')
+            messages.success(request, 'You have signed the agreement.')
 
         elif is_tenant and not agreement.tenant_signed:
             agreement.tenant_signed    = True
             agreement.tenant_signed_at = now
+            messages.success(request, 'You have signed the agreement.')
 
-            if agreement.owner_signed:
-                agreement.status = 'active'
-                messages.success(request, 'Agreement is now active! Both parties have signed.')
-            else:
-                messages.success(request, 'You have signed. Waiting for owner signature.')
         else:
             messages.warning(request, 'You have already signed this agreement.')
+            return redirect('agreements:detail', pk=agreement.pk)
+
+        # ← Check AFTER saving both signatures
+        if agreement.owner_signed and agreement.tenant_signed:
+            agreement.status = 'active'
+            messages.success(request, 'Agreement is now ACTIVE! Both parties have signed.')
+        elif is_owner:
+            agreement.status = 'pending_tenant'
+        elif is_tenant:
+            agreement.status = 'pending_owner'
 
         agreement.save()
         return redirect('agreements:detail', pk=agreement.pk)
 
     return render(request, 'agreements/sign_confirm.html', {'agreement': agreement})
 
-
 @login_required
 def terminate_agreement(request, pk):
-    """Owner or tenant terminates an active agreement."""
     agreement = get_object_or_404(Agreement, pk=pk)
-
     is_owner  = agreement.owner  == request.user
     is_tenant = agreement.tenant == request.user
 
@@ -160,7 +161,11 @@ def terminate_agreement(request, pk):
         return redirect('agreements:detail', pk=pk)
 
     if request.method == 'POST':
-        agreement.status = 'terminated'
+        reason = request.POST.get('reason', '')
+        agreement.status             = 'terminated'
+        agreement.terminated_by      = request.user
+        agreement.terminated_at      = timezone.now()
+        agreement.termination_reason = reason
         agreement.save()
 
         # Mark property/room back to available

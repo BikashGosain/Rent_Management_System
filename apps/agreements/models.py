@@ -23,7 +23,7 @@ class Agreement(models.Model):
     # What is being rented
     property = models.ForeignKey(Property, on_delete=models.SET_NULL, null=True, blank=True, related_name='agreements')
     room     = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True, related_name='agreements')
-    booking  = models.OneToOneField(Booking, on_delete=models.SET_NULL, null=True, blank=True, related_name='agreement')
+    booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, blank=True, related_name='agreements')
 
     # Dates
     start_date = models.DateField()
@@ -47,7 +47,10 @@ class Agreement(models.Model):
     owner_signed_at  = models.DateTimeField(null=True, blank=True)
     tenant_signed_at = models.DateTimeField(null=True, blank=True)
 
-    
+    # Add these fields to Agreement model
+    terminated_by   = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='terminated_agreements')
+    terminated_at   = models.DateTimeField(null=True, blank=True)
+    termination_reason = models.TextField(blank=True)
 
     # Status
     status = models.CharField(max_length=20, 
