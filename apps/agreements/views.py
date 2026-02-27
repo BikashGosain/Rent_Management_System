@@ -7,6 +7,12 @@ from .models import Agreement
 from .forms import AgreementForm
 from apps.bookings.models import Booking
 
+from apps.notifications.utils import (
+    notify_agreement_created,
+    notify_agreement_signed,
+    notify_agreement_terminated,
+)
+
 
 # ── Owner Views ───────────────────────────────────────────────────────────────
 
@@ -43,6 +49,7 @@ def create_agreement(request, booking_pk):
             else:
                 agreement.property = booking.property
             agreement.save()
+            notify_agreement_created(agreement)
             messages.success(request, 'Agreement created! Waiting for your signature.')
             return redirect('agreements:detail', pk=agreement.pk)
         else:
@@ -143,6 +150,7 @@ def sign_agreement(request, pk):
             agreement.status = 'pending_owner'
 
         agreement.save()
+        notify_agreement_signed(agreement, signed_by=request.user)
         return redirect('agreements:detail', pk=agreement.pk)
 
     return render(request, 'agreements/sign_confirm.html', {'agreement': agreement})
@@ -167,6 +175,7 @@ def terminate_agreement(request, pk):
         agreement.terminated_at      = timezone.now()
         agreement.termination_reason = reason
         agreement.save()
+        notify_agreement_terminated(agreement, terminated_by=request.user)
 
         # Mark property/room back to available
         if agreement.room:

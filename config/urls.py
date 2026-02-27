@@ -32,6 +32,8 @@ urlpatterns = [
     path('agreements/',  include('apps.agreements.urls')),
     path('payments/',   include('apps.payments.urls')),
     path('complaints/',  include('apps.complaints.urls')),
+    path('complaints/',  include('apps.complaints.urls')),
+    path('notifications/', include('apps.notifications.urls')),
 ]
 
 if settings.DEBUG:

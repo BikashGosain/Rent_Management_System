@@ -60,6 +60,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.notifications.context_processors.unread_notifications',
             ],
         },
     },
@@ -101,6 +102,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DEFAULT_FROM_EMAIL = 'noreply@rentms.com'
+SITE_URL = 'http://127.0.0.1:8000'
 
 # Login / Logout redirects
 LOGIN_URL          = '/accounts/login/'

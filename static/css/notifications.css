@@ -1,0 +1,77 @@
+/* ── Notification Bell ── */
+.notif-bell {
+    position: relative;
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 0.25rem;
+}
+.notif-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+}
+
+/* ── Notification Page ── */
+.notif-page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* ── Notification List ── */
+.notif-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: background 0.15s;
+    position: relative;
+}
+.notif-item:hover { background: #f5f6fa; }
+.notif-unread { background: #f0f4ff; border-left: 4px solid #3498db; }
+
+/* ── Notification Icon ── */
+.notif-icon {
+    font-size: 1.5rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #f0f4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ── Notification Content ── */
+.notif-content { flex: 1; }
+.notif-title   { font-weight: 700; color: #2c3e50; margin-bottom: 0.2rem; }
+.notif-message { color: #555; font-size: 0.9rem; margin-bottom: 0.25rem; }
+.notif-time    { color: #aaa; font-size: 0.78rem; }
+
+/* ── Unread Dot ── */
+.notif-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3498db;
+    flex-shrink: 0;
+    margin-top: 0.35rem;
+}
