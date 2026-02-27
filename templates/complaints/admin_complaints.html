@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/complaints.css' %}">{% endblock %}
+{% block title %}All Complaints — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>All Complaints</h2>
+
+    {% if complaints %}
+    <div class="complaints-list">
+        {% for complaint in complaints %}
+        <div class="complaint-item status-border-{{ complaint.status }}">
+            <div class="complaint-info">
+                <div class="complaint-header">
+                    <h4>{{ complaint.title }}</h4>
+                    <span class="priority-badge priority-{{ complaint.priority }}">{{ complaint.get_priority_display }}</span>
+                </div>
+                <p class="property-meta">{{ complaint.get_category_display }} · {{ complaint.get_target_name }}</p>
+                <p class="property-meta">Tenant: <strong>{{ complaint.tenant.get_full_name|default:complaint.tenant.username }}</strong></p>
+                <p class="property-meta">Owner: <strong>{{ complaint.owner.get_full_name|default:complaint.owner.username }}</strong></p>
+                <p class="property-meta">{{ complaint.created_at|date:"d M Y" }}</p>
+            </div>
+            <div class="complaint-status-section">
+                <span class="complaint-status complaint-status-{{ complaint.status }}">{{ complaint.get_status_display }}</span>
+                <div class="complaint-actions">
+                    <a href="{% url 'complaints:detail' complaint.pk %}" class="btn btn-secondary">View</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><p>No complaints in the system.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

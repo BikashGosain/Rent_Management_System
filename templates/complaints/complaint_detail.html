@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/complaints.css' %}">{% endblock %}
+{% block title %}{{ complaint.title }} — RentMS{% endblock %}
+
+{% block content %}
+<div class="complaint-container">
+    <div class="complaint-card">
+
+        <div class="section-header">
+            <h2>{{ complaint.title }}</h2>
+            <span class="complaint-status complaint-status-{{ complaint.status }}">{{ complaint.get_status_display }}</span>
+        </div>
+
+        <div class="complaint-meta-grid">
+            <div class="detail-item"><span class="detail-label">Category</span><span class="detail-value">{{ complaint.get_category_display }}</span></div>
+            <div class="detail-item"><span class="detail-label">Priority</span><span class="detail-value"><span class="priority-badge priority-{{ complaint.priority }}">{{ complaint.get_priority_display }}</span></span></div>
+            <div class="detail-item"><span class="detail-label">Property/Room</span><span class="detail-value">{{ complaint.get_target_name }}</span></div>
+            <div class="detail-item"><span class="detail-label">Submitted By</span><span class="detail-value">{{ complaint.tenant.get_full_name|default:complaint.tenant.username }}</span></div>
+            <div class="detail-item"><span class="detail-label">Submitted On</span><span class="detail-value">{{ complaint.created_at|date:"d M Y" }}</span></div>
+            {% if complaint.resolved_at %}
+            <div class="detail-item"><span class="detail-label">Resolved On</span><span class="detail-value">{{ complaint.resolved_at|date:"d M Y" }}</span></div>
+            {% endif %}
+        </div>
+
+        <div class="detail-section">
+            <h3>Description</h3>
+            <p>{{ complaint.description }}</p>
+        </div>
+
+        {% if complaint.attachment %}
+        <div class="detail-section">
+            <h3>Attachment</h3>
+            <img src="{{ complaint.attachment.url }}" alt="Complaint attachment" class="complaint-img">
+        </div>
+        {% endif %}
+
+        <!-- Update Status (Owner only) -->
+        {% if is_owner %}
+        <div class="detail-section">
+            <h3>Update Status</h3>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_status">
+                <div class="form-row">
+                    <div class="form-group">{{ status_form.status }}</div>
+                    <div class="form-group" style="display:flex; align-items:flex-end;">
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Responses Thread -->
+        <div class="detail-section">
+            <h3>Responses ({{ responses.count }})</h3>
+
+            {% if responses %}
+            <div class="responses-thread">
+                {% for response in responses %}
+                <div class="response-item {% if response.responder == complaint.owner %}response-owner{% else %}response-tenant{% endif %}">
+                    <div class="response-header">
+                        <strong>{{ response.responder.get_full_name|default:response.responder.username }}</strong>
+                        <span class="response-role">
+                            {% if response.responder == complaint.owner %}Owner{% else %}Tenant{% endif %}
+                        </span>
+                        <span class="property-meta">{{ response.created_at|date:"d M Y, h:i A" }}</span>
+                    </div>
+                    <p>{{ response.message }}</p>
+                    {% if response.attachment %}
+                        <img src="{{ response.attachment.url }}" alt="attachment" class="complaint-img">
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="property-meta">No responses yet.</p>
+            {% endif %}
+
+            <!-- Add Response (both owner and tenant can respond) -->
+            {% if not complaint.is_resolved %}
+            <div class="response-form">
+                <h4>Add Response</h4>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="respond">
+                    <div class="form-group">{{ response_form.message }}</div>
+                    <div class="form-group">
+                        <label>Attach Photo (optional)</label>
+                        {{ response_form.attachment }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Response</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="detail-actions">
+            {% if is_owner %}
+                <a href="{% url 'complaints:owner_complaints' %}" class="btn btn-secondary">← Back</a>
+            {% elif is_tenant %}
+                <a href="{% url 'complaints:my_complaints' %}" class="btn btn-secondary">← Back</a>
+            {% else %}
+                <a href="{% url 'complaints:admin_complaints' %}" class="btn btn-secondary">← Back</a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}
