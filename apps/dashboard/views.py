@@ -57,10 +57,28 @@ def admin_dashboard(request):
 
 
 
+from apps.agreements.models import Agreement
+
+@tenant_required
+def tenant_dashboard(request):
+    from apps.bookings.models import Booking
+    bookings   = Booking.objects.filter(tenant=request.user).order_by('-created_at')
+    agreements = Agreement.objects.filter(tenant=request.user).order_by('-created_at')
+    context = {
+        'current_property': bookings.filter(status='accepted').first(),
+        'booking_status':   bookings.first(),
+        'upcoming_rent':    None,
+        'agreements':       agreements[:3],
+        'complaints':       [],
+    }
+    return render(request, 'dashboard/tenant.html', context)
+
+
 @owner_required
 def owner_dashboard(request):
     from apps.properties.models import Property
-    properties      = Property.objects.filter(owner=request.user)
+    from apps.bookings.models import Booking
+    properties       = Property.objects.filter(owner=request.user)
     pending_bookings = Booking.objects.filter(
         property__owner=request.user, status='pending'
     ) | Booking.objects.filter(
@@ -69,21 +87,8 @@ def owner_dashboard(request):
     context = {
         'properties':       properties,
         'pending_bookings': pending_bookings.order_by('-created_at')[:5],
-        'active_tenants':   [],
+        'active_tenants':   Agreement.objects.filter(owner=request.user, status='active').count(),
         'recent_payments':  [],
         'open_complaints':  [],
     }
     return render(request, 'dashboard/owner.html', context)
-
-
-@tenant_required
-def tenant_dashboard(request):
-    bookings = Booking.objects.filter(tenant=request.user).order_by('-created_at')
-    context = {
-        'current_property': bookings.filter(status='accepted').first(),
-        'booking_status':   bookings.first(),
-        'upcoming_rent':    None,
-        'agreements':       [],
-        'complaints':       [],
-    }
-    return render(request, 'dashboard/tenant.html', context)

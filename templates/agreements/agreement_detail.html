@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/agreements.css' %}">{% endblock %}
+{% block title %}Agreement Detail — RentMS{% endblock %}
+
+{% block content %}
+<div class="agreement-container">
+    <div class="agreement-card">
+
+        <div class="section-header">
+            <h2>Rental Agreement</h2>
+            <span class="agreement-status agreement-status-{{ agreement.status }}">{{ agreement.get_status_display }}</span>
+        </div>
+
+        <div class="agreement-parties">
+            <div class="party-card">
+                <p class="party-label">Owner</p>
+                <p class="party-name">{{ agreement.owner.get_full_name|default:agreement.owner.username }}</p>
+                <p class="party-meta">{{ agreement.owner.email }}</p>
+                <p class="party-meta">{{ agreement.owner.phone }}</p>
+                {% if agreement.owner_signed %}
+                    <span class="signed-badge">✓ Signed on {{ agreement.owner_signed_at|date:"d M Y" }}</span>
+                {% else %}
+                    <span class="unsigned-badge">✗ Not yet signed</span>
+                {% endif %}
+            </div>
+            <div class="party-card">
+                <p class="party-label">Tenant</p>
+                <p class="party-name">{{ agreement.tenant.get_full_name|default:agreement.tenant.username }}</p>
+                <p class="party-meta">{{ agreement.tenant.email }}</p>
+                <p class="party-meta">{{ agreement.tenant.phone }}</p>
+                {% if agreement.tenant_signed %}
+                    <span class="signed-badge">✓ Signed on {{ agreement.tenant_signed_at|date:"d M Y" }}</span>
+                {% else %}
+                    <span class="unsigned-badge">✗ Not yet signed</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-item"><span class="detail-label">Property/Room</span><span class="detail-value">{{ agreement.get_target_name }}</span></div>
+            <div class="detail-item"><span class="detail-label">Start Date</span><span class="detail-value">{{ agreement.start_date }}</span></div>
+            <div class="detail-item"><span class="detail-label">End Date</span><span class="detail-value">{{ agreement.end_date }}</span></div>
+            <div class="detail-item"><span class="detail-label">Duration</span><span class="detail-value">{{ agreement.duration_months }} months</span></div>
+            <div class="detail-item"><span class="detail-label">Rent/month</span><span class="detail-value">Rs. {{ agreement.rent_amount }}</span></div>
+            <div class="detail-item"><span class="detail-label">Security Deposit</span><span class="detail-value">Rs. {{ agreement.security_deposit }}</span></div>
+            <div class="detail-item"><span class="detail-label">Advance Amount</span><span class="detail-value">Rs. {{ agreement.advance_amount }}</span></div>
+            <div class="detail-item"><span class="detail-label">Notice Period</span><span class="detail-value">{{ agreement.notice_period_days }} days</span></div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Terms & Conditions</h3>
+            <div class="terms-box">{{ agreement.terms_conditions|linebreaks }}</div>
+        </div>
+
+        {% if agreement.document %}
+        <div class="detail-section">
+            <h3>Agreement Document</h3>
+            <a href="{{ agreement.document.url }}" target="_blank" class="btn btn-secondary">📄 Download Document</a>
+        </div>
+        {% endif %}
+
+        <div class="detail-actions">
+            {% if is_owner and not agreement.owner_signed %}
+                <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary">✍ Sign Agreement</a>
+            {% endif %}
+            {% if is_tenant and not agreement.tenant_signed %}
+                <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary">✍ Sign Agreement</a>
+            {% endif %}
+            {% if agreement.is_active %}
+                <a href="{% url 'agreements:terminate' agreement.pk %}" class="btn btn-danger">Terminate Agreement</a>
+            {% endif %}
+            {% if is_owner %}
+                <a href="{% url 'agreements:owner_agreements' %}" class="btn btn-secondary">← Back</a>
+            {% else %}
+                <a href="{% url 'agreements:tenant_agreements' %}" class="btn btn-secondary">← Back</a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

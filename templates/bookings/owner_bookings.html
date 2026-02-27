@@ -37,6 +37,11 @@
                     {% if booking.is_accepted %}
                     <a href="{% url 'bookings:owner_cancel' booking.pk %}" class="btn btn-danger">Cancel</a>
                     {% endif %}
+{% if booking.is_accepted and not booking.agreement %}
+    <a href="{% url 'agreements:create' booking.pk %}" class="btn btn-primary">Create Agreement</a>
+{% elif booking.is_accepted and booking.agreement %}
+    <a href="{% url 'agreements:detail' booking.agreement.pk %}" class="btn btn-secondary">View Agreement</a>
+{% endif %}                   
                 </div>
             </div>
         </div>

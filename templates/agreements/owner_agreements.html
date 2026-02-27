@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/agreements.css' %}">{% endblock %}
+{% block title %}My Agreements — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Rental Agreements</h2>
+
+    {% if agreements %}
+    <div class="agreements-list">
+        {% for agreement in agreements %}
+        <div class="agreement-item status-border-{{ agreement.status }}">
+            <div class="agreement-info">
+                <h4>{{ agreement.get_target_name }}</h4>
+                <p class="property-meta">Tenant: <strong>{{ agreement.tenant.get_full_name|default:agreement.tenant.username }}</strong></p>
+                <p class="property-meta">{{ agreement.start_date }} → {{ agreement.end_date }} ({{ agreement.duration_months }} months)</p>
+                <p class="property-meta">Rent: Rs. {{ agreement.rent_amount }}/month</p>
+            </div>
+            <div class="booking-status-section">
+                <span class="agreement-status agreement-status-{{ agreement.status }}">{{ agreement.get_status_display }}</span>
+                <div class="booking-actions">
+                    <a href="{% url 'agreements:detail' agreement.pk %}" class="btn btn-secondary">View</a>
+                    {% if not agreement.owner_signed %}
+                        <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary">Sign</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No agreements yet. Create one from an accepted booking.</p>
+        <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-primary">View Bookings</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

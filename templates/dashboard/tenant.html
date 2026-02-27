@@ -47,14 +47,28 @@
         {% endif %}
     </div>
 
-    <div class="dashboard-section">
+<div class="dashboard-section">
+    <div class="section-header">
         <h3>My Agreements</h3>
-        {% if agreements %}
-            <p>Agreements will show here.</p>
-        {% else %}
-            <div class="empty-state"><p>No agreements yet.</p></div>
-        {% endif %}
+        <a href="{% url 'agreements:tenant_agreements' %}" class="btn btn-secondary">View All</a>
     </div>
+    {% if agreements %}
+        {% for agreement in agreements %}
+        <p>
+            {{ agreement.get_target_name }} —
+            <span class="agreement-status agreement-status-{{ agreement.status }}">
+                {{ agreement.get_status_display }}
+            </span>
+            <a href="{% url 'agreements:detail' agreement.pk %}">View</a>
+            {% if not agreement.tenant_signed %}
+                <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary">✍ Sign</a>
+            {% endif %}
+        </p>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state"><p>No agreements yet.</p></div>
+    {% endif %}
+</div>
 
     <div class="dashboard-section">
         <h3>My Complaints</h3>
