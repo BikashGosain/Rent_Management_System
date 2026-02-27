@@ -54,41 +54,49 @@ def admin_dashboard(request):
     }
     return render(request, 'dashboard/admin.html', context)
 
-
-
-
-from apps.agreements.models import Agreement
-
 @tenant_required
 def tenant_dashboard(request):
     from apps.bookings.models import Booking
-    bookings   = Booking.objects.filter(tenant=request.user).order_by('-created_at')
-    agreements = Agreement.objects.filter(tenant=request.user).order_by('-created_at')
+    from apps.agreements.models import Agreement
+    from apps.payments.models import Payment
+    bookings     = Booking.objects.filter(tenant=request.user).order_by('-created_at')
+    agreements   = Agreement.objects.filter(tenant=request.user).order_by('-created_at')
+    upcoming_rent = Payment.objects.filter(
+        tenant=request.user, status='pending'
+    ).order_by('due_date').first()
+
     context = {
         'current_property': bookings.filter(status='accepted').first(),
         'booking_status':   bookings.first(),
-        'upcoming_rent':    None,
+        'upcoming_rent':    upcoming_rent,
         'agreements':       agreements[:3],
         'complaints':       [],
     }
     return render(request, 'dashboard/tenant.html', context)
 
 
+from apps.payments.models import Payment
+
 @owner_required
 def owner_dashboard(request):
     from apps.properties.models import Property
     from apps.bookings.models import Booking
+    from apps.agreements.models import Agreement
     properties       = Property.objects.filter(owner=request.user)
     pending_bookings = Booking.objects.filter(
         property__owner=request.user, status='pending'
     ) | Booking.objects.filter(
         room__property__owner=request.user, status='pending'
     )
+    recent_payments = Payment.objects.filter(
+        owner=request.user, status='paid'
+    ).order_by('-paid_date')[:5]
+
     context = {
         'properties':       properties,
         'pending_bookings': pending_bookings.order_by('-created_at')[:5],
         'active_tenants':   Agreement.objects.filter(owner=request.user, status='active').count(),
-        'recent_payments':  [],
+        'recent_payments':  recent_payments,
         'open_complaints':  [],
     }
     return render(request, 'dashboard/owner.html', context)

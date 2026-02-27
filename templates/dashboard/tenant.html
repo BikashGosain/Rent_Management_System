@@ -38,14 +38,22 @@
         {% endif %}
     </div>
 
-    <div class="dashboard-section">
+<div class="dashboard-section">
+    <div class="section-header">
         <h3>Upcoming Rent Due</h3>
-        {% if upcoming_rent %}
-            <p>Rent details will show here.</p>
-        {% else %}
-            <div class="empty-state"><p>No upcoming rent due.</p></div>
-        {% endif %}
+        <a href="{% url 'payments:tenant_payments' %}" class="btn btn-secondary">View All</a>
     </div>
+    {% if upcoming_rent %}
+        <p>{{ upcoming_rent.get_payment_type_display }}
+           {% if upcoming_rent.month and upcoming_rent.year %} — {{ upcoming_rent.get_month_display_name }}{% endif %}
+           — <strong>Rs. {{ upcoming_rent.amount }}</strong>
+           due on <strong>{{ upcoming_rent.due_date }}</strong>
+           <span class="payment-status payment-status-{{ upcoming_rent.status }}">{{ upcoming_rent.get_status_display }}</span>
+        </p>
+    {% else %}
+        <div class="empty-state"><p>No upcoming rent due.</p></div>
+    {% endif %}
+</div>
 
 <div class="dashboard-section">
     <div class="section-header">
