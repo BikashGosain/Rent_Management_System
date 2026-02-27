@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from apps import properties
 from apps.properties.models import Property, Room
 
 
@@ -74,13 +75,14 @@ def search_view(request):
     if has_cctv:
         rooms = rooms.filter(facility__cctv=True)
 
-    # Only show whole properties in results
     whole_properties = properties.filter(rent_type='whole')
+    room_properties  = properties.filter(rent_type='rooms')
 
     context = {
         'whole_properties': whole_properties,
+        'room_properties':  room_properties,
         'rooms':            rooms,
-        'total_results':    whole_properties.count() + rooms.count(),
+        'total_results':    whole_properties.count() + room_properties.count() + rooms.count(),
         'filters': {
             'city':       city,
             'location':   location,

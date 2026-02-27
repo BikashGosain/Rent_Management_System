@@ -46,6 +46,10 @@
         <span class="notif-badge">{{ unread_notifications_count }}</span>
     {% endif %}
 </a>
+{% if user.is_authenticated %}
+    <a href="{% url 'reviews:my_reviews' %}">My Reviews</a>
+{% endif %}
+
 {% endif %}
     </nav>
 

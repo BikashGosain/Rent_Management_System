@@ -108,6 +108,26 @@
         <a href="{% url 'agreements:tenant_agreements' %}" class="btn btn-secondary">← Back</a>
     {% endif %}
 </div>
+{% if agreement.status in 'active,terminated,expired' %}
+    {% if is_tenant %}
+        <div class="detail-section">
+            <h3>Leave a Review</h3>
+            {% if agreement.property %}
+                <a href="{% url 'reviews:write' agreement.pk 'property' %}" class="btn btn-secondary">🏠 Review Property</a>
+            {% endif %}
+            {% if agreement.room %}
+                <a href="{% url 'reviews:write' agreement.pk 'room' %}" class="btn btn-secondary">🚪 Review Room</a>
+            {% endif %}
+            <a href="{% url 'reviews:write' agreement.pk 'owner' %}" class="btn btn-secondary">👤 Review Owner</a>
+        </div>
+    {% endif %}
+    {% if is_owner %}
+        <div class="detail-section">
+            <h3>Leave a Review</h3>
+            <a href="{% url 'reviews:write' agreement.pk 'tenant' %}" class="btn btn-secondary">👤 Review Tenant</a>
+        </div>
+    {% endif %}
+{% endif %}
     </div>
 </div>
 {% endblock %}

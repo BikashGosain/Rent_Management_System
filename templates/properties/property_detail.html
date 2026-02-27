@@ -137,6 +137,33 @@
 {% endif %}
             {% endif %}
         </div>
+        <!-- Add near bottom of property detail -->
+<div class="detail-section">
+    <div class="section-header">
+        <h3>Reviews</h3>
+        <a href="{% url 'reviews:property_reviews' property.pk %}" class="btn btn-secondary">View All</a>
+    </div>
+    {% with reviews=property.reviews.all %}
+    {% if reviews %}
+        {% for review in reviews|slice:":3" %}
+        <div class="review-item">
+            <div class="review-header">
+                <div>
+                    <p class="review-reviewer">{{ review.reviewer.get_full_name|default:review.reviewer.username }}</p>
+                    <h4>{{ review.title }}</h4>
+                </div>
+                <div class="review-stars">
+                    {% for i in review.get_filled_stars %}★{% endfor %}{% for i in review.get_empty_stars %}☆{% endfor %}
+                </div>
+            </div>
+            <p class="review-comment">{{ review.comment }}</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="property-meta">No reviews yet.</p>
+    {% endif %}
+    {% endwith %}
+</div>
     </div>
 </div>
 {% endblock %}

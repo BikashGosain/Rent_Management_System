@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'apps.complaints',
     'apps.notifications',
     'apps.dashboard',
+    'apps.reviews',
 ]
 
 # Middleware

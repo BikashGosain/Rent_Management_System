@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/reviews.css' %}">{% endblock %}
+{% block title %}Reviews — {{ property.title }}{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="section-header">
+        <h2>Reviews for {{ property.title }}</h2>
+        <a href="{% url 'properties:detail' property.pk %}" class="btn btn-secondary">← Back to Property</a>
+    </div>
+
+    {% if avg_rating %}
+    <div class="avg-rating-card">
+        <div class="avg-rating-number">{{ avg_rating|floatformat:1 }}</div>
+        <p>Average from {{ reviews.count }} review(s)</p>
+    </div>
+    {% endif %}
+
+    {% if reviews %}
+    <div class="reviews-list">
+        {% for review in reviews %}
+        <div class="review-item">
+            <div class="review-header">
+                <div>
+                    <p class="review-reviewer">{{ review.reviewer.get_full_name|default:review.reviewer.username }}</p>
+                    <h4>{{ review.title }}</h4>
+                </div>
+                <div class="review-stars">
+                    {% for i in review.get_filled_stars %}★{% endfor %}{% for i in review.get_empty_stars %}☆{% endfor %}
+                    <span class="rating-num">{{ review.rating }}/5</span>
+                </div>
+            </div>
+            <p class="review-comment">{{ review.comment }}</p>
+            {% if review.photo %}
+            <img src="{{ review.photo.url }}" alt="review photo" class="review-img">
+            {% endif %}
+            <div class="review-footer">
+                <span class="property-meta">{{ review.created_at|date:"d M Y" }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><p>No reviews yet for this property.</p></div>
+    {% endif %}
+</div>
+{% endblock %}
