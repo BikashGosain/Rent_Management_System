@@ -1,37 +1,37 @@
-name: Deploy — Push to Server on main
+# name: Deploy — Push to Server on main
  
-on:
-  push:
-    branches: [main]    # ONLY triggers on main
+# on:
+#   push:
+#     branches: [main]    # ONLY triggers on main
  
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
  
-      - name: Deploy via SSH to VPS
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host:     ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key:      ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            cd /var/www/rent_management
-            git pull origin main
-            source venv/bin/activate
-            pip install -r requirements/production.txt
-            python manage.py migrate --settings=config.settings.production
-            python manage.py collectstatic --noinput \
-              --settings=config.settings.production
-            sudo systemctl restart gunicorn
-            sudo systemctl restart nginx
-            echo 'Deployment complete!'
+#       - name: Deploy via SSH to VPS
+#         uses: appleboy/ssh-action@v1.0.0
+#         with:
+#           host:     ${{ secrets.SERVER_HOST }}
+#           username: ${{ secrets.SERVER_USER }}
+#           key:      ${{ secrets.SERVER_SSH_KEY }}
+#           script: |
+#             cd /var/www/rent_management
+#             git pull origin main
+#             source venv/bin/activate
+#             pip install -r requirements/production.txt
+#             python manage.py migrate --settings=config.settings.production
+#             python manage.py collectstatic --noinput \
+#               --settings=config.settings.production
+#             sudo systemctl restart gunicorn
+#             sudo systemctl restart nginx
+#             echo 'Deployment complete!'
  
-# GitHub Secrets to add in repo Settings → Secrets:
-# SERVER_HOST      → your VPS IP or domain
-# SERVER_USER      → ssh username (e.g. ubuntu)
-# SERVER_SSH_KEY   → private SSH key content
-# SECRET_KEY       → Django secret key
-# DATABASE_URL     → production PostgreSQL URL
+# # GitHub Secrets to add in repo Settings → Secrets:
+# # SERVER_HOST      → your VPS IP or domain
+# # SERVER_USER      → ssh username (e.g. ubuntu)
+# # SERVER_SSH_KEY   → private SSH key content
+# # SECRET_KEY       → Django secret key
+# # DATABASE_URL     → production PostgreSQL URL
