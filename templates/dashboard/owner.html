@@ -67,14 +67,24 @@
         {% endif %}
     </div>
 
-    <div class="dashboard-section">
+<div class="dashboard-section">
+    <div class="section-header">
         <h3>Open Complaints</h3>
-        {% if open_complaints %}
-            <p>Complaints will show here.</p>
-        {% else %}
-            <div class="empty-state"><p>No open complaints.</p></div>
-        {% endif %}
+        <a href="{% url 'complaints:owner_complaints' %}" class="btn btn-secondary">View All</a>
     </div>
+    {% if open_complaints %}
+        {% for complaint in open_complaints %}
+        <p>
+            <span class="priority-badge priority-{{ complaint.priority }}">{{ complaint.get_priority_display }}</span>
+            {{ complaint.title }} — {{ complaint.tenant.get_full_name|default:complaint.tenant.username }} —
+            <span class="complaint-status complaint-status-{{ complaint.status }}">{{ complaint.get_status_display }}</span>
+            <a href="{% url 'complaints:detail' complaint.pk %}">View</a>
+        </p>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state"><p>No open complaints.</p></div>
+    {% endif %}
+</div>
 
 </div>
 {% endblock %}

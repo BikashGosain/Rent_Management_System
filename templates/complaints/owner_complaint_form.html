@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/complaints.css' %}">{% endblock %}
+{% block title %}Raise Tenant Issue — RentMS{% endblock %}
+
+{% block content %}
+<div class="complaint-container">
+    <div class="complaint-card">
+        <h2>Raise Issue Against Tenant</h2>
+
+        <div class="booking-target">
+            <p class="booking-target-title">{{ agreement.get_target_name }}</p>
+            <p class="booking-target-meta">Tenant: {{ agreement.tenant.get_full_name|default:agreement.tenant.username }}</p>
+            <p class="booking-target-meta">Agreement: {{ agreement.start_date }} → {{ agreement.end_date }}</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Category</label>
+                    {{ form.category }}
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    {{ form.priority }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Title</label>
+                {{ form.title }}
+                {% for e in form.title.errors %}<small class="error-text">{{ e }}</small>{% endfor %}
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                {{ form.description }}
+                {% for e in form.description.errors %}<small class="error-text">{{ e }}</small>{% endfor %}
+            </div>
+            <div class="form-group">
+                <label>Attach Photo (optional)</label>
+                {{ form.attachment }}
+            </div>
+            <button type="submit" class="btn btn-primary">Raise Issue</button>
+            <a href="{% url 'complaints:owner_complaints' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
