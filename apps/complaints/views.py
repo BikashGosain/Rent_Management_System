@@ -192,6 +192,7 @@ def owner_submit_complaint(request, agreement_pk):
             elif agreement.property:
                 complaint.property = agreement.property
             complaint.save()
+            notify_complaint_submitted(complaint)
             messages.success(request, 'Issue raised against tenant successfully!')
             return redirect('complaints:owner_complaints')
         else:

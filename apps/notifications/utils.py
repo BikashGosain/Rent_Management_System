@@ -148,14 +148,24 @@ def notify_payment_due(payment):
 
 
 def notify_complaint_submitted(complaint):
-    send_notification(
-        recipient  = complaint.owner,
-        notif_type = 'complaint_submitted',
-        title      = 'New Complaint Received',
-        message    = f'{complaint.tenant.get_full_name() or complaint.tenant.username} submitted a complaint: {complaint.title}',
-        link       = f'/complaints/{complaint.pk}/',
-    )
-
+    if complaint.submitted_by == 'owner':
+        # Owner raised issue — notify tenant
+        send_notification(
+            recipient  = complaint.tenant,
+            notif_type = 'complaint_submitted',
+            title      = '⚠️ Issue Raised Against You',
+            message    = f'Your owner has raised an issue: {complaint.title}. Please review and respond.',
+            link       = f'/complaints/{complaint.pk}/',
+        )
+    else:
+        # Tenant submitted complaint — notify owner
+        send_notification(
+            recipient  = complaint.owner,
+            notif_type = 'complaint_submitted',
+            title      = 'New Complaint Received',
+            message    = f'{complaint.tenant.get_full_name() or complaint.tenant.username} submitted a complaint: {complaint.title}',
+            link       = f'/complaints/{complaint.pk}/',
+        )
 
 def notify_complaint_response(complaint, responder):
     # Notify the other party
