@@ -5,18 +5,51 @@
 
 {% block content %}
 <div class="notif-page">
-    <div class="section-header">
+
+    <!-- ── Header ── -->
+    <div class="notif-page-header">
         <h2>🔔 Notifications</h2>
-        {% if notifications %}
-        <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-secondary">Mark All Read</a>
-        {% endif %}
+        <div class="notif-counts">
+            <span class="notif-count-badge total">{{ total_count }} Total</span>
+            <span class="notif-count-badge unread">{{ unread_count }} Unread</span>
+            <span class="notif-count-badge read">{{ read_count }} Read</span>
+        </div>
     </div>
 
+    <!-- ── Filter Tabs ── -->
+    <div class="notif-tabs">
+        <a href="?filter=all"    class="notif-tab {% if filter_type == 'all' %}active{% endif %}">All ({{ total_count }})</a>
+        <a href="?filter=unread" class="notif-tab {% if filter_type == 'unread' %}active{% endif %}">Unread ({{ unread_count }})</a>
+        <a href="?filter=read"   class="notif-tab {% if filter_type == 'read' %}active{% endif %}">Read ({{ read_count }})</a>
+    </div>
+
+    <!-- ── Bulk Actions ── -->
     {% if notifications %}
+    <div class="notif-bulk-actions">
+        <!-- Mark All Read -->
+        {% if unread_count > 0 %}
+        <form method="post" action="{% url 'notifications:mark_all_read' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary btn-sm">✓ Mark All Read</button>
+        </form>
+        {% endif %}
+
+        <!-- Delete All -->
+        <form method="post" action="{% url 'notifications:delete_all' %}" style="display:inline;"
+              onsubmit="return confirm('Delete all {{ filter_type }} notifications?');">
+            {% csrf_token %}
+            <input type="hidden" name="filter_type" value="{{ filter_type }}">
+            <button type="submit" class="btn btn-danger btn-sm">🗑 Delete All {{ filter_type|title }}</button>
+        </form>
+    </div>
+
+    <!-- ── Notifications List ── -->
     <div class="notif-list">
         {% for notif in notifications %}
-        <a href="{% url 'notifications:mark_read' notif.pk %}" class="notif-item {% if not notif.is_read %}notif-unread{% endif %}">
-            <div class="notif-icon notif-icon-{{ notif.notif_type }}">
+        <div class="notif-item {% if not notif.is_read %}notif-unread{% endif %}">
+
+            <!-- Icon -->
+            <div class="notif-icon">
                 {% if 'booking' in notif.notif_type %}🏠
                 {% elif 'agreement' in notif.notif_type %}📋
                 {% elif 'payment' in notif.notif_type %}💰
@@ -24,21 +57,56 @@
                 {% else %}🔔
                 {% endif %}
             </div>
+
+            <!-- Content -->
             <div class="notif-content">
-                <p class="notif-title">{{ notif.title }}</p>
+                <p class="notif-title">
+                    {{ notif.title }}
+                    {% if not notif.is_read %}<span class="notif-new-badge">New</span>{% endif %}
+                </p>
                 <p class="notif-message">{{ notif.message }}</p>
-                <p class="notif-time">{{ notif.created_at|timesince }} ago</p>
+                <p class="notif-time">{{ notif.created_at|timesince }} ago · {{ notif.created_at|date:"d M Y, h:i A" }}</p>
             </div>
-            {% if not notif.is_read %}
-            <div class="notif-dot"></div>
-            {% endif %}
-        </a>
+
+            <!-- Actions -->
+            <div class="notif-item-actions">
+                <!-- View link -->
+                {% if notif.link %}
+                <a href="{% url 'notifications:mark_read' notif.pk %}" class="btn btn-primary btn-sm">View</a>
+                {% endif %}
+
+                <!-- Mark as read (only if unread) -->
+                {% if not notif.is_read %}
+                <form method="post" action="{% url 'notifications:mark_single_read' notif.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary btn-sm">✓ Read</button>
+                </form>
+                {% endif %}
+
+                <!-- Delete -->
+                <form method="post" action="{% url 'notifications:delete_single' notif.pk %}" style="display:inline;"
+                      onsubmit="return confirm('Delete this notification?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">🗑</button>
+                </form>
+            </div>
+
+        </div>
         {% endfor %}
     </div>
+
     {% else %}
     <div class="empty-state">
-        <p>No notifications yet.</p>
+        {% if filter_type == 'unread' %}
+            <p>No unread notifications.</p>
+        {% elif filter_type == 'read' %}
+            <p>No read notifications.</p>
+        {% else %}
+            <p>No notifications yet.</p>
+        {% endif %}
+        <a href="{% url 'dashboard:tenant' %}" class="btn btn-secondary">Go to Dashboard</a>
     </div>
     {% endif %}
+
 </div>
 {% endblock %}
