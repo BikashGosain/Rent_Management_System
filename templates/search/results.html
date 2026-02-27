@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/main.css' %}">{% endblock %}
 {% block title %}Search Properties — RentMS{% endblock %}
 
 {% block content %}
@@ -99,7 +101,7 @@
 
         <div id="results-container" class="property-grid">
 
-            <!-- Whole Properties -->
+            <!-- ── Whole Properties ── -->
             {% for p in whole_properties %}
             <div class="result-card">
                 {% if p.photos.first %}
@@ -118,18 +120,42 @@
                         <span>🚿 {{ p.total_bathrooms }} Bath</span>
                         <span>{{ p.get_furnishing_display }}</span>
                     </div>
-<!-- For whole properties - replace the two buttons with: -->
-<div class="property-actions">
-    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-secondary">View Details</a>
-    {% if request.user.is_authenticated and request.user.role == 'tenant' %}
-        <a href="{% url 'bookings:book_property' p.pk %}" class="btn btn-primary">Book Now</a>
-    {% endif %}
-</div>
+                    <div class="property-actions">
+                        <a href="{% url 'properties:detail' p.pk %}" class="btn btn-secondary">View Details</a>
+                        {% if request.user.is_authenticated and request.user.role == 'tenant' %}
+                            <a href="{% url 'bookings:book_property' p.pk %}" class="btn btn-primary">Book Now</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             {% endfor %}
 
-            <!-- Individual Rooms -->
+            <!-- ── Individual Room Properties ── -->
+            {% for p in room_properties %}
+            <div class="result-card">
+                {% if p.photos.first %}
+                    <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="result-img">
+                {% else %}
+                    <div class="result-img-placeholder">🏠</div>
+                {% endif %}
+                <div class="result-card-body">
+                    <span class="result-tag" style="background:#f3e8ff; color:#6b21a8;">Individual Rooms</span>
+                    <h4>{{ p.title }}</h4>
+                    <p class="property-meta">{{ p.get_type_display }} · {{ p.city }}</p>
+                    {% if p.landmark %}<p class="property-meta">📍 Near {{ p.landmark }}</p>{% endif %}
+                    <p class="property-price">{{ p.available_rooms.count }} room(s) available</p>
+                    <div class="property-details">
+                        <span>🏠 {{ p.total_rooms }} Total Rooms</span>
+                        <span>{{ p.get_furnishing_display }}</span>
+                    </div>
+                    <div class="property-actions">
+                        <a href="{% url 'properties:detail' p.pk %}" class="btn btn-primary">View Rooms</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- ── Individual Rooms ── -->
             {% for room in rooms %}
             <div class="result-card">
                 {% if room.photos.first %}
@@ -156,14 +182,12 @@
                         {% if room.facility.lift %}<span class="amenity amenity-yes">🛗</span>{% endif %}
                     </div>
                     {% endif %}
-
-                 <!-- For rooms - replace the two buttons with: -->
-<div class="property-actions">
-    <a href="{% url 'properties:room_detail' room.property.pk room.pk %}" class="btn btn-secondary">View Details</a>
-    {% if request.user.is_authenticated and request.user.role == 'tenant' %}
-        <a href="{% url 'bookings:book_room' room.property.pk room.pk %}" class="btn btn-primary">Book Now</a>
-    {% endif %}
-</div>
+                    <div class="property-actions">
+                        <a href="{% url 'properties:room_detail' room.property.pk room.pk %}" class="btn btn-secondary">View Details</a>
+                        {% if request.user.is_authenticated and request.user.role == 'tenant' %}
+                            <a href="{% url 'bookings:book_room' room.property.pk room.pk %}" class="btn btn-primary">Book Now</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -195,7 +219,6 @@ function setView(view) {
     }
     localStorage.setItem('searchView', view);
 }
-// Restore last view preference
 const savedView = localStorage.getItem('searchView');
 if (savedView) setView(savedView);
 </script>

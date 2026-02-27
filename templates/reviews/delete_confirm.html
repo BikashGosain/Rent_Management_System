@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/reviews.css' %}">{% endblock %}
+{% block title %}Delete Review — RentMS{% endblock %}
+
+{% block content %}
+<div class="review-container">
+    <div class="review-card">
+        <h2>Delete Review</h2>
+        <p>Are you sure you want to delete your review: <strong>{{ review.title }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'reviews:my_reviews' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/reviews.css' %}">{% endblock %}
+{% block title %}Write Review — RentMS{% endblock %}
+
+{% block content %}
+<div class="review-container">
+    <div class="review-card">
+        <h2>Write a Review</h2>
+
+        <div class="booking-target">
+            <p class="booking-target-title">
+                {% if review_type == 'property' %}🏠 Reviewing Property
+                {% elif review_type == 'room' %}🚪 Reviewing Room
+                {% elif review_type == 'owner' %}👤 Reviewing Owner
+                {% else %}👤 Reviewing Tenant
+                {% endif %}
+            </p>
+            <p class="booking-target-meta">{{ target_name }}</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Star Rating -->
+            <div class="form-group">
+                <label>Rating</label>
+                <div class="star-rating-group">
+                    {% for choice_value, choice_label in form.rating.field.choices %}
+                    <label class="star-label">
+                        <input type="radio" name="rating" value="{{ choice_value }}"
+                               {% if form.rating.value == choice_value|stringformat:"s" %}checked{% endif %}>
+                        <span class="star">★</span>
+                        <span class="star-label-text">{{ choice_label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% for e in form.rating.errors %}<small class="error-text">{{ e }}</small>{% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label>Title</label>
+                {{ form.title }}
+                {% for e in form.title.errors %}<small class="error-text">{{ e }}</small>{% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label>Review</label>
+                {{ form.comment }}
+                {% for e in form.comment.errors %}<small class="error-text">{{ e }}</small>{% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label>Photo (optional)</label>
+                {{ form.photo }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+            <a href="{% url 'reviews:my_reviews' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
