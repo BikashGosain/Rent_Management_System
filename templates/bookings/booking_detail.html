@@ -47,22 +47,50 @@
         </div>
         {% endif %}
 
-        <div class="detail-actions">
-            {% if is_owner and booking.is_pending %}
-                <a href="{% url 'bookings:accept' booking.pk %}" class="btn btn-primary">Accept</a>
-                <a href="{% url 'bookings:reject' booking.pk %}" class="btn btn-danger">Reject</a>
+<div class="detail-actions">
+    {% if is_owner and booking.is_pending %}
+        <a href="{% url 'bookings:accept' booking.pk %}" class="btn btn-primary">Accept</a>
+        <a href="{% url 'bookings:reject' booking.pk %}" class="btn btn-danger">Reject</a>
+    {% endif %}
+
+    {% if is_owner and booking.is_accepted %}
+        {% if not booking.agreement %}
+            <a href="{% url 'agreements:create' booking.pk %}" class="btn btn-primary">Create Agreement</a>
+        {% else %}
+            <a href="{% url 'agreements:detail' booking.agreement.pk %}" class="btn btn-secondary">View Agreement</a>
+        {% endif %}
+        <a href="{% url 'bookings:owner_cancel' booking.pk %}" class="btn btn-danger">Cancel Booking</a>
+    {% endif %}
+
+    {% if is_tenant and booking.is_pending %}
+        <a href="{% url 'bookings:cancel' booking.pk %}" class="btn btn-danger">Cancel Request</a>
+    {% endif %}
+
+    {% if is_tenant and booking.is_accepted %}
+        {% if booking.agreement %}
+            <a href="{% url 'agreements:detail' booking.agreement.pk %}" class="btn btn-primary">View Agreement</a>
+            {% if not booking.agreement.tenant_signed %}
+                <a href="{% url 'agreements:sign' booking.agreement.pk %}" class="btn btn-primary">✍ Sign Agreement</a>
             {% endif %}
-            {% if is_owner and booking.is_accepted %}
-                <a href="{% url 'bookings:owner_cancel' booking.pk %}" class="btn btn-danger">Cancel Booking</a>
-            {% endif %}
-            {% if is_tenant and booking.is_pending %}
-                <a href="{% url 'bookings:cancel' booking.pk %}" class="btn btn-danger">Cancel Request</a>
-            {% endif %}
-            {% if is_owner %}
-                <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-secondary">← Back</a>
-            {% else %}
-                <a href="{% url 'bookings:my_bookings' %}" class="btn btn-secondary">← Back</a>
-            {% endif %}
+        {% else %}
+            <p class="property-meta">Waiting for owner to create agreement.</p>
+        {% endif %}
+    {% endif %}
+
+    {% if is_owner %}
+        <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-secondary">← Back</a>
+    {% else %}
+        <a href="{% url 'bookings:my_bookings' %}" class="btn btn-secondary">← Back</a>
+    {% endif %}
+
+{% if is_owner and booking.is_accepted %}
+    {% if not booking.agreement %}
+        <a href="{% url 'agreements:create' booking.pk %}" class="btn btn-primary">Create Agreement</a>
+    {% else %}
+        <a href="{% url 'agreements:detail' booking.agreement.pk %}" class="btn btn-secondary">View Agreement</a>
+    {% endif %}
+{% endif %}
+
         </div>
     </div>
 </div>

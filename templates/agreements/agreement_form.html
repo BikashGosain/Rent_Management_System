@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/agreements.css' %}">{% endblock %}
+{% block title %}Create Agreement — RentMS{% endblock %}
+
+{% block content %}
+<div class="agreement-container">
+    <h2>Create Rental Agreement</h2>
+
+    <div class="booking-target">
+        <p class="booking-target-title">{{ booking.get_target_name }}</p>
+        <p class="booking-target-meta">Tenant: {{ booking.tenant.get_full_name|default:booking.tenant.username }}</p>
+        <p class="booking-target-meta">Move in: {{ booking.move_in_date }}</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-card">
+            <h3>Agreement Dates</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Start Date</label>{{ form.start_date }}{% for e in form.start_date.errors %}<small class="error-text">{{ e }}</small>{% endfor %}</div>
+                <div class="form-group"><label>End Date</label>{{ form.end_date }}{% for e in form.end_date.errors %}<small class="error-text">{{ e }}</small>{% endfor %}</div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3>Financial Details</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Rent Amount/month (Rs.)</label>{{ form.rent_amount }}</div>
+                <div class="form-group"><label>Security Deposit (Rs.)</label>{{ form.security_deposit }}</div>
+                <div class="form-group"><label>Advance Amount (Rs.)</label>{{ form.advance_amount }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Notice Period (days)</label>{{ form.notice_period_days }}</div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3>Terms & Conditions</h3>
+            <div class="form-group">{{ form.terms_conditions }}</div>
+        </div>
+
+        <div class="form-card">
+            <h3>Upload Agreement Document (optional)</h3>
+            <div class="form-group">{{ form.document }}</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Agreement</button>
+        <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

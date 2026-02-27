@@ -29,6 +29,7 @@ urlpatterns = [
     path('properties/',  include('apps.properties.urls')),
     path('search/',     include('apps.search.urls')),
     path('bookings/',   include('apps.bookings.urls')),
+    path('agreements/',  include('apps.agreements.urls')),
 ]
 
 if settings.DEBUG:

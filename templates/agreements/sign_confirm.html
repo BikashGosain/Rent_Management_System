@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/agreements.css' %}">{% endblock %}
+{% block title %}Sign Agreement — RentMS{% endblock %}
+
+{% block content %}
+<div class="agreement-container">
+    <div class="agreement-card">
+        <h2>Sign Agreement</h2>
+        <p>You are about to digitally sign the rental agreement for <strong>{{ agreement.get_target_name }}</strong>.</p>
+        <p>By signing, you confirm that you have read and agree to all terms and conditions.</p>
+
+        <div class="sign-info">
+            <p>📋 Duration: {{ agreement.start_date }} → {{ agreement.end_date }}</p>
+            <p>💰 Rent: Rs. {{ agreement.rent_amount }}/month</p>
+            <p>🔒 Security Deposit: Rs. {{ agreement.security_deposit }}</p>
+            <p>📅 Notice Period: {{ agreement.notice_period_days }} days</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">✍ Yes, I Sign This Agreement</button>
+            <a href="{% url 'agreements:detail' agreement.pk %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
