@@ -8,9 +8,14 @@
     <div class="agreement-card">
         <h2>Terminate Agreement</h2>
         <p>Are you sure you want to terminate the agreement for <strong>{{ agreement.get_target_name }}</strong>?</p>
-        <p>The notice period is <strong>{{ agreement.notice_period_days }} days</strong>. The property/room will be marked as available.</p>
+        
+        <p>Notice period is <strong>{{ agreement.notice_period_days }} days</strong>.</p>
         <form method="post">
             {% csrf_token %}
+            <div class="form-group">
+                <label>Reason for Termination (optional)</label>
+                <textarea name="reason" rows="3" class="filter-input" placeholder="Enter reason..."></textarea>
+            </div>
             <button type="submit" class="btn btn-danger">Yes, Terminate Agreement</button>
             <a href="{% url 'agreements:detail' agreement.pk %}" class="btn btn-secondary">Cancel</a>
         </form>

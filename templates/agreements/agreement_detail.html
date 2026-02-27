@@ -52,6 +52,20 @@
             <h3>Terms & Conditions</h3>
             <div class="terms-box">{{ agreement.terms_conditions|linebreaks }}</div>
         </div>
+        {% if agreement.status == 'terminated' %}
+<div class="detail-section">
+    <h3>Termination Details</h3>
+    <div class="sign-info" style="border-left-color: #e74c3c;">
+        <p>❌ Terminated by: <strong>{{ agreement.terminated_by.get_full_name|default:agreement.terminated_by.username }}</strong>
+           {% if agreement.terminated_by == agreement.owner %}(Owner){% else %}(Tenant){% endif %}
+        </p>
+        <p>📅 Terminated on: {{ agreement.terminated_at|date:"d M Y, h:i A" }}</p>
+        {% if agreement.termination_reason %}
+        <p>📝 Reason: {{ agreement.termination_reason }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 
         {% if agreement.document %}
         <div class="detail-section">
@@ -60,23 +74,33 @@
         </div>
         {% endif %}
 
-        <div class="detail-actions">
-            {% if is_owner and not agreement.owner_signed %}
-                <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary">✍ Sign Agreement</a>
-            {% endif %}
-            {% if is_tenant and not agreement.tenant_signed %}
-                <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary">✍ Sign Agreement</a>
-            {% endif %}
-            {% if agreement.is_active %}
-                <a href="{% url 'agreements:terminate' agreement.pk %}" class="btn btn-danger">Terminate Agreement</a>
-            {% endif %}
-            {% if is_owner %}
-                <a href="{% url 'agreements:owner_agreements' %}" class="btn btn-secondary">← Back</a>
-            {% else %}
-                <a href="{% url 'agreements:tenant_agreements' %}" class="btn btn-secondary">← Back</a>
-            {% endif %}
-        </div>
+<div class="detail-actions">
+    {% if is_owner and not agreement.owner_signed %}
+        <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary">✍ Sign Agreement</a>
+    {% endif %}
+    {% if is_tenant and not agreement.tenant_signed %}
+        <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary">✍ Sign Agreement</a>
+    {% endif %}
+    {% if agreement.is_active %}
+        <a href="{% url 'agreements:terminate' agreement.pk %}" class="btn btn-danger">Terminate Agreement</a>
+    {% endif %}
 
+    <!-- Create new agreement after termination -->
+    {% if agreement.status == 'terminated' %}
+        {% if is_owner and agreement.booking %}
+            <a href="{% url 'agreements:create' agreement.booking.pk %}" class="btn btn-primary">Create New Agreement</a>
+        {% endif %}
+        {% if is_tenant %}
+            <p class="property-meta">⏳ Waiting for owner to create new agreement.</p>
+        {% endif %}
+    {% endif %}
+
+    {% if is_owner %}
+        <a href="{% url 'agreements:owner_agreements' %}" class="btn btn-secondary">← Back</a>
+    {% else %}
+        <a href="{% url 'agreements:tenant_agreements' %}" class="btn btn-secondary">← Back</a>
+    {% endif %}
+</div>
     </div>
 </div>
 {% endblock %}
