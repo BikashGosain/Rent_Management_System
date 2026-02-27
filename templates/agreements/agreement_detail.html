@@ -95,9 +95,11 @@
         {% endif %}
     {% endif %}
 
+
 {% if is_owner and agreement.is_active %}
     <a href="{% url 'payments:create' agreement.pk %}" class="btn btn-primary">+ Add Payment</a>
     <a href="{% url 'payments:auto_generate' agreement.pk %}" class="btn btn-secondary">⚡ Auto Generate Monthly</a>
+    <a href="{% url 'complaints:owner_submit' agreement.pk %}" class="btn btn-danger">⚠️ Raise Tenant Issue</a>
 {% endif %}
 
     {% if is_owner %}

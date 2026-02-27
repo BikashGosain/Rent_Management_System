@@ -13,6 +13,16 @@
         </div>
 
         <div class="complaint-meta-grid">
+            <div class="detail-item">
+                <span class="detail-label">Raised By</span>
+                <span class="detail-value">
+                    {% if complaint.submitted_by == 'owner' %}
+                    Owner
+                    {% else %}
+                    Tenant
+                    {% endif %}
+                </span>
+            </div>
             <div class="detail-item"><span class="detail-label">Category</span><span class="detail-value">{{ complaint.get_category_display }}</span></div>
             <div class="detail-item"><span class="detail-label">Priority</span><span class="detail-value"><span class="priority-badge priority-{{ complaint.priority }}">{{ complaint.get_priority_display }}</span></span></div>
             <div class="detail-item"><span class="detail-label">Property/Room</span><span class="detail-value">{{ complaint.get_target_name }}</span></div>

@@ -32,6 +32,11 @@ class Complaint(models.Model):
         ('closed',      'Closed'),
     ]
 
+    SUBMITTED_BY = [
+    ('tenant', 'Tenant'),
+    ('owner',  'Owner'),
+    ]
+
     # Who submitted
     tenant    = models.ForeignKey(User, on_delete=models.CASCADE, related_name='complaints')
     owner     = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_complaints')
@@ -50,6 +55,8 @@ class Complaint(models.Model):
 
     # Status
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
+    
+    submitted_by = models.CharField(max_length=10, choices=SUBMITTED_BY, default='tenant')
 
     # Timestamps
     created_at  = models.DateTimeField(auto_now_add=True)

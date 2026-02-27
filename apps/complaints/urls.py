@@ -10,6 +10,7 @@ urlpatterns = [
 
     # Owner
     path('owner/',        views.owner_complaints, name='owner_complaints'),
+    path('owner/raise/<int:agreement_pk>/',      views.owner_submit_complaint, name='owner_submit'),
 
     # Admin
     path('admin/',        views.admin_complaints, name='admin_complaints'),

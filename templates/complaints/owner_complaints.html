@@ -6,7 +6,7 @@
 {% block content %}
 <div class="dashboard">
     <div class="section-header">
-        <h2>Tenant Complaints</h2>
+        <h2>Tenant Complaints & Issues</h2>
     </div>
 
     <div class="stats-grid">
@@ -28,6 +28,11 @@
                 <div class="complaint-header">
                     <h4>{{ complaint.title }}</h4>
                     <span class="priority-badge priority-{{ complaint.priority }}">{{ complaint.get_priority_display }}</span>
+                    {% if complaint.submitted_by == 'owner' %}
+                    <span class="result-tag">📢 Raised by You</span>
+                    {% else %}
+                    <span class="result-tag result-tag-room">📩 From Tenant</span>
+                    {% endif %}
                 </div>
                 <p class="property-meta">{{ complaint.get_category_display }} · {{ complaint.get_target_name }}</p>
                 <p class="property-meta">Tenant: <strong>{{ complaint.tenant.get_full_name|default:complaint.tenant.username }}</strong></p>

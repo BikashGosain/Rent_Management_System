@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponseForbidden
 from django.utils import timezone
 from .models import Complaint, ComplaintResponse
-from .forms import ComplaintForm, ComplaintResponseForm, ComplaintStatusForm
+from .forms import ComplaintForm, ComplaintResponseForm, ComplaintStatusForm, OwnerComplaintForm
 from apps.agreements.models import Agreement
 
 
@@ -54,16 +54,23 @@ def submit_complaint(request):
 
 @login_required
 def my_complaints(request):
-    """Tenant sees their own complaints and responses."""
     if not request.user.is_tenant():
         return redirect('dashboard:owner')
 
-    complaints = Complaint.objects.filter(
-        tenant=request.user
+    # Complaints submitted BY tenant
+    my_submitted = Complaint.objects.filter(
+        tenant=request.user, submitted_by='tenant'
     ).prefetch_related('responses')
 
-    return render(request, 'complaints/my_complaints.html', {'complaints': complaints})
+    # Complaints raised AGAINST tenant by owner
+    raised_against = Complaint.objects.filter(
+        tenant=request.user, submitted_by='owner'
+    ).prefetch_related('responses')
 
+    return render(request, 'complaints/my_complaints.html', {
+        'my_submitted':   my_submitted,
+        'raised_against': raised_against,
+    })
 
 # ── Owner Views ───────────────────────────────────────────────────────────────
 
@@ -160,3 +167,35 @@ def admin_complaints(request):
     ).prefetch_related('responses')
 
     return render(request, 'complaints/admin_complaints.html', {'complaints': complaints})
+
+@login_required
+def owner_submit_complaint(request, agreement_pk):
+    """Owner submits complaint against a tenant."""
+    if not request.user.is_owner():
+        return HttpResponseForbidden('Only owners can use this.')
+
+    agreement = get_object_or_404(Agreement, pk=agreement_pk, owner=request.user, status='active')
+
+    if request.method == 'POST':
+        form = OwnerComplaintForm(request.POST, request.FILES)
+        if form.is_valid():
+            complaint              = form.save(commit=False)
+            complaint.owner        = request.user
+            complaint.tenant       = agreement.tenant
+            complaint.agreement    = agreement
+            complaint.submitted_by = 'owner'
+            if agreement.room:
+                complaint.room = agreement.room
+            elif agreement.property:
+                complaint.property = agreement.property
+            complaint.save()
+            messages.success(request, 'Issue raised against tenant successfully!')
+            return redirect('complaints:owner_complaints')
+        else:
+            messages.error(request, 'Please fix the errors below.')
+    else:
+        form = OwnerComplaintForm()
+
+    return render(request, 'complaints/owner_complaint_form.html', {
+        'form': form, 'agreement': agreement
+    })

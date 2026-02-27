@@ -25,3 +25,12 @@ class ComplaintStatusForm(forms.ModelForm):
     class Meta:
         model  = Complaint
         fields = ['status']
+
+class OwnerComplaintForm(forms.ModelForm):
+    class Meta:
+        model  = Complaint
+        fields = ['category', 'priority', 'title', 'description', 'attachment']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Describe the issue with tenant...'}),
+            'title':       forms.TextInput(attrs={'placeholder': 'Brief title of the issue'}),
+        }
