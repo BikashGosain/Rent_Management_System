@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/notifications.css' %}">{% endblock %}
+{% block title %}Notifications — RentMS{% endblock %}
+
+{% block content %}
+<div class="notif-page">
+    <div class="section-header">
+        <h2>🔔 Notifications</h2>
+        {% if notifications %}
+        <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-secondary">Mark All Read</a>
+        {% endif %}
+    </div>
+
+    {% if notifications %}
+    <div class="notif-list">
+        {% for notif in notifications %}
+        <a href="{% url 'notifications:mark_read' notif.pk %}" class="notif-item {% if not notif.is_read %}notif-unread{% endif %}">
+            <div class="notif-icon notif-icon-{{ notif.notif_type }}">
+                {% if 'booking' in notif.notif_type %}🏠
+                {% elif 'agreement' in notif.notif_type %}📋
+                {% elif 'payment' in notif.notif_type %}💰
+                {% elif 'complaint' in notif.notif_type %}⚠️
+                {% else %}🔔
+                {% endif %}
+            </div>
+            <div class="notif-content">
+                <p class="notif-title">{{ notif.title }}</p>
+                <p class="notif-message">{{ notif.message }}</p>
+                <p class="notif-time">{{ notif.created_at|timesince }} ago</p>
+            </div>
+            {% if not notif.is_read %}
+            <div class="notif-dot"></div>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No notifications yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

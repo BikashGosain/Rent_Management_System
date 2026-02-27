@@ -6,6 +6,12 @@ from .models import Booking
 from .forms import BookingRequestForm, OwnerResponseForm
 from apps.properties.models import Property, Room
 
+from apps.notifications.utils import (
+    notify_booking_received,
+    notify_booking_accepted,
+    notify_booking_rejected,
+)
+
 
 # ── Tenant Views ──────────────────────────────────────────────────────────────
 
@@ -34,6 +40,7 @@ def book_property(request, pk):
             booking.tenant   = request.user
             booking.property = prop
             booking.save()
+            notify_booking_received(booking)
             messages.success(request, 'Booking request sent successfully!')
             return redirect('bookings:my_bookings')
     else:
@@ -69,6 +76,7 @@ def book_room(request, property_pk, room_pk):
             booking.tenant = request.user
             booking.room   = room
             booking.save()
+            notify_booking_received(booking)
             messages.success(request, 'Booking request sent successfully!')
             return redirect('bookings:my_bookings')
     else:
@@ -173,6 +181,7 @@ def accept_booking(request, pk):
             booking        = form.save(commit=False)
             booking.status = 'accepted'
             booking.save()
+            notify_booking_accepted(booking)
 
             # Mark property/room as occupied
             if booking.room:
@@ -211,6 +220,7 @@ def reject_booking(request, pk):
             booking.status = 'rejected'
             booking.cancelled_by = 'owner'
             booking.save()
+            notify_booking_rejected(booking)
             messages.success(request, 'Booking rejected.')
             return redirect('bookings:owner_bookings')
     else:

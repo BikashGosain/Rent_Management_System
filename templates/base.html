@@ -31,6 +31,7 @@
 {% elif user.is_authenticated and user.role == 'owner' %}
     <a href="{% url 'agreements:owner_agreements' %}">Agreements</a>
 {% endif %}
+
                 <a href="{% url 'accounts:profile' %}">Profile</a>
                 <a href="{% url 'accounts:logout' %}">Logout</a>
             {% else %}
@@ -38,6 +39,14 @@
                 <a href="{% url 'accounts:register' %}">Register</a>
             {% endif %}
         </div>
+        {% if user.is_authenticated %}
+<a href="{% url 'notifications:list' %}" class="notif-bell">
+    🔔
+    {% if unread_notifications_count > 0 %}
+        <span class="notif-badge">{{ unread_notifications_count }}</span>
+    {% endif %}
+</a>
+{% endif %}
     </nav>
 
     {% if messages %}

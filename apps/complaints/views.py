@@ -7,6 +7,7 @@ from .models import Complaint, ComplaintResponse
 from .forms import ComplaintForm, ComplaintResponseForm, ComplaintStatusForm, OwnerComplaintForm
 from apps.agreements.models import Agreement
 
+from apps.notifications.utils import notify_complaint_submitted, notify_complaint_response
 
 # ── Tenant Views ──────────────────────────────────────────────────────────────
 
@@ -40,6 +41,7 @@ def submit_complaint(request):
             elif agreement.property:
                 complaint.property = agreement.property
             complaint.save()
+            notify_complaint_submitted(complaint)
             messages.success(request, 'Complaint submitted successfully!')
             return redirect('complaints:my_complaints')
         else:
@@ -123,6 +125,7 @@ def complaint_detail(request, pk):
                 response.complaint = complaint
                 response.responder = request.user
                 response.save()
+                notify_complaint_response(complaint, responder=request.user)
 
                 # Auto update status when owner responds
                 if is_owner and complaint.status == 'open':
