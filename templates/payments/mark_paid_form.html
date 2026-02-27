@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/payments.css' %}">{% endblock %}
+{% block title %}Mark Payment Paid — RentMS{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="payment-card">
+        <h2>Mark Payment as Paid</h2>
+
+        <div class="booking-target">
+            <p class="booking-target-title">{{ payment.get_payment_type_display }}
+                {% if payment.month and payment.year %} — {{ payment.get_month_display_name }}{% endif %}
+            </p>
+            <p class="booking-target-meta">Amount: Rs. {{ payment.amount }}</p>
+            <p class="booking-target-meta">Due: {{ payment.due_date }}</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                    <small class="error-text">{{ error }}</small>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">✓ Mark as Paid</button>
+            <a href="{% url 'payments:owner_payments' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

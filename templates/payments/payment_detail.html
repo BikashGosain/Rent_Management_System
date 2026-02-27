@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/payments.css' %}">{% endblock %}
+{% block title %}Payment Detail — RentMS{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="payment-card">
+        <div class="section-header">
+            <h2>Payment Detail</h2>
+            <span class="payment-status payment-status-{{ payment.status }}">{{ payment.get_status_display }}</span>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-item"><span class="detail-label">Type</span><span class="detail-value">{{ payment.get_payment_type_display }}</span></div>
+            <div class="detail-item"><span class="detail-label">Amount</span><span class="detail-value">Rs. {{ payment.amount }}</span></div>
+            <div class="detail-item"><span class="detail-label">Due Date</span><span class="detail-value">{{ payment.due_date }}</span></div>
+            {% if payment.paid_date %}
+            <div class="detail-item"><span class="detail-label">Paid Date</span><span class="detail-value">{{ payment.paid_date }}</span></div>
+            {% endif %}
+            <div class="detail-item"><span class="detail-label">Method</span><span class="detail-value">{{ payment.get_payment_method_display }}</span></div>
+            {% if payment.month and payment.year %}
+            <div class="detail-item"><span class="detail-label">Month</span><span class="detail-value">{{ payment.get_month_display_name }}</span></div>
+            {% endif %}
+            {% if payment.transaction_id %}
+            <div class="detail-item"><span class="detail-label">Transaction ID</span><span class="detail-value">{{ payment.transaction_id }}</span></div>
+            {% endif %}
+            <div class="detail-item"><span class="detail-label">Property/Room</span><span class="detail-value">{{ payment.agreement.get_target_name }}</span></div>
+            <div class="detail-item"><span class="detail-label">Tenant</span><span class="detail-value">{{ payment.tenant.get_full_name|default:payment.tenant.username }}</span></div>
+            <div class="detail-item"><span class="detail-label">Owner</span><span class="detail-value">{{ payment.owner.get_full_name|default:payment.owner.username }}</span></div>
+        </div>
+
+        {% if payment.notes %}
+        <div class="detail-section">
+            <h3>Notes</h3>
+            <p>{{ payment.notes }}</p>
+        </div>
+        {% endif %}
+
+        {% if payment.receipt %}
+        <div class="detail-section">
+            <h3>Receipt</h3>
+            <a href="{{ payment.receipt.url }}" target="_blank" class="btn btn-secondary">📄 View Receipt</a>
+        </div>
+        {% endif %}
+
+        <div class="detail-actions">
+            {% if is_owner and not payment.is_paid and payment.status != 'cancelled' %}
+                <a href="{% url 'payments:mark_paid' payment.pk %}" class="btn btn-primary">Mark as Paid</a>
+                <a href="{% url 'payments:cancel' payment.pk %}" class="btn btn-danger">Cancel</a>
+            {% endif %}
+            {% if is_owner %}
+                <a href="{% url 'payments:owner_payments' %}" class="btn btn-secondary">← Back</a>
+            {% else %}
+                <a href="{% url 'payments:tenant_payments' %}" class="btn btn-secondary">← Back</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

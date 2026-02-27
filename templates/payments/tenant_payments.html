@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/payments.css' %}">{% endblock %}
+{% block title %}My Payments — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>My Payments</h2>
+
+    {% if upcoming %}
+    <div class="upcoming-payment">
+        <h3>⚠️ Upcoming Payment Due</h3>
+        <p><strong>{{ upcoming.get_payment_type_display }}</strong>
+           {% if upcoming.month and upcoming.year %} — {{ upcoming.get_month_display_name }}{% endif %}
+        </p>
+        <p>Amount: <strong>Rs. {{ upcoming.amount }}</strong></p>
+        <p>Due Date: <strong>{{ upcoming.due_date }}</strong></p>
+        <a href="{% url 'payments:detail' upcoming.pk %}" class="btn btn-primary">View Details</a>
+    </div>
+    {% endif %}
+
+    {% if payments %}
+    <div class="payments-list">
+        {% for payment in payments %}
+        <div class="payment-item status-border-{{ payment.status }}">
+            <div class="payment-info">
+                <h4>{{ payment.get_payment_type_display }}
+                    {% if payment.month and payment.year %}
+                        — {{ payment.get_month_display_name }}
+                    {% endif %}
+                </h4>
+                <p class="property-meta">{{ payment.agreement.get_target_name }}</p>
+                <p class="property-meta">Due: {{ payment.due_date }}</p>
+                {% if payment.paid_date %}
+                <p class="property-meta">Paid: {{ payment.paid_date }}</p>
+                {% endif %}
+            </div>
+            <div class="payment-status-section">
+                <p class="payment-amount">Rs. {{ payment.amount }}</p>
+                <span class="payment-status payment-status-{{ payment.status }}">{{ payment.get_status_display }}</span>
+                <div class="payment-actions">
+                    <a href="{% url 'payments:detail' payment.pk %}" class="btn btn-secondary">View</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><p>No payments yet.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

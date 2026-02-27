@@ -30,6 +30,7 @@ urlpatterns = [
     path('search/',     include('apps.search.urls')),
     path('bookings/',   include('apps.bookings.urls')),
     path('agreements/',  include('apps.agreements.urls')),
+    path('payments/',   include('apps.payments.urls')),
 ]
 
 if settings.DEBUG:

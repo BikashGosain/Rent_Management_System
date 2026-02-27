@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/payments.css' %}">{% endblock %}
+{% block title %}Payments — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="section-header">
+        <h2>Payments</h2>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">Rs. {{ total_received }}</div>
+            <div class="stat-label">Total Received</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">Rs. {{ total_pending }}</div>
+            <div class="stat-label">Pending/Overdue</div>
+        </div>
+    </div>
+
+    {% if payments %}
+    <div class="payments-list">
+        {% for payment in payments %}
+        <div class="payment-item status-border-{{ payment.status }}">
+            <div class="payment-info">
+                <h4>{{ payment.get_payment_type_display }}
+                    {% if payment.month and payment.year %}
+                        — {{ payment.get_month_display_name }}
+                    {% endif %}
+                </h4>
+                <p class="property-meta">Tenant: <strong>{{ payment.tenant.get_full_name|default:payment.tenant.username }}</strong></p>
+                <p class="property-meta">{{ payment.agreement.get_target_name }}</p>
+                <p class="property-meta">Due: {{ payment.due_date }}</p>
+                {% if payment.paid_date %}
+                <p class="property-meta">Paid: {{ payment.paid_date }}</p>
+                {% endif %}
+                {% if payment.is_auto_generated %}
+                <span class="auto-badge">⚡ Auto</span>
+                {% endif %}
+            </div>
+            <div class="payment-status-section">
+                <p class="payment-amount">Rs. {{ payment.amount }}</p>
+                <span class="payment-status payment-status-{{ payment.status }}">{{ payment.get_status_display }}</span>
+                <div class="payment-actions">
+                    <a href="{% url 'payments:detail' payment.pk %}" class="btn btn-secondary">View</a>
+                    {% if not payment.is_paid and payment.status != 'cancelled' %}
+                        <a href="{% url 'payments:mark_paid' payment.pk %}" class="btn btn-primary">Mark Paid</a>
+                        <a href="{% url 'payments:cancel' payment.pk %}" class="btn btn-danger">Cancel</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No payments yet. Create one from an active agreement.</p>
+        <a href="{% url 'agreements:owner_agreements' %}" class="btn btn-primary">View Agreements</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

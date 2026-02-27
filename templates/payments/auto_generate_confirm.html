@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/payments.css' %}">{% endblock %}
+{% block title %}Auto Generate Payments — RentMS{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="payment-card">
+        <h2>Auto Generate Monthly Payments</h2>
+        <p>This will generate monthly rent payments for <strong>{{ agreement.get_target_name }}</strong>.</p>
+        <div class="sign-info">
+            <p>📅 Period: {{ agreement.start_date }} → {{ agreement.end_date }}</p>
+            <p>💰 Amount: Rs. {{ agreement.rent_amount }}/month</p>
+            <p>📆 Due date: 5th of every month</p>
+            <p>⚡ Already existing payments will be skipped.</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">⚡ Generate Payments</button>
+            <a href="{% url 'agreements:detail' agreement.pk %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

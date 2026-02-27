@@ -1,0 +1,83 @@
+/* ── Payment Container ── */
+.payment-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+.payment-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+.payment-card h2 { margin-bottom: 1.5rem; color: #2c3e50; }
+
+/* ── Upcoming Payment ── */
+.upcoming-payment {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #f39c12;
+}
+.upcoming-payment h3 { color: #856404; margin-bottom: 0.5rem; }
+
+/* ── Payment List ── */
+.payments-list { display: flex; flex-direction: column; gap: 1rem; }
+.payment-item {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    border-left: 5px solid #ddd;
+    gap: 1rem;
+}
+.payment-info { flex: 1; }
+.payment-info h4 { margin-bottom: 0.35rem; color: #2c3e50; }
+.payment-status-section { text-align: right; min-width: 160px; }
+.payment-amount { font-size: 1.2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.35rem; }
+.payment-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; justify-content: flex-end; }
+
+/* ── Auto Badge ── */
+.auto-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+/* ── Payment Status ── */
+.payment-status {
+    display: inline-block;
+    padding: 0.25rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.payment-status-pending   { background: #fff3cd; color: #856404; }
+.payment-status-paid      { background: #d5f5e3; color: #1e8449; }
+.payment-status-overdue   { background: #f8d7da; color: #721c24; }
+.payment-status-cancelled { background: #eee;    color: #888; }
+
+/* ── Status Borders ── */
+.status-border-pending   { border-left-color: #f39c12; }
+.status-border-paid      { border-left-color: #2ecc71; }
+.status-border-overdue   { border-left-color: #e74c3c; }
+.status-border-cancelled { border-left-color: #95a5a6; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .payment-item { flex-direction: column; }
+    .payment-status-section { text-align: left; }
+    .payment-actions { justify-content: flex-start; }
+}

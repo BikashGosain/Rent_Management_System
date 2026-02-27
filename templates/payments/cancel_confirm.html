@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/payments.css' %}">{% endblock %}
+{% block title %}Cancel Payment — RentMS{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="payment-card">
+        <h2>Cancel Payment</h2>
+        <p>Are you sure you want to cancel the <strong>{{ payment.get_payment_type_display }}</strong> of <strong>Rs. {{ payment.amount }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Cancel Payment</button>
+            <a href="{% url 'payments:owner_payments' %}" class="btn btn-secondary">Go Back</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
