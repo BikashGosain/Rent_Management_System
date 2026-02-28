@@ -175,6 +175,77 @@
         </div>
         {% endif %}
 
+<!-- ── Extension Section ── -->
+{% if agreement.is_active %}
+<div class="detail-section notice-section">
+    <h3>📅 Stay Extension</h3>
+
+    {% if agreement.extension_status == 'none' or agreement.extension_status == 'rejected' %}
+        <p class="property-meta">
+            {% if agreement.end_date %}
+                Current end date: <strong>{{ agreement.end_date }}</strong>
+            {% else %}
+                Month-to-Month — no fixed end date.
+            {% endif %}
+        </p>
+        {% if agreement.extension_status == 'rejected' %}
+        <div class="notice-card notice-rejected" style="margin-bottom:0.75rem;">
+            <p>Previous request was rejected.</p>
+            {% if agreement.extension_response %}<p>Reason: {{ agreement.extension_response }}</p>{% endif %}
+        </div>
+        {% endif %}
+        <a href="{% url 'agreements:request_extension' agreement.pk %}" class="btn btn-secondary"
+            style="margin-top:0.5rem;">
+            📅 Request Extension
+        </a>
+
+    {% else %}
+    {% if agreement.extension_status == 'pending' %}
+        <div class="notice-card notice-pending">
+            <div class="notice-header">
+                <span class="notice-type-badge">Extension Request</span>
+                <span class="notice-status-badge pending">Pending</span>
+            </div>
+            <p>Requested by: <strong>{{ agreement.extension_requested_by.get_full_name|default:agreement.extension_requested_by.username }}</strong></p>
+            <p>Extend by: <strong>{{ agreement.extension_duration }} {{ agreement.get_extension_unit_display }}</strong></p>
+            <p>Current end: <strong>{% if agreement.end_date %}{{ agreement.end_date }}{% else %}Month-to-Month{% endif %}</strong></p>
+            <p>New end date: <strong>{{ agreement.extension_new_end_date }}</strong></p>
+            {% if agreement.extension_reason %}
+            <p>Reason: {{ agreement.extension_reason }}</p>
+            {% endif %}
+            <div style="display:flex; gap:0.5rem; margin-top:1rem; flex-wrap:wrap;">
+                {% if agreement.extension_requested_by != request.user %}
+                <a href="{% url 'agreements:respond_extension' agreement.pk %}" class="btn btn-primary">Respond</a>
+                {% endif %}
+                {% if agreement.extension_requested_by == request.user %}
+                <form method="post" action="{% url 'agreements:cancel_extension' agreement.pk %}"
+                    onsubmit="return confirm('Cancel this extension request?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Cancel Request</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+    {% else %}
+    {% if agreement.extension_status == 'approved' %}
+        <div class="notice-card notice-approved">
+            <div class="notice-header">
+                <span class="notice-type-badge">Extension</span>
+                <span class="notice-status-badge approved">✅ Approved</span>
+            </div>
+            <p>Extended by: <strong>{{ agreement.extension_duration }} {{ agreement.get_extension_unit_display }}</strong></p>
+            <p>New end date: <strong>{{ agreement.end_date }}</strong></p>
+            {% if agreement.extension_response %}<p>Note: {{ agreement.extension_response }}</p>{% endif %}
+        </div>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+
+</div>
+{% endif %}
+        
+
         <!-- Terms -->
         {% if agreement.terms_conditions %}
         <div class="detail-section">

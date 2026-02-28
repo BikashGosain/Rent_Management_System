@@ -89,3 +89,43 @@ class NoticeResponseForm(forms.ModelForm):
             ('rejected', 'Reject Notice'),
             ('mutual',   'Agree Mutually'),
         ]
+
+class ExtensionRequestForm(forms.ModelForm):
+    class Meta:
+        model  = Agreement
+        fields = ['extension_duration', 'extension_unit', 'extension_reason']
+        widgets = {
+            'extension_reason': forms.Textarea(attrs={
+                'rows': 3,
+                'placeholder': 'Why do you want to extend your stay?'
+            }),
+            'extension_duration': forms.NumberInput(attrs={'min': 1}),
+        }
+        labels = {
+            'extension_duration': 'Extend by (number)',
+            'extension_unit':     'Unit',
+            'extension_reason':   'Reason for Extension',
+        }
+
+
+class ExtensionResponseForm(forms.ModelForm):
+    class Meta:
+        model  = Agreement
+        fields = ['extension_status', 'extension_response']
+        widgets = {
+            'extension_response': forms.Textarea(attrs={
+                'rows': 3,
+                'placeholder': 'Your response...'
+            }),
+        }
+        labels = {
+            'extension_status':   'Decision',
+            'extension_response': 'Response Message',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['extension_status'].choices = [
+            ('approved', 'Approve Extension'),
+            ('rejected', 'Reject Extension'),
+        ]

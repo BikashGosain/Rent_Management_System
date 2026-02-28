@@ -37,6 +37,13 @@ class Agreement(SoftDeleteModel):
         ('mutual',    'Mutual Agreement'),
     ]
 
+    EXTENSION_STATUS = [
+    ('none',     'No Request'),
+    ('pending',  'Extension Requested'),
+    ('approved', 'Extension Approved'),
+    ('rejected', 'Extension Rejected'),
+    ]
+
     # Parties
     owner     = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_agreements')
     tenant    = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tenant_agreements')
@@ -92,6 +99,20 @@ class Agreement(SoftDeleteModel):
     notice_response    = models.TextField(blank=True, help_text='Owner response to notice')
     notice_responded_at = models.DateTimeField(null=True, blank=True)
 
+    extension_status       = models.CharField(max_length=10, choices=EXTENSION_STATUS, default='none')
+    extension_requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='extension_requests')
+    extension_requested_at = models.DateTimeField(null=True, blank=True)
+    extension_duration     = models.PositiveIntegerField(null=True, blank=True, help_text='Number of days or months to extend')
+    extension_unit         = models.CharField(max_length=10, blank=True, choices=[
+        ('days',   'Days'),
+        ('months', 'Months'),
+    ])
+    extension_reason       = models.TextField(blank=True)
+    extension_new_end_date = models.DateField(null=True, blank=True)
+    extension_response     = models.TextField(blank=True)
+    extension_responded_at = models.DateTimeField(null=True, blank=True)
+    extension_responded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='extension_responses')
+
     # Month-to-month auto renewal
     auto_renew       = models.BooleanField(default=True)
     last_renewed_at  = models.DateField(null=True, blank=True)
@@ -143,6 +164,17 @@ class Agreement(SoftDeleteModel):
             if total > 0:
                 return min(100, int((elapsed / total) * 100))
         return 0
+    
+    def calculate_extension_end_date(self):
+        """Calculate new end date after extension."""
+        from datetime import timedelta
+        from dateutil.relativedelta import relativedelta
+        base = self.end_date or timezone.now().date()
+        if self.extension_unit == 'days':
+            return base + timedelta(days=self.extension_duration)
+        elif self.extension_unit == 'months':
+            return base + relativedelta(months=self.extension_duration)
+        return base
 
     def get_rental_type_label(self):
         if self.rental_type == 'fixed':

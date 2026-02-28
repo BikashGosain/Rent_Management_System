@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.http import HttpResponseForbidden
 from django.utils import timezone
 from .models import Agreement
-from .forms import AgreementForm, NoticeForm, NoticeResponseForm
+from .forms import AgreementForm, NoticeForm, NoticeResponseForm, ExtensionRequestForm, ExtensionResponseForm
+
 from apps.notifications.utils import (
     notify_agreement_created,
     notify_agreement_signed,
@@ -347,6 +348,152 @@ def complete_vacate(request, pk):
             link       = f'/agreements/{agreement.pk}/',
         )
         messages.success(request, 'Tenant marked as vacated. Property is now available.')
+
+    return redirect('agreements:detail', pk=pk)
+
+
+@login_required
+def request_extension(request, pk):
+    """Tenant or owner requests extension of stay."""
+    agreement = get_object_or_404(Agreement, pk=pk, status='active')
+    is_owner  = agreement.owner  == request.user
+    is_tenant = agreement.tenant == request.user
+
+    if not (is_owner or is_tenant):
+        return HttpResponseForbidden('Access denied.')
+
+    if agreement.extension_status == 'pending':
+        messages.error(request, 'An extension request is already pending.')
+        return redirect('agreements:detail', pk=pk)
+
+    if request.method == 'POST':
+        form = ExtensionRequestForm(request.POST, instance=agreement)
+        if form.is_valid():
+            ext                        = form.save(commit=False)
+            ext.extension_status       = 'pending'
+            ext.extension_requested_by = request.user
+            ext.extension_requested_at = timezone.now()
+            ext.extension_new_end_date = ext.calculate_extension_end_date()
+            ext.save()
+
+            # Notify other party
+            from apps.notifications.utils import send_notification
+            if is_tenant:
+                send_notification(
+                    recipient  = agreement.owner,
+                    notif_type = 'agreement_signed',
+                    title      = '📅 Extension Request Received',
+                    message    = f'{agreement.tenant.get_full_name() or agreement.tenant.username} wants to extend stay by {ext.extension_duration} {ext.extension_unit} at {agreement.get_target_name()}. New end date: {ext.extension_new_end_date}',
+                    link       = f'/agreements/{agreement.pk}/',
+                )
+            else:
+                send_notification(
+                    recipient  = agreement.tenant,
+                    notif_type = 'agreement_signed',
+                    title      = '📅 Owner Proposes Extension',
+                    message    = f'Owner is proposing to extend your stay by {ext.extension_duration} {ext.extension_unit} at {agreement.get_target_name()}. New end date: {ext.extension_new_end_date}',
+                    link       = f'/agreements/{agreement.pk}/',
+                )
+
+            messages.success(request, f'Extension request submitted! New end date would be {ext.extension_new_end_date}.')
+            return redirect('agreements:detail', pk=pk)
+    else:
+        form = ExtensionRequestForm()
+
+    return render(request, 'agreements/extension_request_form.html', {
+        'form':      form,
+        'agreement': agreement,
+        'is_owner':  is_owner,
+        'is_tenant': is_tenant,
+    })
+
+
+@login_required
+def respond_extension(request, pk):
+    """Owner or tenant responds to extension request."""
+    agreement = get_object_or_404(Agreement, pk=pk)
+
+    # The other party responds
+    is_owner  = agreement.owner  == request.user
+    is_tenant = agreement.tenant == request.user
+
+    if not (is_owner or is_tenant):
+        return HttpResponseForbidden('Access denied.')
+
+    # Requester cannot respond to their own request
+    if agreement.extension_requested_by == request.user:
+        messages.error(request, 'You cannot respond to your own extension request.')
+        return redirect('agreements:detail', pk=pk)
+
+    if agreement.extension_status != 'pending':
+        messages.error(request, 'No pending extension request.')
+        return redirect('agreements:detail', pk=pk)
+
+    if request.method == 'POST':
+        form = ExtensionResponseForm(request.POST, instance=agreement)
+        if form.is_valid():
+            ext                      = form.save(commit=False)
+            ext.extension_responded_at = timezone.now()
+            ext.extension_responded_by = request.user
+
+            if ext.extension_status == 'approved':
+                # Update the actual end date
+                old_end = agreement.end_date
+                ext.end_date = ext.extension_new_end_date
+
+                from apps.notifications.utils import send_notification
+                notify_user = agreement.tenant if is_owner else agreement.owner
+                send_notification(
+                    recipient  = notify_user,
+                    notif_type = 'agreement_signed',
+                    title      = '✅ Extension Approved!',
+                    message    = f'Your extension request for {agreement.get_target_name()} has been approved. New end date: {ext.extension_new_end_date}',
+                    link       = f'/agreements/{agreement.pk}/',
+                )
+            elif ext.extension_status == 'rejected':
+                from apps.notifications.utils import send_notification
+                notify_user = agreement.tenant if is_owner else agreement.owner
+                send_notification(
+                    recipient  = notify_user,
+                    notif_type = 'agreement_signed',
+                    title      = '❌ Extension Rejected',
+                    message    = f'Your extension request for {agreement.get_target_name()} has been rejected. Reason: {ext.extension_response}',
+                    link       = f'/agreements/{agreement.pk}/',
+                )
+
+            ext.save()
+            messages.success(request, f'Extension request {ext.extension_status}.')
+            return redirect('agreements:detail', pk=pk)
+    else:
+        form = ExtensionResponseForm(instance=agreement)
+
+    return render(request, 'agreements/extension_response_form.html', {
+        'form':      form,
+        'agreement': agreement,
+    })
+
+
+@login_required
+def cancel_extension(request, pk):
+    """Cancel a pending extension request."""
+    agreement = get_object_or_404(Agreement, pk=pk)
+
+    if agreement.extension_requested_by != request.user:
+        return HttpResponseForbidden('Only the requester can cancel.')
+
+    if request.method == 'POST':
+        agreement.extension_status       = 'none'
+        agreement.extension_requested_by = None
+        agreement.extension_requested_at = None
+        agreement.extension_duration     = None
+        agreement.extension_unit         = ''
+        agreement.extension_reason       = ''
+        agreement.extension_new_end_date = None
+        agreement.extension_response     = ''
+        agreement.extension_responded_at = None
+        agreement.extension_responded_by = None
+        agreement.save()
+        messages.success(request, 'Extension request cancelled.')
 
     return redirect('agreements:detail', pk=pk)
 

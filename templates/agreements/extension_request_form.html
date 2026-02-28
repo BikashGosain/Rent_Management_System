@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/agreements.css' %}">{% endblock %}
+{% block title %}Request Extension — RentMS{% endblock %}
+
+{% block content %}
+<div class="agreement-container">
+    <div class="agreement-card">
+        <h2>📅 Request Stay Extension</h2>
+
+        <div class="booking-target">
+            <p class="booking-target-title">{{ agreement.get_target_name }}</p>
+            <p class="booking-target-meta">Current End Date:
+                {% if agreement.end_date %}{{ agreement.end_date }}
+                {% else %}Month-to-Month (no fixed end){% endif %}
+            </p>
+            <p class="booking-target-meta">Rent: Rs. {{ agreement.rent_amount }}/month</p>
+        </div>
+
+        <div class="sign-info">
+            <p>💡 Your request will be sent to the
+                {% if is_tenant %}owner{% else %}tenant{% endif %}
+                for approval. The agreement end date will only update if approved.
+            </p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Extend by (number)</label>
+                    {{ form.extension_duration }}
+                    {% for e in form.extension_duration.errors %}<small class="error-text">{{ e }}</small>{% endfor %}
+                </div>
+                <div class="form-group">
+                    <label>Unit</label>
+                    {{ form.extension_unit }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Reason</label>
+                {{ form.extension_reason }}
+                {% for e in form.extension_reason.errors %}<small class="error-text">{{ e }}</small>{% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">📅 Submit Extension Request</button>
+            <a href="{% url 'agreements:detail' agreement.pk %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
