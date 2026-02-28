@@ -47,9 +47,17 @@
                 <a href="{% url 'agreements:detail' agreement.pk %}" class="btn btn-secondary">View Agreement</a>
             {% endif %}
         {% endif %}
+        {% if booking.status == 'cancelled' or booking.status == 'rejected' %}
+        <form method="post" action="{% url 'bookings:delete' booking.pk %}"
+            onsubmit="return confirm('Remove this booking from your list?');" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">🗑 Remove</button>
+        </form>
+        {% endif %}
     {% endwith %}
 </div>
             </div>
+            
         </div>
         {% endfor %}
     </div>

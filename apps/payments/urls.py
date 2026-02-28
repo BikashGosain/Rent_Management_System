@@ -16,4 +16,6 @@ urlpatterns = [
 
     # Shared
     path('<int:pk>/',                               views.payment_detail,          name='detail'),
+
+    path('<int:pk>/delete/', views.delete_payment, name='delete'),
 ]

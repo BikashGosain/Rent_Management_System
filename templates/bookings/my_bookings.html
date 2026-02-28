@@ -40,7 +40,9 @@
         Cancelled
     {% endif %}
 {% else %}
+    <span class="booking-status booking-status-{{ booking.status }}">
     {{ booking.get_status_display }}
+</span>
 {% endif %}
         </div></span>
                 <p class="property-meta">{{ booking.created_at|date:"d M Y" }}</p>
@@ -48,6 +50,13 @@
                     <a href="{% url 'bookings:detail' booking.pk %}" class="btn btn-secondary">View</a>
                     {% if booking.is_pending %}
                     <a href="{% url 'bookings:cancel' booking.pk %}" class="btn btn-danger">Cancel</a>
+                    {% endif %}
+                    {% if booking.status == 'cancelled' or booking.status == 'rejected' %}
+                    <form method="post" action="{% url 'bookings:delete' booking.pk %}"
+                        onsubmit="return confirm('Remove this booking from your list?');" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">🗑 Remove</button>
+                    </form>
                     {% endif %}
                 </div>
             </div>

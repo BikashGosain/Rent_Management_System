@@ -203,3 +203,27 @@ def owner_submit_complaint(request, agreement_pk):
     return render(request, 'complaints/owner_complaint_form.html', {
         'form': form, 'agreement': agreement
     })
+
+@login_required
+def delete_complaint(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk)
+
+    is_owner  = complaint.owner  == request.user
+    is_tenant = complaint.tenant == request.user
+
+    if not (is_owner or is_tenant):
+        return HttpResponseForbidden('Access denied.')
+
+    allowed = ['resolved', 'closed']
+    if complaint.status not in allowed:
+        messages.error(request, 'Only resolved or closed complaints can be removed.')
+        return redirect('complaints:owner_complaints' if is_owner else 'complaints:my_complaints')
+
+    if request.method == 'POST':
+        complaint.soft_delete()
+        messages.success(request, 'Complaint removed from your list.')
+        if is_owner:
+            return redirect('complaints:owner_complaints')
+        return redirect('complaints:my_complaints')
+
+    return render(request, 'base_delete_confirm.html', {'object': complaint, 'type': 'Complaint'})

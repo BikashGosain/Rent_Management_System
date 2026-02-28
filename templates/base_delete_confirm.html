@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Remove {{ type }} — RentMS{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="payment-card">
+        <h2>Remove {{ type }}</h2>
+        <p>Are you sure you want to remove this {{ type|lower }} from your list?</p>
+        <div class="sign-info">
+            <p>⚠️ This will hide it from your list but the record is kept securely in our system.</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Remove</button>
+            <a href="javascript:history.back()" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
