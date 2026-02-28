@@ -79,7 +79,7 @@ def owner_agreements(request):
     """Owner sees all their agreements."""
     if not request.user.is_owner():
         return redirect('dashboard:tenant')
-    agreements = Agreement.objects.filter(owner=request.user).select_related('tenant', 'property', 'room')
+    agreements = Agreement.owner_objects.filter(owner=request.user).select_related('tenant', 'property', 'room')
     return render(request, 'agreements/owner_agreements.html', {'agreements': agreements})
 
 
@@ -90,7 +90,7 @@ def tenant_agreements(request):
     """Tenant sees all their agreements."""
     if not request.user.is_tenant():
         return redirect('dashboard:owner')
-    agreements = Agreement.objects.filter(tenant=request.user).select_related('owner', 'property', 'room')
+    agreements = Agreement.tenant_objects.filter(tenant=request.user).select_related('owner', 'property', 'room')
     return render(request, 'agreements/tenant_agreements.html', {'agreements': agreements})
 
 
@@ -194,7 +194,7 @@ def terminate_agreement(request, pk):
 
 @login_required
 def delete_agreement(request, pk):
-    agreement = get_object_or_404(Agreement, pk=pk)
+    agreement = get_object_or_404(Agreement.all_objects, pk=pk)
 
     is_owner  = agreement.owner  == request.user
     is_tenant = agreement.tenant == request.user
@@ -204,14 +204,19 @@ def delete_agreement(request, pk):
 
     allowed = ['terminated', 'expired']
     if agreement.status not in allowed:
-        messages.error(request, f'Cannot delete an active agreement.')
+        messages.error(request, 'Cannot delete an active agreement.')
         return redirect('agreements:owner_agreements' if is_owner else 'agreements:tenant_agreements')
 
     if request.method == 'POST':
-        agreement.soft_delete()
+        if is_owner:
+            agreement.soft_delete_by_owner()
+        else:
+            agreement.soft_delete_by_tenant()
         messages.success(request, 'Agreement removed from your list.')
         if is_owner:
             return redirect('agreements:owner_agreements')
         return redirect('agreements:tenant_agreements')
 
-    return render(request, 'base_delete_confirm.html', {'object': agreement, 'type': 'Agreement'})
+    return render(request, 'base_delete_confirm.html', {
+        'object': agreement, 'type': 'Agreement'
+    })
