@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'apps.notifications',
     'apps.dashboard',
     'apps.reviews',
+    'apps.core',
 ]
 
 # Middleware

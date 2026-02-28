@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
+{% block title %}RentMS — Find Your Perfect Home{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero Section ── -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Find Your Perfect<br><span class="hero-highlight">Rental Home</span></h1>
+        <p class="hero-subtitle">Search from hundreds of verified properties and rooms across Nepal</p>
+        <form class="hero-search" method="get" action="{% url 'search:results' %}">
+            <input type="text" name="city" placeholder="🔍 Enter city or area..." class="hero-search-input">
+            <select name="rent_type" class="hero-search-select">
+                <option value="">Any Type</option>
+                <option value="whole">Whole Property</option>
+                <option value="rooms">Individual Room</option>
+            </select>
+            <button type="submit" class="btn btn-primary hero-search-btn">Search</button>
+        </form>
+    </div>
+    <div class="hero-image">🏙️</div>
+</section>
+
+<!-- ── Stats Section ── -->
+<section class="stats-section">
+    <div class="container">
+        <div class="home-stats-grid">
+            <div class="home-stat-card">
+                <div class="home-stat-number">{{ total_properties }}+</div>
+                <div class="home-stat-label">Available Properties</div>
+            </div>
+            <div class="home-stat-card">
+                <div class="home-stat-number">{{ total_owners }}+</div>
+                <div class="home-stat-label">Verified Owners</div>
+            </div>
+            <div class="home-stat-card">
+                <div class="home-stat-number">{{ total_tenants }}+</div>
+                <div class="home-stat-label">Happy Tenants</div>
+            </div>
+            <div class="home-stat-card">
+                <div class="home-stat-number">100%</div>
+                <div class="home-stat-label">Verified Listings</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── How It Works ── -->
+<section class="how-it-works">
+    <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-icon">🔍</div>
+                <div class="step-number">1</div>
+                <h3>Search</h3>
+                <p>Browse hundreds of verified properties and rooms in your preferred location.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">📋</div>
+                <div class="step-number">2</div>
+                <h3>Book</h3>
+                <p>Send a booking request to the owner with your move-in date.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">✍️</div>
+                <div class="step-number">3</div>
+                <h3>Sign Agreement</h3>
+                <p>Both parties digitally sign the rental agreement online.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">🏠</div>
+                <div class="step-number">4</div>
+                <h3>Move In</h3>
+                <p>Move into your new home and manage everything from your dashboard.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Featured Whole Properties ── -->
+{% if featured_whole %}
+<section class="featured-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Featured Whole Properties</h2>
+            <a href="{% url 'search:results' %}?rent_type=whole" class="btn btn-secondary">View All →</a>
+        </div>
+        <div class="featured-grid">
+            {% for p in featured_whole %}
+            <div class="featured-card">
+                {% if p.photos.first %}
+                    <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="featured-img">
+                {% else %}
+                    <div class="featured-img-placeholder">🏠</div>
+                {% endif %}
+                <div class="featured-card-body">
+                    <span class="result-tag">{{ p.get_type_display }}</span>
+                    <h4>{{ p.title }}</h4>
+                    <p class="property-meta">📍 {{ p.city }}{% if p.landmark %}, near {{ p.landmark }}{% endif %}</p>
+                    <p class="property-price">Rs. {{ p.rent_price }}/month</p>
+                    <div class="property-details">
+                        <span>🛏 {{ p.total_bedrooms }} Bed</span>
+                        <span>🚿 {{ p.total_bathrooms }} Bath</span>
+                        <span>{{ p.get_furnishing_display }}</span>
+                    </div>
+                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-primary" style="margin-top:0.75rem; display:block; text-align:center;">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ── Featured Room Properties ── -->
+{% if featured_rooms %}
+<section class="featured-section" style="background:#f9f9f9;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Individual Rooms Available</h2>
+            <a href="{% url 'search:results' %}?rent_type=rooms" class="btn btn-secondary">View All →</a>
+        </div>
+        <div class="featured-grid">
+            {% for p in featured_rooms %}
+            <div class="featured-card">
+                {% if p.photos.first %}
+                    <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="featured-img">
+                {% else %}
+                    <div class="featured-img-placeholder">🚪</div>
+                {% endif %}
+                <div class="featured-card-body">
+                    <span class="result-tag" style="background:#f3e8ff; color:#6b21a8;">Individual Rooms</span>
+                    <h4>{{ p.title }}</h4>
+                    <p class="property-meta">📍 {{ p.city }}{% if p.landmark %}, near {{ p.landmark }}{% endif %}</p>
+                    <p class="property-price">{{ p.available_rooms.count }} room(s) available</p>
+                    <div class="property-details">
+                        <span>🏠 {{ p.total_rooms }} Total Rooms</span>
+                        <span>{{ p.get_furnishing_display }}</span>
+                    </div>
+                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-primary" style="margin-top:0.75rem; display:block; text-align:center;">View Rooms</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ── Testimonials ── -->
+{% if testimonials %}
+<section class="testimonials-section">
+    <div class="container">
+        <h2 class="section-title">What Tenants Say</h2>
+        <div class="testimonials-grid">
+            {% for review in testimonials %}
+            <div class="testimonial-card">
+                <div class="testimonial-stars">
+                    {% for i in review.get_filled_stars %}★{% endfor %}{% for i in review.get_empty_stars %}☆{% endfor %}
+                </div>
+                <p class="testimonial-comment">"{{ review.comment|truncatewords:20 }}"</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">{{ review.reviewer.username|first|upper }}</div>
+                    <div>
+                        <p class="testimonial-name">{{ review.reviewer.get_full_name|default:review.reviewer.username }}</p>
+                        {% if review.property %}<p class="testimonial-property">{{ review.property.title }}</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ── Contact Section ── -->
+<section class="contact-section">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h2>Get In Touch</h2>
+                <p>Have questions? We're here to help you find your perfect rental.</p>
+                <div class="contact-items">
+                    <p>📧 support@rentms.com</p>
+                    <p>📞 +977-9800000000</p>
+                    <p>📍 Kathmandu, Nepal</p>
+                </div>
+            </div>
+            <div class="contact-actions">
+                {% if not request.user.is_authenticated %}
+                <h3>Get Started Today</h3>
+                <p>Join thousands of happy tenants and owners.</p>
+                <a href="{% url 'accounts:register' %}" class="btn btn-primary" style="margin-right:0.5rem;">Register Now</a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-secondary">Login</a>
+                {% else %}
+                <h3>Welcome back!</h3>
+                <a href="{% url 'search:results' %}" class="btn btn-primary">Search Properties</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="home-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>🏠 RentMS</h3>
+                <p>Nepal's trusted rental management platform.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="{% url 'search:results' %}">Search Properties</a>
+                {% if not request.user.is_authenticated %}
+                <a href="{% url 'accounts:register' %}">Register</a>
+                <a href="{% url 'accounts:login' %}">Login</a>
+                {% else %}
+                <a href="{% url 'core:home' %}">Dashboard</a>
+                {% endif %}
+            </div>
+            <div class="footer-links">
+                <h4>For Owners</h4>
+                <a href="{% url 'accounts:register' %}">List Your Property</a>
+                <a href="{% url 'accounts:login' %}">Owner Login</a>
+            </div>
+            <div class="footer-links">
+                <h4>For Tenants</h4>
+                <a href="{% url 'search:results' %}">Find a Home</a>
+                <a href="{% url 'accounts:register' %}">Create Account</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 RentMS. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+{% endblock %}

@@ -1,90 +1,244 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Owner Dashboard — RentMS{% endblock %}
 
 {% block content %}
 <div class="dashboard">
 
-    <div class="dashboard-header">       
+    <div class="dashboard-header">
         <h2>Owner Dashboard</h2>
-        <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+        <p>Welcome back, {{ request.user.get_full_name|default:request.user.username }}</p>
     </div>
 
+    <!-- ── Quick Actions ── -->
+    <div class="quick-actions">
+        <a href="{% url 'properties:add' %}" class="quick-action-btn">➕ Add Property</a>
+        <a href="{% url 'bookings:owner_bookings' %}" class="quick-action-btn">📋 Bookings</a>
+        <a href="{% url 'agreements:owner_agreements' %}" class="quick-action-btn">📄 Agreements</a>
+        <a href="{% url 'payments:owner_payments' %}" class="quick-action-btn">💰 Payments</a>
+        <a href="{% url 'complaints:owner_complaints' %}" class="quick-action-btn">⚠️ Complaints</a>
+    </div>
+
+    <!-- ── Stats Cards ── -->
+     <!-- My Properties (Full List) -->
+<div class="dashboard-section">
+    <div class="section-header">
+        <h3>📋 All My Properties</h3>
+        <a href="{% url 'properties:add' %}" class="btn btn-primary btn-sm">+ Add New</a>
+    </div>
+    {% if all_properties %}
+        {% for p in all_properties %}
+        <div class="dash-item">
+            <div>
+                <p class="dash-item-title">{{ p.title }}</p>
+                <p class="property-meta">
+                    {{ p.get_type_display }} · {{ p.city }}
+                </p>
+                <p class="property-meta">
+                    {% if p.rent_type == 'whole' %}
+                    <span class="result-tag" style="font-size:0.75rem; padding:0.1rem 0.5rem;">🏠 Whole Property</span>
+                    Rs. {{ p.rent_price }}/month
+                    {% else %}
+                    <span class="result-tag"
+                        style="font-size:0.75rem; padding:0.1rem 0.5rem; background:#f3e8ff; color:#6b21a8;">🚪 Individual
+                        Rooms</span>
+                    {{ p.available_rooms.count }}/{{ p.total_rooms }} rooms available
+                    {% endif %}
+                </p>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                <span class="status-badge status-{{ p.status }}">{{ p.get_status_display }}</span>
+                <a href="{% url 'properties:detail' p.pk %}" class="btn btn-secondary btn-sm">View</a>
+                <a href="{% url 'properties:edit' p.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+            </div>
+        </div>
+        {% endfor %}
+        <div style="margin-top:0.75rem;">
+            <a href="{% url 'properties:list' %}" class="btn btn-secondary">View Full Properties Page →</a>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No properties yet.</p>
+            <a href="{% url 'properties:add' %}" class="btn btn-primary">Add Your First Property</a>
+        </div>
+    {% endif %}
+</div>
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-number">{{ properties|length }}</div>
-            <div class="stat-label">My Properties</div>
+            <div class="stat-number">{{ total_whole }}</div>
+            <div class="stat-label">Whole Properties</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">{{ pending_bookings|length }}</div>
-            <div class="stat-label">Pending Bookings</div>
+            <div class="stat-number">{{ total_room_props }}</div>
+            <div class="stat-label">Room Properties</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">{{ active_tenants|length }}</div>
+            <div class="stat-number">{{ active_tenants }}</div>
             <div class="stat-label">Active Tenants</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">{{ open_complaints|length }}</div>
+            <div class="stat-number">{{ pending_count }}</div>
+            <div class="stat-label">Pending Bookings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">Rs. {{ total_received }}</div>
+            <div class="stat-label">Total Received</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ open_count }}</div>
             <div class="stat-label">Open Complaints</div>
         </div>
     </div>
 
-    <div class="dashboard-section">
-        <div class="section-header">
-            <h3>My Properties</h3>
-            <a href="{% url 'properties:add' %}" class="btn btn-primary">+ Add Property</a>
-        </div>
-        {% if properties %}
-            <p>Properties will show here.</p>
-        {% else %}
-            <div class="empty-state">
-                <p>You have no properties yet.</p>
-                <a href="{% url 'properties:add' %}" class="btn btn-primary">Add Your First Property</a>
+    <div class="dashboard-two-col">
+
+        <!-- ── Left Column ── -->
+        <div class="dashboard-col">
+
+            <!-- Whole Properties -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>🏠 Whole Properties ({{ total_whole }})</h3>
+                    <a href="{% url 'properties:list' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                {% if whole_properties %}
+                    {% for p in whole_properties %}
+                    <div class="dash-item">
+                        <div>
+                            <p class="dash-item-title">{{ p.title }}</p>
+                            <p class="property-meta">{{ p.city }} · Rs. {{ p.rent_price }}/month</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.5rem;">
+                            <span class="status-badge status-{{ p.status }}">{{ p.get_status_display }}</span>
+                            <a href="{% url 'properties:detail' p.pk %}" class="btn btn-secondary btn-sm">View</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><p>No whole properties yet.</p>
+                    <a href="{% url 'properties:add' %}" class="btn btn-primary">Add Property</a></div>
+                {% endif %}
             </div>
-        {% endif %}
-    </div>
 
-<div class="dashboard-section">
-    <div class="section-header">
-        <h3>Pending Booking Requests</h3>
-        <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-primary">View All Bookings</a>
-    </div>
-    {% if pending_bookings %}
-        {% for booking in pending_bookings %}
-        <p>{{ booking.get_target_name }} — {{ booking.tenant.get_full_name|default:booking.tenant.username }}</p>
-        {% endfor %}
-    {% else %}
-        <div class="empty-state"><p>No pending booking requests.</p></div>
-    {% endif %}
-</div>
+            <!-- Room Properties -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>🚪 Room Properties ({{ total_room_props }})</h3>
+                    <a href="{% url 'properties:list' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                {% if room_properties %}
+                    {% for p in room_properties %}
+                    <div class="dash-item">
+                        <div>
+                            <p class="dash-item-title">{{ p.title }}</p>
+                            <p class="property-meta">{{ p.city }} · {{ p.available_rooms.count }}/{{ p.total_rooms }} rooms available</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.5rem;">
+                            <span class="status-badge status-{{ p.status }}">{{ p.get_status_display }}</span>
+                            <a href="{% url 'properties:detail' p.pk %}" class="btn btn-secondary btn-sm">View</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><p>No room properties yet.</p></div>
+                {% endif %}
+            </div>
 
-    <div class="dashboard-section">
-        <h3>Recent Payments Received</h3>
-        {% if recent_payments %}
-            <p>Payments will show here.</p>
-        {% else %}
-            <div class="empty-state"><p>No payments received yet.</p></div>
-        {% endif %}
-    </div>
+            <!-- Pending Bookings -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>📋 Pending Bookings ({{ pending_count }})</h3>
+                    <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                {% if pending_bookings %}
+                    {% for booking in pending_bookings %}
+                    <div class="dash-item">
+                        <div>
+                            <p class="dash-item-title">{{ booking.get_target_name }}</p>
+                            <p class="property-meta">{{ booking.tenant.get_full_name|default:booking.tenant.username }} · {{ booking.move_in_date }}</p>
+                        </div>
+                        <div style="display:flex; gap:0.5rem;">
+                            <a href="{% url 'bookings:accept' booking.pk %}" class="btn btn-primary btn-sm">Accept</a>
+                            <a href="{% url 'bookings:reject' booking.pk %}" class="btn btn-danger btn-sm">Reject</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><p>No pending bookings.</p></div>
+                {% endif %}
+            </div>
 
-<div class="dashboard-section">
-    <div class="section-header">
-        <h3>Open Complaints</h3>
-        <a href="{% url 'complaints:owner_complaints' %}" class="btn btn-secondary">View All</a>
-    </div>
-    {% if open_complaints %}
-        {% for complaint in open_complaints %}
-        <p>
-            <span class="priority-badge priority-{{ complaint.priority }}">{{ complaint.get_priority_display }}</span>
-            {{ complaint.title }} — {{ complaint.tenant.get_full_name|default:complaint.tenant.username }} —
-            <span class="complaint-status complaint-status-{{ complaint.status }}">{{ complaint.get_status_display }}</span>
-            <a href="{% url 'complaints:detail' complaint.pk %}">View</a>
-        </p>
-        {% endfor %}
-    {% else %}
-        <div class="empty-state"><p>No open complaints.</p></div>
-    {% endif %}
-</div>
+        </div>
 
+        <!-- ── Right Column ── -->
+        <div class="dashboard-col">
+
+            <!-- Recent Activity -->
+            <div class="dashboard-section">
+                <h3>⚡ Recent Activity</h3>
+                {% if activity %}
+                <div class="activity-feed">
+                    {% for item in activity %}
+                    <a href="{{ item.link }}" class="activity-item">
+                        <span class="activity-icon">{{ item.icon }}</span>
+                        <div class="activity-content">
+                            <p class="activity-text">{{ item.text }}</p>
+                            <p class="activity-time">{{ item.time|timesince }} ago</p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                    <div class="empty-state"><p>No recent activity.</p></div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Payments -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>💰 Recent Payments</h3>
+                    <a href="{% url 'payments:owner_payments' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                {% if recent_payments %}
+                    {% for payment in recent_payments %}
+                    <div class="dash-item">
+                        <div>
+                            <p class="dash-item-title">Rs. {{ payment.amount }}</p>
+                            <p class="property-meta">{{ payment.tenant.get_full_name|default:payment.tenant.username }} · {{ payment.paid_date }}</p>
+                        </div>
+                        <span class="payment-status payment-status-paid">Paid</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><p>No payments yet.</p></div>
+                {% endif %}
+            </div>
+
+            <!-- Open Complaints -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>⚠️ Open Complaints</h3>
+                    <a href="{% url 'complaints:owner_complaints' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                {% if open_complaints %}
+                    {% for complaint in open_complaints %}
+                    <div class="dash-item">
+                        <div>
+                            <p class="dash-item-title">{{ complaint.title }}</p>
+                            <p class="property-meta">{{ complaint.tenant.get_full_name|default:complaint.tenant.username }} · {{ complaint.get_category_display }}</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.5rem;">
+                            <span class="priority-badge priority-{{ complaint.priority }}">{{ complaint.get_priority_display }}</span>
+                            <a href="{% url 'complaints:detail' complaint.pk %}" class="btn btn-secondary btn-sm">View</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><p>No open complaints.</p></div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
 </div>
 {% endblock %}
