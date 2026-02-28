@@ -176,17 +176,28 @@ def payment_detail(request, pk):
 
 @login_required
 def delete_payment(request, pk):
-    payment = get_object_or_404(Payment.all_objects, pk=pk, owner=request.user)
+    payment   = get_object_or_404(Payment.all_objects, pk=pk)
+    is_owner  = payment.owner  == request.user
+    is_tenant = payment.tenant == request.user
 
-    if payment.status != 'cancelled':
-        messages.error(request, 'Only cancelled payments can be removed.')
-        return redirect('payments:owner_payments')
+    if not (is_owner or is_tenant):
+        return HttpResponseForbidden('Access denied.')
+
+    allowed = ['cancelled', 'paid']
+    if payment.status not in allowed:
+        messages.error(request, 'Only paid or cancelled payments can be removed.')
+        return redirect('payments:owner_payments' if is_owner else 'payments:tenant_payments')
 
     if request.method == 'POST':
-        payment.soft_delete_by_owner()
+        if is_owner:
+            payment.soft_delete_by_owner()
+        else:
+            payment.soft_delete_by_tenant()
         messages.success(request, 'Payment removed from your list.')
-        return redirect('payments:owner_payments')
+        return redirect('payments:owner_payments' if is_owner else 'payments:tenant_payments')
 
     return render(request, 'base_delete_confirm.html', {
-        'object': payment, 'type': 'Payment'
+        'object':     payment,
+        'type':       'Payment',
+        'cancel_url': 'payments:owner_payments' if is_owner else 'payments:tenant_payments',
     })

@@ -1,6 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'dashboard/dashboard_base.html' %}
 {% load static %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/payments.css' %}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/payments.css' %}">
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+{% endblock %}
 {% block title %}My Payments — RentMS{% endblock %}
 
 {% block content %}
@@ -40,6 +43,13 @@
                 <span class="payment-status payment-status-{{ payment.status }}">{{ payment.get_status_display }}</span>
                 <div class="payment-actions">
                     <a href="{% url 'payments:detail' payment.pk %}" class="btn btn-secondary">View</a>
+                    {% if payment.status == 'cancelled' or payment.status == 'paid' %}
+                    <form method="post" action="{% url 'payments:delete' payment.pk %}"
+                        onsubmit="return confirm('Remove this payment from your list?');" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">🗑 Remove</button>
+                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

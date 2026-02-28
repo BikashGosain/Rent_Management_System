@@ -74,7 +74,9 @@ def recycle_bin(request):
         deleted_agreements = Agreement.all_objects.filter(
             tenant=request.user, tenant_deleted=True
         )
-        deleted_payments = Payment.objects.none()
+        deleted_payments = Payment.all_objects.filter(
+        tenant=request.user, tenant_deleted=True
+        )
         deleted_complaints = Complaint.all_objects.filter(
             tenant=request.user, tenant_deleted=True
         )
@@ -224,6 +226,9 @@ def restore_all(request):
         Agreement.all_objects.filter(
             tenant=request.user, tenant_deleted=True
         ).update(tenant_deleted=False, tenant_deleted_at=None)
+        Payment.all_objects.filter(
+            tenant=request.user, tenant_deleted=True
+        ).update(tenant_deleted=False, tenant_deleted_at=None)
         Complaint.all_objects.filter(
             tenant=request.user, tenant_deleted=True
         ).update(tenant_deleted=False, tenant_deleted_at=None)
@@ -267,6 +272,9 @@ def permanent_delete_all(request):
             tenant=request.user, tenant_deleted=True
         ).delete()
         Agreement.all_objects.filter(
+            tenant=request.user, tenant_deleted=True
+        ).delete()
+        Payment.all_objects.filter(
             tenant=request.user, tenant_deleted=True
         ).delete()
         Complaint.all_objects.filter(

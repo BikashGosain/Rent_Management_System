@@ -1,4 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/properties.css' %}">
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+{% endblock %}
 {% block title %}My Properties — RentMS{% endblock %}
 {% block content %}
 <div class="dashboard">
@@ -6,7 +11,6 @@
         <h2>My Properties</h2>
         <a href="{% url 'properties:add' %}" class="btn btn-primary">+ Add Property</a>
     </div>
-
     {% if properties %}
     <div class="property-grid">
         {% for p in properties %}

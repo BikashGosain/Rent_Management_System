@@ -1,6 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'dashboard/dashboard_base.html' %}
 {% load static %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/recycle_bin.css' %}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/recycle_bin.css' %}">
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+{% endblock %}
 {% block title %}Recycle Bin — RentMS{% endblock %}
 
 {% block content %}
@@ -114,8 +117,7 @@
         {% endif %}
     </div>
 
-    <!-- ── Deleted Payments (Owner only) ── -->
-    {% if is_owner %}
+    <!-- ── Deleted Payments ── -->
     <div class="recycle-section">
         <h3>💰 Payments ({{ deleted_payments.count }})</h3>
         {% if deleted_payments %}
@@ -123,13 +125,23 @@
             {% for payment in deleted_payments %}
             <div class="recycle-item">
                 <div class="recycle-info">
-                    <p class="recycle-title">{{ payment.get_payment_type_display }}{% if payment.month and payment.year %} — {{ payment.get_month_display_name }}{% endif %}</p>
+                    <p class="recycle-title">{{ payment.get_payment_type_display }}{% if payment.month and payment.year %} —
+                        {{ payment.get_month_display_name }}{% endif %}</p>
                     <p class="property-meta">
-                        Status: <span class="payment-status payment-status-{{ payment.status }}">{{ payment.get_status_display }}</span>
+                        Status: <span class="payment-status payment-status-{{ payment.status }}">{{
+                            payment.get_status_display }}</span>
                     </p>
                     <p class="property-meta">Amount: Rs. {{ payment.amount }}</p>
+                    {% if is_owner %}
                     <p class="property-meta">Tenant: {{ payment.tenant.get_full_name|default:payment.tenant.username }}</p>
-                    <p class="property-meta recycle-deleted-at">Removed: {{ payment.owner_deleted_at|date:"d M Y, h:i A" }}</p>
+                    <p class="property-meta recycle-deleted-at">Removed: {{ payment.owner_deleted_at|date:"d M Y, h:i A" }}
+                    </p>
+                    {% endif %}
+                    {% if is_tenant %}
+                    <p class="property-meta">Owner: {{ payment.owner.get_full_name|default:payment.owner.username }}</p>
+                    <p class="property-meta recycle-deleted-at">Removed: {{ payment.tenant_deleted_at|date:"d M Y, h:i A" }}
+                    </p>
+                    {% endif %}
                 </div>
                 <div class="recycle-actions">
                     <a href="{% url 'payments:detail' payment.pk %}" class="btn btn-secondary btn-sm">👁 View</a>
@@ -138,8 +150,8 @@
                         <button type="submit" class="btn btn-primary btn-sm">♻️ Restore</button>
                     </form>
                     <form method="post" action="{% url 'core:permanent_delete' 'payment' payment.pk %}"
-                          onsubmit="return confirm('Permanently delete this payment? This cannot be undone.');"
-                          style="display:inline;">
+                        onsubmit="return confirm('Permanently delete this payment? This cannot be undone.');"
+                        style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger btn-sm">🗑 Delete Forever</button>
                     </form>
@@ -148,10 +160,11 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="recycle-empty"><p>No deleted payments.</p></div>
+        <div class="recycle-empty">
+            <p>No deleted payments.</p>
+        </div>
         {% endif %}
     </div>
-    {% endif %}
 
     <!-- ── Deleted Complaints ── -->
     <div class="recycle-section">

@@ -108,6 +108,7 @@
                     <li class="nav-item"><a class="nav-link dropdown-title">Complaints</a></li>
                     <li class="nav-item"><a href="{% url 'complaints:owner_complaints' %}" class="nav-link dropdown-link">All Complaints</a></li>
                 </ul>
+                
             </li>
 
             <!-- Reviews -->
@@ -260,6 +261,16 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li class="nav-item"><a class="nav-link dropdown-title">Recycle Bin</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a href="{% url 'accounts:password_change' %}" class="nav-link">
+                    <span class="material-symbols-rounded">password</span>
+                    <span class="nav-label">Change Password</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Change Password</a></li>
                 </ul>
             </li>
 
