@@ -16,6 +16,15 @@
             <div>
                 <h2>Room {{ room.room_number }}</h2>
                 <p class="property-meta">{{ room.get_room_type_display }} · {{ property.title }} · Floor {{ room.floor_number }}</p>
+
+                {% if request.user.is_authenticated %}
+                <form method="post" action="{% url 'bookmarks:toggle_room' room.property.pk room.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary">
+                        {% if room.pk in bookmarked_room_ids %}❤️ Saved{% else %}🤍 Save{% endif %}
+                    </button>
+                </form>
+                {% endif %}
             </div>
             <div>
                 <p class="property-price">Rs. {{ room.rent_price }}/month</p>

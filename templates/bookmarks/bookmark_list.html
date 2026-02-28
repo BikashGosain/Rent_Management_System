@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/bookmarks.css' %}">{% endblock %}
+{% block title %}My Favorites — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+    <div class="section-header">
+        <h2>❤️ My Favorites ({{ bookmarks.count }})</h2>
+        {% if compare_ids|length >= 2 %}
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+            <span class="compare-count-badge">{{ compare_ids|length }} selected</span>
+            <a href="{% url 'bookmarks:compare' %}" class="btn btn-primary">⚖️ Compare Now</a>
+            <a href="{% url 'bookmarks:clear_compare' %}" class="btn btn-secondary">✕ Clear</a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if compare_ids %}
+    <div class="compare-banner">
+        <p>⚖️ <strong>{{ compare_ids|length }}/3</strong> properties selected for comparison.
+        {% if compare_ids|length >= 2 %}
+            <a href="{% url 'bookmarks:compare' %}">Compare Now →</a>
+        {% else %}
+            Select at least 2 to compare.
+        {% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+    {% if bookmarks %}
+    <div class="bookmarks-grid">
+        {% for bookmark in bookmarks %}
+        <div class="bookmark-card {% if bookmark.pk in compare_ids %}bookmark-selected{% endif %}">
+
+            <!-- Image -->
+            {% if bookmark.room %}
+                {% if bookmark.room.photos.first %}
+                    <img src="{{ bookmark.room.photos.first.image.url }}" class="bookmark-img" alt="Room">
+                {% else %}
+                    <div class="bookmark-img-placeholder">🚪</div>
+                {% endif %}
+            {% else %}
+                {% if bookmark.property.photos.first %}
+                    <img src="{{ bookmark.property.photos.first.image.url }}" class="bookmark-img" alt="{{ bookmark.property.title }}">
+                {% else %}
+                    <div class="bookmark-img-placeholder">🏠</div>
+                {% endif %}
+            {% endif %}
+
+            <!-- Body -->
+            <div class="bookmark-body">
+                {% if bookmark.room %}
+                    <span class="result-tag" style="background:#f3e8ff; color:#6b21a8;">🚪 Room</span>
+                {% else %}
+                    <span class="result-tag">🏠 Property</span>
+                {% endif %}
+
+                <h4>{{ bookmark.get_target_name }}</h4>
+                <p class="property-meta">📍 {{ bookmark.get_city }}</p>
+                <p class="property-price">Rs. {{ bookmark.get_rent_price }}/month</p>
+
+                {% if bookmark.room %}
+                <div class="property-details">
+                    <span>🛏 {{ bookmark.room.bedrooms }} Bed</span>
+                    <span>{{ bookmark.room.get_furnishing_display }}</span>
+                </div>
+                {% else %}
+                <div class="property-details">
+                    <span>🛏 {{ bookmark.property.total_bedrooms }} Bed</span>
+                    <span>🚿 {{ bookmark.property.total_bathrooms }} Bath</span>
+                    <span>{{ bookmark.property.get_furnishing_display }}</span>
+                </div>
+                {% endif %}
+
+                <p class="property-meta">Saved {{ bookmark.created_at|timesince }} ago</p>
+
+                <!-- Actions -->
+                <div class="bookmark-actions">
+                    <a href="{{ bookmark.get_detail_url }}" class="btn btn-secondary btn-sm">View</a>
+
+                    <!-- Compare toggle -->
+                    <form method="post" action="{% url 'bookmarks:toggle_compare' bookmark.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        {% if bookmark.pk in compare_ids %}
+                            <button type="submit" class="btn btn-primary btn-sm">✓ Selected</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-secondary btn-sm">⚖️ Compare</button>
+                        {% endif %}
+                    </form>
+
+                    <!-- Remove bookmark -->
+                    <form method="post" action="{% url 'bookmarks:remove' bookmark.pk %}"
+                          onsubmit="return confirm('Remove from favorites?');" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">🗑</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <p>No saved properties yet.</p>
+        <a href="{% url 'search:results' %}" class="btn btn-primary">Search Properties</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

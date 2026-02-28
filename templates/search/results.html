@@ -111,6 +111,14 @@
                 {% endif %}
                 <div class="result-card-body">
                     <span class="result-tag">Whole Property</span>
+                    {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'bookmarks:toggle_property' p.pk %}" style="display:inline; float:right;">
+                        {% csrf_token %}
+                        <button type="submit" class="bookmark-heart {% if p.pk in bookmarked_property_ids %}bookmarked{% endif %}">
+                            {% if p.pk in bookmarked_property_ids %}❤️{% else %}🤍{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
                     <h4>{{ p.title }}</h4>
                     <p class="property-meta">{{ p.get_type_display }} · {{ p.city }}</p>
                     {% if p.landmark %}<p class="property-meta">📍 Near {{ p.landmark }}</p>{% endif %}
@@ -140,6 +148,14 @@
                 {% endif %}
                 <div class="result-card-body">
                     <span class="result-tag" style="background:#f3e8ff; color:#6b21a8;">Individual Rooms</span>
+                    {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'bookmarks:toggle_property' p.pk %}" style="display:inline; float:right;">
+                        {% csrf_token %}
+                        <button type="submit" class="bookmark-heart {% if p.pk in bookmarked_property_ids %}bookmarked{% endif %}">
+                            {% if p.pk in bookmarked_property_ids %}❤️{% else %}🤍{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
                     <h4>{{ p.title }}</h4>
                     <p class="property-meta">{{ p.get_type_display }} · {{ p.city }}</p>
                     {% if p.landmark %}<p class="property-meta">📍 Near {{ p.landmark }}</p>{% endif %}
@@ -165,6 +181,15 @@
                 {% endif %}
                 <div class="result-card-body">
                     <span class="result-tag result-tag-room">Room</span>
+                    {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'bookmarks:toggle_room' room.property.pk room.pk %}"
+                        style="display:inline; float:right;">
+                        {% csrf_token %}
+                        <button type="submit" class="bookmark-heart {% if room.pk in bookmarked_room_ids %}bookmarked{% endif %}">
+                            {% if room.pk in bookmarked_room_ids %}❤️{% else %}🤍{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
                     <h4>Room {{ room.room_number }} — {{ room.property.title }}</h4>
                     <p class="property-meta">{{ room.get_room_type_display }} · {{ room.property.city }}</p>
                     {% if room.property.landmark %}<p class="property-meta">📍 Near {{ room.property.landmark }}</p>{% endif %}

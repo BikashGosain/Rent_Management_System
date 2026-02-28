@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/bookmarks.css' %}">{% endblock %}
+{% block title %}Compare Properties — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="section-header">
+        <h2>⚖️ Compare Properties</h2>
+        <div style="display:flex; gap:0.5rem;">
+            <a href="{% url 'bookmarks:list' %}" class="btn btn-secondary">← Back to Favorites</a>
+            <a href="{% url 'bookmarks:clear_compare' %}" class="btn btn-danger btn-sm">Clear Selection</a>
+        </div>
+    </div>
+
+    <div class="compare-table-wrapper">
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th class="compare-label-col">Feature</th>
+                    {% for bookmark in bookmarks %}
+                    <th>
+                        <div class="compare-header">
+                            {% if bookmark.room %}
+                                {% if bookmark.room.photos.first %}
+                                    <img src="{{ bookmark.room.photos.first.image.url }}" class="compare-thumb">
+                                {% else %}
+                                    <div class="compare-thumb-placeholder">🚪</div>
+                                {% endif %}
+                            {% else %}
+                                {% if bookmark.property.photos.first %}
+                                    <img src="{{ bookmark.property.photos.first.image.url }}" class="compare-thumb">
+                                {% else %}
+                                    <div class="compare-thumb-placeholder">🏠</div>
+                                {% endif %}
+                            {% endif %}
+                            <p class="compare-name">{{ bookmark.get_target_name }}</p>
+                        </div>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="compare-row">
+                    <td class="compare-label">Type</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}🚪 Individual Room
+                        {% else %}🏠 Whole Property{% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row compare-row-alt">
+                    <td class="compare-label">💰 Rent</td>
+                    {% for bookmark in bookmarks %}
+                    <td class="compare-price">Rs. {{ bookmark.get_rent_price }}/month</td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row">
+                    <td class="compare-label">📍 City</td>
+                    {% for bookmark in bookmarks %}
+                    <td>{{ bookmark.get_city }}</td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row compare-row-alt">
+                    <td class="compare-label">🛏 Bedrooms</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}{{ bookmark.room.bedrooms }}
+                        {% else %}{{ bookmark.property.total_bedrooms }}{% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row">
+                    <td class="compare-label">🚿 Bathrooms</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}{{ bookmark.room.get_bathroom_type_display }}
+                        {% else %}{{ bookmark.property.total_bathrooms }}{% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row compare-row-alt">
+                    <td class="compare-label">🪑 Furnishing</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}{{ bookmark.room.get_furnishing_display }}
+                        {% else %}{{ bookmark.property.get_furnishing_display }}{% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row">
+                    <td class="compare-label">📶 WiFi</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}
+                            {% if bookmark.room.facility.wifi %}✅{% else %}❌{% endif %}
+                        {% else %}
+                            {% if bookmark.property.wifi %}✅{% else %}❌{% endif %}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row compare-row-alt">
+                    <td class="compare-label">❄️ AC</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}
+                            {% if bookmark.room.facility.ac %}✅{% else %}❌{% endif %}
+                        {% else %}
+                            {% if bookmark.property.ac %}✅{% else %}❌{% endif %}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row">
+                    <td class="compare-label">🚗 Parking</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}
+                            {% if bookmark.room.facility.parking %}✅{% else %}❌{% endif %}
+                        {% else %}
+                            {% if bookmark.property.parking %}✅{% else %}❌{% endif %}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row compare-row-alt">
+                    <td class="compare-label">🛗 Lift</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}
+                            {% if bookmark.room.facility.lift %}✅{% else %}❌{% endif %}
+                        {% else %}
+                            {% if bookmark.property.lift %}✅{% else %}❌{% endif %}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row">
+                    <td class="compare-label">📷 CCTV</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}
+                            {% if bookmark.room.facility.cctv %}✅{% else %}❌{% endif %}
+                        {% else %}
+                            {% if bookmark.property.cctv %}✅{% else %}❌{% endif %}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row compare-row-alt">
+                    <td class="compare-label">Status</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        {% if bookmark.room %}{{ bookmark.room.get_status_display }}
+                        {% else %}{{ bookmark.property.get_status_display }}{% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr class="compare-row">
+                    <td class="compare-label">Action</td>
+                    {% for bookmark in bookmarks %}
+                    <td>
+                        <a href="{{ bookmark.get_detail_url }}" class="btn btn-primary btn-sm">View Details</a>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
