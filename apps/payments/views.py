@@ -16,7 +16,7 @@ def owner_payments(request):
     """Owner sees all payments for their properties."""
     if not request.user.is_owner():
         return redirect('dashboard:tenant')
-    payments = Payment.objects.filter(owner=request.user).select_related(
+    payments = Payment.owner_objects.filter(owner=request.user).select_related(
         'tenant', 'agreement'
     )
     # Update overdue status
@@ -141,7 +141,7 @@ def tenant_payments(request):
     if not request.user.is_tenant():
         return redirect('dashboard:owner')
 
-    payments = Payment.objects.filter(tenant=request.user).select_related(
+    payments = Payment.tenant_objects.filter(tenant=request.user).select_related(
         'owner', 'agreement'
     )
     # Update overdue
@@ -176,15 +176,17 @@ def payment_detail(request, pk):
 
 @login_required
 def delete_payment(request, pk):
-    payment = get_object_or_404(Payment, pk=pk, owner=request.user)
+    payment = get_object_or_404(Payment.all_objects, pk=pk, owner=request.user)
 
     if payment.status != 'cancelled':
         messages.error(request, 'Only cancelled payments can be removed.')
         return redirect('payments:owner_payments')
 
     if request.method == 'POST':
-        payment.soft_delete()
+        payment.soft_delete_by_owner()
         messages.success(request, 'Payment removed from your list.')
         return redirect('payments:owner_payments')
 
-    return render(request, 'base_delete_confirm.html', {'object': payment, 'type': 'Payment'})
+    return render(request, 'base_delete_confirm.html', {
+        'object': payment, 'type': 'Payment'
+    })

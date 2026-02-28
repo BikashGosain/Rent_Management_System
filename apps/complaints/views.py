@@ -60,12 +60,12 @@ def my_complaints(request):
         return redirect('dashboard:owner')
 
     # Complaints submitted BY tenant
-    my_submitted = Complaint.objects.filter(
+    my_submitted = Complaint.tenant_objects.filter(
         tenant=request.user, submitted_by='tenant'
     ).prefetch_related('responses')
 
     # Complaints raised AGAINST tenant by owner
-    raised_against = Complaint.objects.filter(
+    raised_against = Complaint.tenant_objects.filter(
         tenant=request.user, submitted_by='owner'
     ).prefetch_related('responses')
 
@@ -82,7 +82,7 @@ def owner_complaints(request):
     if not request.user.is_owner():
         return redirect('dashboard:tenant')
 
-    complaints = Complaint.objects.filter(
+    complaints = Complaint.owner_objects.filter(
         owner=request.user
     ).prefetch_related('responses').select_related('tenant')
 
@@ -206,7 +206,7 @@ def owner_submit_complaint(request, agreement_pk):
 
 @login_required
 def delete_complaint(request, pk):
-    complaint = get_object_or_404(Complaint, pk=pk)
+    complaint = get_object_or_404(Complaint.all_objects, pk=pk)
 
     is_owner  = complaint.owner  == request.user
     is_tenant = complaint.tenant == request.user
@@ -220,10 +220,15 @@ def delete_complaint(request, pk):
         return redirect('complaints:owner_complaints' if is_owner else 'complaints:my_complaints')
 
     if request.method == 'POST':
-        complaint.soft_delete()
+        if is_owner:
+            complaint.soft_delete_by_owner()
+        else:
+            complaint.soft_delete_by_tenant()
         messages.success(request, 'Complaint removed from your list.')
         if is_owner:
             return redirect('complaints:owner_complaints')
         return redirect('complaints:my_complaints')
 
-    return render(request, 'base_delete_confirm.html', {'object': complaint, 'type': 'Complaint'})
+    return render(request, 'base_delete_confirm.html', {
+        'object': complaint, 'type': 'Complaint'
+    })

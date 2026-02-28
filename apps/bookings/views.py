@@ -93,7 +93,7 @@ def my_bookings(request):
     if not request.user.is_tenant():
         return redirect('dashboard:owner')
 
-    bookings = Booking.objects.filter(tenant=request.user).select_related(
+    bookings = Booking.tenant_objects.filter(tenant=request.user).select_related(
         'property', 'room', 'room__property'
     ).order_by('-created_at')
 
@@ -127,9 +127,9 @@ def owner_bookings(request):
     if not request.user.is_owner():
         return redirect('dashboard:tenant')
 
-    bookings = Booking.objects.filter(
+    bookings = Booking.owner_objects.filter(
         property__owner=request.user
-    ).select_related('tenant', 'property', 'room', 'room__property') | Booking.objects.filter(
+    ).select_related('tenant', 'property', 'room', 'room__property') | Booking.owner_objects.filter(
         room__property__owner=request.user
     ).select_related('tenant', 'property', 'room', 'room__property')
 
@@ -259,7 +259,7 @@ def owner_cancel_booking(request, pk):
 
 @login_required
 def delete_booking(request, pk):
-    booking = get_object_or_404(Booking, pk=pk)
+    booking = get_object_or_404(Booking.all_objects, pk=pk)
 
     is_owner  = booking.get_owner() == request.user
     is_tenant = booking.tenant == request.user
@@ -267,17 +267,21 @@ def delete_booking(request, pk):
     if not (is_owner or is_tenant):
         return HttpResponseForbidden('Access denied.')
 
-    # Only allow delete for inactive statuses
     allowed = ['cancelled', 'rejected']
     if booking.status not in allowed:
         messages.error(request, f'Cannot delete a booking with status: {booking.get_status_display()}')
         return redirect('bookings:my_bookings')
 
     if request.method == 'POST':
-        booking.soft_delete()
+        if is_owner:
+            booking.soft_delete_by_owner()
+        else:
+            booking.soft_delete_by_tenant()
         messages.success(request, 'Booking removed from your list.')
         if is_owner:
             return redirect('bookings:owner_bookings')
         return redirect('bookings:my_bookings')
 
-    return render(request, 'bookings/delete_confirm.html', {'object': booking, 'type': 'Booking'})
+    return render(request, 'base_delete_confirm.html', {
+        'object': booking, 'type': 'Booking'
+    })
