@@ -7,81 +7,389 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Rent Management System{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base_nav.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
 
-    <nav class="navbar">
-        <div class="nav-brand">
-            <a href="/">🏠 RentMS</a>
+    <!-- ===================== PUBLIC NAVBAR ===================== -->
+    <nav class="pub-navbar">
+
+        <!-- Brand -->
+        <div class="pub-nav-brand">
+            <a href="{% url 'core:home' %}" class="pub-brand-link">
+                <div class="pub-logo-icon">RM</div>
+                <span class="pub-logo-text">RentMS</span>
+            </a>
         </div>
-        <div class="nav-links">
+
+        <!-- Center Links -->
+        <div class="pub-nav-center">
+            <a href="{% url 'core:home' %}" class="pub-nav-link">Home</a>
+            <a href="{% url 'search:results' %}" class="pub-nav-link">Search</a>
             {% if user.is_authenticated %}
-            <span class="nav-user">Hello, {{ user.first_name|default:user.username }}</span>
-            {% if user.role == 'admin' or user.is_superuser %}
-            <a href="{% url 'dashboard:admin' %}">Dashboard</a>
-            {% elif user.role == 'owner' %}
-            <a href="{% url 'dashboard:owner' %}">Dashboard</a>
-            {% else %}
-            <a href="{% url 'dashboard:tenant' %}">Dashboard</a>
-            {% endif %}
-            {% if user.is_authenticated and user.role == 'tenant' %}
-            <a href="{% url 'search:results' %}">Search</a>
-            {% endif %}
-            {% if user.is_authenticated and user.role == 'tenant' %}
-            <a href="{% url 'agreements:tenant_agreements' %}">My Agreements</a>
-            {% elif user.is_authenticated and user.role == 'owner' %}
-            <a href="{% url 'agreements:owner_agreements' %}">Agreements</a>
-            {% endif %}
-
-            <a href="{% url 'accounts:profile' %}">Profile</a>
-            <a href="{% url 'accounts:logout' %}">Logout</a>
-            {% else %}
-            <a href="{% url 'accounts:login' %}">Login</a>
-            <a href="{% url 'accounts:register' %}">Register</a>
+                {% if user.role == 'tenant' %}
+                <a href="{% url 'bookmarks:list' %}" class="pub-nav-link">
+                    Favorites
+                    {% if bookmarks_count > 0 %}
+                    <span class="pub-badge">{{ bookmarks_count }}</span>
+                    {% endif %}
+                </a>
+                {% endif %}
+                {% if user.role == 'owner' %}
+                <a href="{% url 'properties:list' %}" class="pub-nav-link">My Properties</a>
+                {% endif %}
             {% endif %}
         </div>
-        {% if user.is_authenticated %}
-        <a href="{% url 'notifications:list' %}" class="notif-bell">
-            🔔
-            {% if unread_notifications_count > 0 %}
-            <span class="notif-badge">{{ unread_notifications_count }}</span>
-            {% endif %}
-        </a>
-        {% if user.is_authenticated %}
-        <a href="{% url 'reviews:my_reviews' %}">My Reviews</a>
-        {% endif %}
-        {% if user.is_authenticated %}
-        <a href="{% url 'core:recycle_bin' %}">🗑 Recycle Bin</a>
-        {% endif %}
-        {% endif %}
 
-        {% if user.is_authenticated %}
-        <a href="{% url 'bookmarks:list' %}">
-            ❤️ Favorites
-            {% if bookmarks_count > 0 %}
-            <span class="notif-badge">{{ bookmarks_count }}</span>
+        <!-- Right Actions -->
+        <div class="pub-nav-right">
+            
+            {% if user.is_authenticated %}
+
+                <!-- Notification Bell -->
+                <a href="{% url 'notifications:list' %}" class="pub-icon-btn" title="Notifications">
+                    <span class="material-symbols-rounded">notifications</span>
+                    {% if unread_notifications_count > 0 %}
+                    <span class="pub-badge pub-badge-red">{{ unread_notifications_count }}</span>
+                    {% endif %}
+                </a>
+
+                <!-- Recycle Bin -->
+                <a href="{% url 'core:recycle_bin' %}" class="pub-icon-btn" title="Recycle Bin">
+                    <span class="material-symbols-rounded">delete</span>
+                </a>
+
+                <!-- Dashboard Button -->
+                {% if user.role == 'admin' or user.is_superuser %}
+                    <a href="{% url 'dashboard:admin' %}" class="pub-dashboard-btn">
+                        <span class="material-symbols-rounded">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                {% elif user.role == 'owner' %}
+                    <a href="{% url 'dashboard:owner' %}" class="pub-dashboard-btn">
+                        <span class="material-symbols-rounded">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'dashboard:tenant' %}" class="pub-dashboard-btn">
+                        <span class="material-symbols-rounded">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                {% endif %}
+
+                <!-- Profile Dropdown -->
+                <div class="pub-profile-wrapper" id="pubProfileWrapper">
+                    <button class="pub-profile-btn" id="pubProfileToggle">
+                        {% if user.photo %}
+                            <img src="{{ user.photo.url }}" alt="Profile" class="pub-avatar" />
+                        {% else %}
+                            <div class="pub-avatar pub-avatar-placeholder">{{ user.username|first|upper }}</div>
+                        {% endif %}
+                        <span class="pub-username">{{ user.get_full_name|default:user.username }}</span>
+                        <span class="material-symbols-rounded pub-profile-arrow">expand_more</span>
+                    </button>
+
+                    <!-- Dropdown Panel -->
+                    <div class="pub-dropdown" id="pubProfileDropdown">
+
+                        <!-- User Info Header -->
+                        <div class="pub-dropdown-header">
+                            {% if user.photo %}
+                                <img src="{{ user.photo.url }}" alt="Profile" class="pub-dropdown-avatar" />
+                            {% else %}
+                                <div class="pub-dropdown-avatar pub-dropdown-avatar-ph">{{ user.username|first|upper }}</div>
+                            {% endif %}
+                            <div class="pub-dropdown-info">
+                                <span class="pub-dropdown-name">{{ user.get_full_name|default:user.username }}</span>
+                                <span class="pub-dropdown-email">{{ user.email }}</span>
+                                {% if user.phone %}
+                                <span class="pub-dropdown-phone">
+                                    <span class="material-symbols-rounded">phone</span>
+                                    {{ user.phone }}
+                                </span>
+                                {% endif %}
+                                <span class="pub-role-badge pub-role-{{ user.role }}">
+                                    {% if user.role == 'owner' %}🏠 Owner
+                                    {% elif user.role == 'tenant' %}🔑 Tenant
+                                    {% else %}⚙️ Admin{% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="pub-dropdown-divider"></div>
+
+                        <!-- Main Menu -->
+                        <ul class="pub-dropdown-menu">
+                            <li>
+                                <a href="{% url 'accounts:profile' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">person</span>
+                                    My Profile
+                                </a>
+                            </li>
+                            <li>
+                                {% if user.role == 'admin' or user.is_superuser %}
+                                    <a href="{% url 'dashboard:admin' %}" class="pub-dropdown-link">
+                                {% elif user.role == 'owner' %}
+                                    <a href="{% url 'dashboard:owner' %}" class="pub-dropdown-link">
+                                {% else %}
+                                    <a href="{% url 'dashboard:tenant' %}" class="pub-dropdown-link">
+                                {% endif %}
+                                        <span class="material-symbols-rounded">dashboard</span>
+                                        Dashboard
+                                    </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'notifications:list' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">notifications</span>
+                                    Notifications
+                                    {% if unread_notifications_count > 0 %}
+                                    <span class="pub-badge pub-badge-red pub-badge-inline">{{ unread_notifications_count }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            {% if user.role == 'tenant' %}
+                            <li>
+                                <a href="{% url 'bookmarks:list' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">favorite</span>
+                                    Favorites
+                                    {% if bookmarks_count > 0 %}
+                                    <span class="pub-badge pub-badge-inline">{{ bookmarks_count }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'bookings:my_bookings' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">calendar_today</span>
+                                    My Bookings
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'agreements:tenant_agreements' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">description</span>
+                                    My Agreements
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'payments:tenant_payments' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">payments</span>
+                                    My Payments
+                                </a>
+                            </li>
+                            {% elif user.role == 'owner' %}
+                            <li>
+                                <a href="{% url 'properties:list' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">home_work</span>
+                                    My Properties
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'bookings:owner_bookings' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">calendar_today</span>
+                                    Bookings
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'agreements:owner_agreements' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">description</span>
+                                    Agreements
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'payments:owner_payments' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">payments</span>
+                                    Payments
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <a href="{% url 'reviews:my_reviews' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">star</span>
+                                    My Reviews
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'complaints:my_complaints' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">report_problem</span>
+                                    Complaints
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'core:recycle_bin' %}" class="pub-dropdown-link">
+                                    <span class="material-symbols-rounded">delete</span>
+                                    Recycle Bin
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="pub-dropdown-divider"></div>
+
+                        <ul class="pub-dropdown-menu">
+                            <li>
+                                <a href="{% url 'accounts:logout' %}" class="pub-dropdown-link pub-logout-link">
+                                    <span class="material-symbols-rounded">logout</span>
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+
+            {% else %}
+                <!-- Guest -->
+                <a href="{% url 'accounts:login' %}" class="pub-login-btn">Login</a>
+                <a href="{% url 'accounts:register' %}" class="pub-register-btn">Register</a>
             {% endif %}
-        </a>
-        {% endif %}
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button class="pub-hamburger" id="pubHamburger" aria-label="Menu">
+            <span class="material-symbols-rounded">menu</span>
+        </button>
+
     </nav>
 
+    <!-- ===================== MOBILE MENU ===================== -->
+    <div class="pub-mobile-menu" id="pubMobileMenu">
+        <a href="{% url 'core:home' %}" class="pub-mobile-link">
+            <span class="material-symbols-rounded">home</span> Home
+        </a>
+        <a href="{% url 'search:results' %}" class="pub-mobile-link">
+            <span class="material-symbols-rounded">search</span> Search
+        </a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'notifications:list' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">notifications</span>
+                Notifications
+                {% if unread_notifications_count > 0 %}
+                <span class="pub-badge pub-badge-red">{{ unread_notifications_count }}</span>
+                {% endif %}
+            </a>
+            <a href="{% url 'accounts:profile' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">person</span> Profile
+            </a>
+            {% if user.role == 'tenant' %}
+            <a href="{% url 'bookmarks:list' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">favorite</span> Favorites
+            </a>
+            <a href="{% url 'bookings:my_bookings' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">calendar_today</span> My Bookings
+            </a>
+            <a href="{% url 'agreements:tenant_agreements' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">description</span> My Agreements
+            </a>
+            {% elif user.role == 'owner' %}
+            <a href="{% url 'properties:list' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">home_work</span> My Properties
+            </a>
+            <a href="{% url 'bookings:owner_bookings' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">calendar_today</span> Bookings
+            </a>
+            <a href="{% url 'agreements:owner_agreements' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">description</span> Agreements
+            </a>
+            {% endif %}
+            <a href="{% url 'core:recycle_bin' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">delete</span> Recycle Bin
+            </a>
+            {% if user.role == 'admin' or user.is_superuser %}
+                <a href="{% url 'dashboard:admin' %}" class="pub-mobile-dashboard">
+                    <span class="material-symbols-rounded">dashboard</span> Dashboard
+                </a>
+            {% elif user.role == 'owner' %}
+                <a href="{% url 'dashboard:owner' %}" class="pub-mobile-dashboard">
+                    <span class="material-symbols-rounded">dashboard</span> Dashboard
+                </a>
+            {% else %}
+                <a href="{% url 'dashboard:tenant' %}" class="pub-mobile-dashboard">
+                    <span class="material-symbols-rounded">dashboard</span> Dashboard
+                </a>
+            {% endif %}
+            <a href="{% url 'accounts:logout' %}" class="pub-mobile-link pub-mobile-logout">
+                <span class="material-symbols-rounded">logout</span> Logout
+            </a>
+        {% else %}
+            <a href="{% url 'accounts:login' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">login</span> Login
+            </a>
+            <a href="{% url 'accounts:register' %}" class="pub-mobile-link">
+                <span class="material-symbols-rounded">person_add</span> Register
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- ===================== DJANGO MESSAGES ===================== -->
     {% if messages %}
-    <div class="messages">
+    <div class="pub-messages">
         {% for message in messages %}
-        <div class="message message-{{ message.tags }}">{{ message }}</div>
+        <div class="pub-msg pub-msg-{{ message.tags }}">
+            <span>{{ message }}</span>
+            <button onclick="this.parentElement.remove()" class="pub-msg-close">✕</button>
+        </div>
         {% endfor %}
     </div>
     {% endif %}
 
-    <main class="container">
+    <!-- ===================== PAGE CONTENT ===================== -->
+    <main>
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 Rent Management System. All rights reserved.</p>
-    </footer>
+    <!-- ===================== JS ===================== -->
+    <script>
+    // ── Profile Dropdown ──
+    (function() {
+        const toggle   = document.getElementById('pubProfileToggle');
+        const wrapper  = document.getElementById('pubProfileWrapper');
+        const dropdown = document.getElementById('pubProfileDropdown');
+        if (!toggle || !wrapper || !dropdown) return;
+
+        toggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isOpen = wrapper.classList.contains('pub-open');
+            if (!isOpen) {
+                const rect = toggle.getBoundingClientRect();
+                dropdown.style.top   = (rect.bottom + 8) + 'px';
+                dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+            }
+            wrapper.classList.toggle('pub-open');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!wrapper.contains(e.target)) {
+                wrapper.classList.remove('pub-open');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') wrapper.classList.remove('pub-open');
+        });
+    })();
+
+    // ── Mobile Hamburger ──
+    (function() {
+        const btn  = document.getElementById('pubHamburger');
+        const menu = document.getElementById('pubMobileMenu');
+        if (!btn || !menu) return;
+
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menu.classList.toggle('pub-open');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.remove('pub-open');
+            }
+        });
+    })();
+    </script>
+
+    {% block extra_js %}{% endblock %}
 
 </body>
-
 </html>

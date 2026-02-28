@@ -1,0 +1,570 @@
+/* =====================================================
+   base_nav.css
+   Public navbar styles — all prefixed with "pub-"
+   Zero conflicts with dashboard_base.css
+   ===================================================== */
+
+/* ── Navbar Container ── */
+.pub-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 66px;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    gap: 16px;
+}
+
+/* ── Brand ── */
+.pub-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.pub-logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.pub-logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+    white-space: nowrap;
+}
+
+/* ── Center Nav Links ── */
+.pub-nav-center {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+}
+
+.pub-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+    position: relative;
+}
+
+.pub-nav-link:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+
+/* ── Right Section ── */
+.pub-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* ── Icon Button (Bell, Trash) ── */
+.pub-icon-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
+.pub-icon-btn:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.pub-icon-btn .material-symbols-rounded {
+    font-size: 22px;
+}
+
+/* ── Badge ── */
+.pub-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #6366f1;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 10px;
+    line-height: 1;
+}
+
+.pub-badge-red {
+    background: #ef4444;
+}
+
+/* Badge on icon button — absolute position */
+.pub-icon-btn .pub-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+
+/* Badge inline (inside text links) */
+.pub-badge-inline {
+    position: static;
+    margin-left: 6px;
+}
+
+/* ── Dashboard Button ── */
+.pub-dashboard-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #6366f1;
+    color: #fff;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.pub-dashboard-btn:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+}
+
+.pub-dashboard-btn .material-symbols-rounded {
+    font-size: 18px;
+}
+
+/* ── Guest Buttons ── */
+.pub-login-btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #d1d5db;
+    transition: all 0.2s;
+}
+
+.pub-login-btn:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.pub-register-btn {
+    padding: 7px 18px;
+    background: #6366f1;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.pub-register-btn:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+}
+
+/* ── Profile Button ── */
+.pub-profile-wrapper {
+    position: relative;
+}
+
+.pub-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px 5px 5px;
+    background: none;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.pub-profile-btn:hover {
+    background: #f3f4f6;
+}
+
+.pub-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+.pub-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    user-select: none;
+}
+
+.pub-username {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    white-space: nowrap;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pub-profile-arrow {
+    font-size: 18px;
+    color: #6b7280;
+    transition: transform 0.3s;
+}
+
+.pub-profile-wrapper.pub-open .pub-profile-arrow {
+    transform: rotate(180deg);
+}
+
+/* ── Profile Dropdown Panel ── */
+.pub-dropdown {
+    position: fixed;
+    width: 270px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.13);
+    border: 1px solid #e5e7eb;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.97);
+    transform-origin: top right;
+    transition: all 0.2s ease;
+    z-index: 600;
+    overflow: hidden;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.pub-profile-wrapper.pub-open .pub-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* Scrollbar styling */
+.pub-dropdown::-webkit-scrollbar { width: 4px; }
+.pub-dropdown::-webkit-scrollbar-track { background: transparent; }
+.pub-dropdown::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+
+/* ── Dropdown Header ── */
+.pub-dropdown-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+}
+
+.pub-dropdown-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+.pub-dropdown-avatar-ph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+    user-select: none;
+}
+
+.pub-dropdown-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.pub-dropdown-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pub-dropdown-email {
+    font-size: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pub-dropdown-phone {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.pub-dropdown-phone .material-symbols-rounded {
+    font-size: 13px;
+    color: #6366f1;
+}
+
+/* ── Role Badge ── */
+.pub-role-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 3px;
+}
+
+.pub-role-owner  { background: #dbeafe; color: #1e40af; }
+.pub-role-tenant { background: #d5f5e3; color: #1e8449; }
+.pub-role-admin  { background: #fde8d8; color: #c0392b; }
+
+/* ── Dropdown Divider ── */
+.pub-dropdown-divider {
+    height: 1px;
+    background: #f3f4f6;
+}
+
+/* ── Dropdown Menu ── */
+.pub-dropdown-menu {
+    list-style: none;
+    padding: 4px 0;
+    margin: 0;
+}
+
+.pub-dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    font-size: 13.5px;
+    color: #374151;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.pub-dropdown-link:hover {
+    background: #f5f6ff;
+    color: #6366f1;
+}
+
+.pub-dropdown-link .material-symbols-rounded {
+    font-size: 18px;
+    color: #9ca3af;
+    flex-shrink: 0;
+    transition: color 0.15s;
+}
+
+.pub-dropdown-link:hover .material-symbols-rounded {
+    color: #6366f1;
+}
+
+/* ── Logout Link ── */
+.pub-logout-link { color: #ef4444; }
+.pub-logout-link:hover { background: #fff5f5; color: #ef4444; }
+.pub-logout-link .material-symbols-rounded { color: #ef4444; }
+.pub-logout-link:hover .material-symbols-rounded { color: #ef4444; }
+
+/* ── Hamburger (Mobile) ── */
+.pub-hamburger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #374151;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.pub-hamburger:hover { background: #f3f4f6; }
+
+/* ── Mobile Menu ── */
+.pub-mobile-menu {
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    position: fixed;
+    top: 66px;
+    left: 12px;
+    right: 12px;
+    z-index: 499;
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+    transform: translateY(-8px) scale(0.98);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.2s ease, opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.pub-mobile-menu.pub-open {
+    display: flex;
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+.pub-mobile-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #374151;
+    text-decoration: none;
+    border-bottom: 1px solid #f3f4f6;
+    font-weight: 500;
+    transition: background 0.15s;
+}
+
+.pub-mobile-link:hover { background: #f9fafb; }
+
+.pub-mobile-link .material-symbols-rounded {
+    font-size: 18px;
+    color: #9ca3af;
+}
+
+.pub-mobile-dashboard {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6366f1;
+    text-decoration: none;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s;
+}
+
+.pub-mobile-dashboard:hover { background: #f5f6ff; }
+
+.pub-mobile-dashboard .material-symbols-rounded {
+    font-size: 18px;
+}
+
+.pub-mobile-logout { color: #ef4444; }
+.pub-mobile-logout .material-symbols-rounded { color: #ef4444; }
+
+/* ── Django Messages ── */
+.pub-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 24px;
+}
+
+.pub-msg {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.pub-msg-success { background: #d5f5e3; color: #1e8449; border-left: 4px solid #2ecc71; }
+.pub-msg-error   { background: #fde8d8; color: #c0392b; border-left: 4px solid #e74c3c; }
+.pub-msg-warning { background: #fff3cd; color: #856404; border-left: 4px solid #f39c12; }
+.pub-msg-info    { background: #dbeafe; color: #1e40af; border-left: 4px solid #3498db; }
+
+.pub-msg-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: inherit;
+    opacity: 0.6;
+    padding: 0 4px;
+    flex-shrink: 0;
+}
+
+.pub-msg-close:hover { opacity: 1; }
+
+/* ===================== RESPONSIVE ===================== */
+
+@media (max-width: 1024px) {
+    .pub-nav-center { gap: 2px; }
+    .pub-nav-link   { padding: 7px 10px; font-size: 13px; }
+    .pub-username   { max-width: 80px; }
+}
+
+@media (max-width: 768px) {
+    .pub-navbar     { padding: 0 16px; }
+    .pub-nav-center { display: none; }
+    .pub-dashboard-btn { display: none; }
+    .pub-username   { display: none; }
+    .pub-profile-arrow { display: none; }
+    .pub-login-btn  { display: none; }
+    .pub-register-btn { display: none; }
+    .pub-hamburger  { display: flex; }
+    .pub-messages   { padding: 10px 16px; }
+}
+
+@media (max-width: 480px) {
+    .pub-logo-text { display: none; }
+    .pub-navbar    { padding: 0 12px; height: 58px; }
+    .pub-mobile-menu { top: 58px; } /* ← match smaller navbar height */
+}

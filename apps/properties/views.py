@@ -11,7 +11,12 @@ def property_list(request):
     if not request.user.is_owner():
         return redirect('dashboard:tenant')
     properties = Property.objects.filter(owner=request.user)
-    return render(request, 'properties/property_list.html', {'properties': properties})
+
+    rent_type = request.GET.get('rent_type')
+    if rent_type in ['whole', 'rooms']:
+        properties = properties.filter(rent_type=rent_type)
+
+    return render(request, 'properties/property_list.html', {'properties': properties, 'rent_type':  rent_type,})
 
 
 @login_required

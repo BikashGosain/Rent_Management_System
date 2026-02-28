@@ -1,243 +1,435 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>{% block title %}RentMS Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_base.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  </head>
-  <body>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
 
-    <!-- ===================== SIDEBAR ===================== -->
-    <aside class="sidebar">
-      <header class="sidebar-header">
-        <a href="#" class="header-logo">
-          <div class="logo-placeholder">CN</div>
+<!-- ===================== SIDEBAR ===================== -->
+<aside class="sidebar">
+    <header class="sidebar-header">
+        <a href="{% url 'core:home' %}" class="header-logo">
+            <div class="logo-placeholder">RM</div>
         </a>
         <button class="sidebar-toggler">
-          <span class="material-symbols-rounded">chevron_left</span>
+            <span class="material-symbols-rounded">chevron_left</span>
         </button>
-      </header>
+    </header>
 
-      <nav class="sidebar-nav">
+    <nav class="sidebar-nav">
         <ul class="nav-list primary-nav">
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">dashboard</span>
-              <span class="nav-label">Dashboard</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link dropdown-title">Dashboard</a></li>
-            </ul>
-          </li>
+            <!-- ── Dashboard ── -->
+            <li class="nav-item">
+                <a href="{% if user.is_owner %}{% url 'dashboard:owner' %}{% elif user.is_tenant %}{% url 'dashboard:tenant' %}{% else %}{% url 'dashboard:admin' %}{% endif %}" class="nav-link">
+                    <span class="material-symbols-rounded">dashboard</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Dashboard</a></li>
+                </ul>
+            </li>
 
-          <li class="nav-item dropdown-container">
-            <a href="#" class="nav-link dropdown-toggle">
-              <span class="material-symbols-rounded">calendar_today</span>
-              <span class="nav-label">Services</span>
-              <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link dropdown-title">Services</a></li>
-              <li class="nav-item"><a href="#" class="nav-link dropdown-link">IT Consulting</a></li>
-              <li class="nav-item"><a href="#" class="nav-link dropdown-link">Cloud Solutions</a></li>
-              <li class="nav-item"><a href="#" class="nav-link dropdown-link">Mobile Apps</a></li>
-            </ul>
-          </li>
+            {% if user.is_owner %}
+            <!-- ══ OWNER NAV ══ -->
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">notifications</span>
-              <span class="nav-label">Notifications</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link dropdown-title">Notifications</a></li>
-            </ul>
-          </li>
+            <!-- Properties -->
+            <li class="nav-item dropdown-container">
+                <a href="#" class="nav-link dropdown-toggle">
+                    <span class="material-symbols-rounded">home_work</span>
+                    <span class="nav-label">Properties</span>
+                    <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Properties</a></li>
+                    <li class="nav-item"><a href="{% url 'properties:list' %}" class="nav-link dropdown-link">All Properties</a></li>
+                    <li class="nav-item"><a href="{% url 'properties:add' %}" class="nav-link dropdown-link">Add Property</a></li>
+                    <li class="nav-item"><a href="{% url 'properties:list' %}?rent_type=whole" class="nav-link dropdown-link">Whole
+                            Properties</a></li>
+                    <li class="nav-item"><a href="{% url 'properties:list' %}?rent_type=rooms" class="nav-link dropdown-link">Individual
+                            Rooms</a></li>
+                </ul>
+            </li>
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">local_library</span>
-              <span class="nav-label">Resources</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link dropdown-title">Resources</a></li>
-            </ul>
-          </li>
+            <!-- Bookings -->
+            <li class="nav-item dropdown-container">
+                <a href="#" class="nav-link dropdown-toggle">
+                    <span class="material-symbols-rounded">calendar_today</span>
+                    <span class="nav-label">Bookings</span>
+                    <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Bookings</a></li>
+                    <li class="nav-item"><a href="{% url 'bookings:owner_bookings' %}" class="nav-link dropdown-link">All Bookings</a></li>
+                </ul>
+            </li>
 
-          <li class="nav-item dropdown-container">
-            <a href="#" class="nav-link dropdown-toggle">
-              <span class="material-symbols-rounded">star</span>
-              <span class="nav-label">Bookmarks</span>
-              <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link dropdown-title">Bookmarks</a></li>
-              <li class="nav-item"><a href="#" class="nav-link dropdown-link">Saved Tutorials</a></li>
-              <li class="nav-item"><a href="#" class="nav-link dropdown-link">Favorite Blogs</a></li>
-              <li class="nav-item"><a href="#" class="nav-link dropdown-link">Resource Guides</a></li>
-            </ul>
-          </li>
+            <!-- Agreements -->
+            <li class="nav-item dropdown-container">
+                <a href="#" class="nav-link dropdown-toggle">
+                    <span class="material-symbols-rounded">description</span>
+                    <span class="nav-label">Agreements</span>
+                    <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Agreements</a></li>
+                    <li class="nav-item"><a href="{% url 'agreements:owner_agreements' %}" class="nav-link dropdown-link">All Agreements</a></li>
+                </ul>
+            </li>
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">extension</span>
-              <span class="nav-label">Extensions</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link dropdown-title">Extensions</a></li>
-            </ul>
-          </li>
+            <!-- Payments -->
+            <li class="nav-item dropdown-container">
+                <a href="#" class="nav-link dropdown-toggle">
+                    <span class="material-symbols-rounded">payments</span>
+                    <span class="nav-label">Payments</span>
+                    <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Payments</a></li>
+                    <li class="nav-item"><a href="{% url 'payments:owner_payments' %}" class="nav-link dropdown-link">All Payments</a></li>
+                </ul>
+            </li>
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">settings</span>
-              <span class="nav-label">Settings</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link dropdown-title">Settings</a></li>
-            </ul>
-          </li>
+            <!-- Complaints -->
+            <li class="nav-item dropdown-container">
+                <a href="#" class="nav-link dropdown-toggle">
+                    <span class="material-symbols-rounded">report_problem</span>
+                    <span class="nav-label">Complaints</span>
+                    <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Complaints</a></li>
+                    <li class="nav-item"><a href="{% url 'complaints:owner_complaints' %}" class="nav-link dropdown-link">All Complaints</a></li>
+                </ul>
+            </li>
+
+            <!-- Reviews -->
+            <li class="nav-item dropdown-container">
+                <a href="#" class="nav-link dropdown-toggle">
+                    <span class="material-symbols-rounded">star</span>
+                    <span class="nav-label">Reviews</span>
+                    <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Reviews</a></li>
+                    <li class="nav-item"><a href="{% url 'reviews:my_reviews' %}" class="nav-link dropdown-link">My Reviews</a></li>
+                    <li class="nav-item"><a href="{% url 'reviews:received' %}" class="nav-link dropdown-link">Reviews Received</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="{% url 'bookmarks:list' %}" class="nav-link">
+                <span class="material-symbols-rounded">favorite</span>
+                <span class="nav-label">Favorites</span>
+                {% if bookmarks_count > 0 %}
+                <span class="notif-badge">({{ bookmarks_count }})</span>
+                {% endif %}
+              </a>
+             </li>
+
+            {% elif user.is_tenant %}
+            <!-- ══ TENANT NAV ══ -->
+
+            <!-- Search -->
+            <li class="nav-item">
+                <a href="{% url 'search:results' %}" class="nav-link">
+                    <span class="material-symbols-rounded">search</span>
+                    <span class="nav-label">Search Properties</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Search Properties</a></li>
+                </ul>
+            </li>
+
+            <!-- Bookings -->
+            <li class="nav-item">
+                <a href="{% url 'bookings:my_bookings' %}" class="nav-link">
+                    <span class="material-symbols-rounded">calendar_today</span>
+                    <span class="nav-label">My Bookings</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">My Bookings</a></li>
+                </ul>
+            </li>
+
+            <!-- Agreements -->
+            <li class="nav-item">
+                <a href="{% url 'agreements:tenant_agreements' %}" class="nav-link">
+                    <span class="material-symbols-rounded">description</span>
+                    <span class="nav-label">My Agreements</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">My Agreements</a></li>
+                </ul>
+            </li>
+
+            <!-- Payments -->
+            <li class="nav-item">
+                <a href="{% url 'payments:tenant_payments' %}" class="nav-link">
+                    <span class="material-symbols-rounded">payments</span>
+                    <span class="nav-label">My Payments</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">My Payments</a></li>
+                </ul>
+            </li>
+
+            <!-- Complaints -->
+            <li class="nav-item">
+                <a href="{% url 'complaints:my_complaints' %}" class="nav-link">
+                    <span class="material-symbols-rounded">report_problem</span>
+                    <span class="nav-label">My Complaints</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">My Complaints</a></li>
+                </ul>
+            </li>
+
+            <!-- Favorites -->
+            <li class="nav-item">
+                <a href="{% url 'bookmarks:list' %}" class="nav-link">
+                    <span class="material-symbols-rounded">favorite</span>
+                    <span class="nav-label">
+                        Favorites
+                        {% if bookmarks_count > 0 %}
+                        <span class="sidebar-badge">{{ bookmarks_count }}</span>
+                        {% endif %}
+                    </span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Favorites</a></li>
+                </ul>
+            </li>
+
+            <!-- Reviews -->
+            <li class="nav-item dropdown-container">
+                <a href="#" class="nav-link dropdown-toggle">
+                    <span class="material-symbols-rounded">star</span>
+                    <span class="nav-label">Reviews</span>
+                    <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Reviews</a></li>
+                    <li class="nav-item"><a href="{% url 'reviews:my_reviews' %}" class="nav-link dropdown-link">My Reviews</a></li>
+                    <li class="nav-item"><a href="{% url 'reviews:received' %}" class="nav-link dropdown-link">Reviews Received</a></li>
+                </ul>
+            </li>
+
+            {% else %}
+            <!-- ══ ADMIN NAV ══ -->
+            <li class="nav-item">
+                <a href="/admin/" class="nav-link">
+                    <span class="material-symbols-rounded">admin_panel_settings</span>
+                    <span class="nav-label">Admin Panel</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Admin Panel</a></li>
+                </ul>
+            </li>
+            {% endif %}
+
+            <!-- ── Shared for ALL roles ── -->
+            <!-- Notifications -->
+            <li class="nav-item">
+                <a href="{% url 'notifications:list' %}" class="nav-link">
+                    <span class="material-symbols-rounded">notifications</span>
+                    <span class="nav-label">
+                        Notifications
+                        {% if unread_notifications_count > 0 %}
+                        <span class="sidebar-badge">({{ unread_notifications_count }})</span>
+                        {% endif %}
+                    </span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Notifications</a></li>
+                </ul>
+            </li>
+
+            <!-- Recycle Bin -->
+            <li class="nav-item">
+                <a href="{% url 'core:recycle_bin' %}" class="nav-link">
+                    <span class="material-symbols-rounded">delete</span>
+                    <span class="nav-label">Recycle Bin</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Recycle Bin</a></li>
+                </ul>
+            </li>
 
         </ul>
 
+        <!-- ── Secondary Nav (bottom) ── -->
         <ul class="nav-list secondary-nav">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">help</span>
-              <span class="nav-label">Support</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link dropdown-title">Support</a></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <span class="material-symbols-rounded">logout</span>
-              <span class="nav-label">Sign Out</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a class="nav-link dropdown-title">Sign Out</a></li>
-            </ul>
-          </li>
+            <li class="nav-item">
+                <a href="{% url 'core:home' %}" class="nav-link">
+                    <span class="material-symbols-rounded">home</span>
+                    <span class="nav-label">Home</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Home</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'accounts:logout' %}" class="nav-link logout-nav-link">
+                    <span class="material-symbols-rounded">logout</span>
+                    <span class="nav-label">Sign Out</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link dropdown-title">Sign Out</a></li>
+                </ul>
+            </li>
         </ul>
 
-      </nav>
-    </aside>
+    </nav>
+</aside>
 
-    <!-- ===================== MAIN CONTENT ===================== -->
-    <main class="main-content">
+<!-- ===================== MAIN CONTENT ===================== -->
+<main class="main-content">
 
-      <!-- Top Header / Navbar -->
-      <header class="main-header">
+    <!-- Top Header -->
+    <header class="main-header">
         <div class="header-content">
-
-          <!-- Left: Page Title only -->
-          <div class="header-left">
-            <h1 class="page-title">Dashboard</h1>
-          </div>
-
-          <!-- Right: Search + Notifications + Profile -->
-          <div class="header-right">
-            <div class="search-box">
-              <span class="material-symbols-rounded">search</span>
-              <input type="text" placeholder="Search..." />
+            <div class="header-left">
+                <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
             </div>
-            <div class="header-actions">
+            <div class="header-right">
 
-              <button class="notification-btn">
-                <span class="material-symbols-rounded">notifications</span>
-                <span class="notification-badge">3</span>
-              </button>
-
-              <!-- Profile Dropdown -->
-              <div class="user-profile-wrapper" id="profileWrapper">
-                <button class="user-profile-btn" id="profileToggle">
-                  {% if user.photo %}
-                    <img src="{{ user.photo.url }}" alt="Profile Photo" class="user-avatar" />
-                  {% else %}
-                    <div class="user-avatar user-avatar-placeholder">{{ user.username|first|upper }}</div>
-                  {% endif %}
-                  <span class="user-name-header">{{ user.username }}</span>
-                  <span class="material-symbols-rounded profile-arrow">expand_more</span>
-                </button>
-
-                <div class="profile-dropdown" id="profileDropdown">
-                  <div class="profile-dropdown-header">
-                    {% if user.photo %}
-                      <img src="{{ user.photo.url }}" alt="Profile Photo" class="profile-dropdown-avatar" />
-                    {% else %}
-                      <div class="profile-dropdown-avatar profile-dropdown-avatar-placeholder">{{ user.username|first|upper }}</div>
-                    {% endif %}
-                    <div class="profile-dropdown-info">
-                      <span class="profile-dropdown-name">{{ user.get_full_name|default:user.username }}</span>
-                      <span class="profile-dropdown-email">{{ user.email }}</span>
-                      {% if user.phone %}
-                      <span class="profile-dropdown-phone">
-                        <span class="material-symbols-rounded">phone</span>
-                        {{ user.phone }}
-                      </span>
-                      {% endif %}
-                    </div>
-                  </div>
-                  <div class="profile-dropdown-divider"></div>
-                  <ul class="profile-dropdown-menu">
-                    <li><a href="#" class="profile-dropdown-link"><span class="material-symbols-rounded">person</span>Profile</a></li>
-                    <li><a href="#" class="profile-dropdown-link"><span class="material-symbols-rounded">home</span>Home</a></li>
-                    <li><a href="#" class="profile-dropdown-link"><span class="material-symbols-rounded">notifications</span>Notifications</a></li>
-                  </ul>
-                  <div class="profile-dropdown-divider"></div>
-                  <ul class="profile-dropdown-menu">
-                    <li><a href="#" class="profile-dropdown-link logout-link"><span class="material-symbols-rounded">logout</span>Logout</a></li>
-                  </ul>
+                <!-- Search -->
+                <div class="search-box">
+                    <span class="material-symbols-rounded">search</span>
+                    <form method="get" action="{% url 'search:results' %}">
+                        <input type="text" name="q" placeholder="Search properties..." />
+                    </form>
                 </div>
-              </div>
 
+                <div class="header-actions">
+
+                    <!-- Notifications bell -->
+                    <a href="{% url 'notifications:list' %}" class="notification-btn">
+                        <span class="material-symbols-rounded">notifications</span>
+                        {% if unread_notifications_count > 0 %}
+                        <span class="notification-badge">{{ unread_notifications_count }}</span>
+                        {% endif %}
+                    </a>
+
+                    <!-- Profile Dropdown -->
+                    <div class="user-profile-wrapper" id="profileWrapper">
+                        <button class="user-profile-btn" id="profileToggle">
+                            {% if user.photo %}
+                                <img src="{{ user.photo.url }}" alt="Profile" class="user-avatar" />
+                            {% else %}
+                                <div class="user-avatar user-avatar-placeholder">{{ user.username|first|upper }}</div>
+                            {% endif %}
+                            <span class="user-name-header">{{ user.get_full_name|default:user.username }}</span>
+                            <span class="material-symbols-rounded profile-arrow">expand_more</span>
+                        </button>
+
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <div class="profile-dropdown-header">
+                                {% if user.photo %}
+                                    <img src="{{ user.photo.url }}" alt="Profile" class="profile-dropdown-avatar" />
+                                {% else %}
+                                    <div class="profile-dropdown-avatar profile-dropdown-avatar-placeholder">{{ user.username|first|upper }}</div>
+                                {% endif %}
+                                <div class="profile-dropdown-info">
+                                    <span class="profile-dropdown-name">{{ user.get_full_name|default:user.username }}</span>
+                                    <span class="profile-dropdown-email">{{ user.email }}</span>
+                                    <span class="profile-dropdown-role role-{{ user.role }}">{{ user.get_role_display }}</span>
+                                    {% if user.phone %}
+                                    <span class="profile-dropdown-phone">
+                                        <span class="material-symbols-rounded">phone</span>
+                                        {{ user.phone }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="profile-dropdown-divider"></div>
+                            <ul class="profile-dropdown-menu">
+                                <li><a href="{% url 'accounts:profile' %}" class="profile-dropdown-link">
+                                    <span class="material-symbols-rounded">person</span>My Profile</a></li>
+                                <li><a href="{% url 'core:home' %}" class="profile-dropdown-link">
+                                    <span class="material-symbols-rounded">home</span>Home Page</a></li>
+                                <li><a href="{% url 'notifications:list' %}" class="profile-dropdown-link">
+                                    <span class="material-symbols-rounded">notifications</span>Notifications
+                                   {% if unread_notifications_count > 0 %}
+                                    <span class="notification-badge" style="position:static; margin-left:auto;">{{ unread_notifications_count }}</span>
+                                    {% endif %}
+                                </a></li>
+                                <li>
+              <a href="{% url 'bookmarks:list' %}" class="profile-dropdown-link">
+                <span class="material-symbols-rounded">favorite</span>
+                Favorites
+                {% if bookmarks_count > 0 %}
+                <span class="notif-badge">({{ bookmarks_count }})</span>
+                {% endif %}
+              </a>
+             </li>
+                                <li><a href="{% url 'core:recycle_bin' %}" class="profile-dropdown-link">
+                                    <span class="material-symbols-rounded">delete</span>Recycle Bin</a></li>
+                            </ul>
+                            <div class="profile-dropdown-divider"></div>
+                            <ul class="profile-dropdown-menu">
+                                <li><a href="{% url 'accounts:logout' %}" class="profile-dropdown-link logout-link">
+                                    <span class="material-symbols-rounded">logout</span>Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-          </div>
         </div>
-      </header>
+    </header>
 
-      <!-- Page Content -->
-      <div class="page-content">
-        <div class="content-wrapper">
-          <div class="welcome-card">
-            <h2>Welcome to Your Dashboard</h2>
-            <p class="page-subtitle">Welcome back! Here's what's happening today.</p>
-            <p>This is your main content area. You can add your application content here.</p>
-          </div>
+    <!-- Django Messages -->
+    {% if messages %}
+    <div class="django-messages">
+        {% for message in messages %}
+        <div class="django-message django-message-{{ message.tags }}">
+            {{ message }}
+            <button onclick="this.parentElement.remove()" class="message-close">✕</button>
         </div>
-      </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-      <!-- Footer -->
-      <footer class="main-footer">
+    <!-- Page Content -->
+    <div class="page-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
         <div class="footer-content">
-          <div class="footer-left">
-            <p>&copy; 2025 CodingNepal. All rights reserved.</p>
-          </div>
-          <div class="footer-center">
-            <nav class="footer-nav">
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of Service</a>
-              <a href="#">Support</a>
-              <a href="#">Documentation</a>
-            </nav>
-          </div>
-          <div class="footer-right">
-            <div class="social-links">
-              <a href="#" class="social-link"><span class="material-symbols-rounded">language</span></a>
-              <a href="#" class="social-link"><span class="material-symbols-rounded">mail</span></a>
-              <a href="#" class="social-link"><span class="material-symbols-rounded">phone</span></a>
+            <div class="footer-left">
+                <p>&copy; 2026 RentMS. All rights reserved.</p>
             </div>
-          </div>
+            <div class="footer-center">
+                <nav class="footer-nav">
+                    <a href="{% url 'core:home' %}">Home</a>
+                    <a href="{% url 'search:results' %}">Search</a>
+                    <a href="{% url 'core:recycle_bin' %}">Recycle Bin</a>
+                </nav>
+            </div>
+            <div class="footer-right">
+                <div class="social-links">
+                    <a href="#" class="social-link"><span class="material-symbols-rounded">language</span></a>
+                    <a href="#" class="social-link"><span class="material-symbols-rounded">mail</span></a>
+                    <a href="#" class="social-link"><span class="material-symbols-rounded">phone</span></a>
+                </div>
+            </div>
         </div>
-      </footer>
+    </footer>
 
-    </main>
+</main>
 
-    <script src="script.js"></script>
-  </body>
+<script src="{% static 'js/dashboard_base.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
 </html>

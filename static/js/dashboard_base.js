@@ -102,3 +102,20 @@ if (profileToggle && profileWrapper) {
     }
   });
 }
+
+// ── Highlight active nav link ──
+const currentPath = window.location.pathname;
+document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
+    if (link.href && link.getAttribute('href') !== '#') {
+        const linkPath = new URL(link.href).pathname;
+        if (currentPath.startsWith(linkPath) && linkPath !== '/') {
+            link.classList.add('active');
+            // Open parent dropdown if child is active
+            const parentDropdown = link.closest('.dropdown-container');
+            if (parentDropdown) {
+                const menu = parentDropdown.querySelector('.dropdown-menu');
+                toggleDropdown(parentDropdown, menu, true);
+            }
+        }
+    }
+});

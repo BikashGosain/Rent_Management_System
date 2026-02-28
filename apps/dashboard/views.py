@@ -3,7 +3,15 @@ from django.contrib.auth.decorators import login_required
 from functools import wraps
 from django.db.models import Sum, Count, Avg
 
-
+@login_required
+def dashboard_redirect(request):
+    if request.user.is_owner():
+        return redirect('dashboard:owner')
+    elif request.user.is_tenant():
+        return redirect('dashboard:tenant')
+    else:
+        return redirect('dashboard:admin')
+    
 def admin_required(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):

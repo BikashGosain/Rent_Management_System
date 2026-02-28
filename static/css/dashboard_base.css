@@ -676,3 +676,69 @@ body {
   .profile-dropdown { width: 220px; }
   .footer-nav a { font-size: 12px; }
 }
+/* ── Sidebar Badge ── */
+.sidebar-badge {
+    background: #ef4444;
+    color: #fff;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+/* ── Role Badge in Profile Dropdown ── */
+.profile-dropdown-role {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 2px;
+}
+.role-owner  { background: #dbeafe; color: #1e40af; }
+.role-tenant { background: #d5f5e3; color: #1e8449; }
+.role-admin  { background: #fde8d8; color: #c0392b; }
+
+/* ── Logout nav link color ── */
+.logout-nav-link { color: #ef4444 !important; }
+.logout-nav-link:hover { background: #fff5f5 !important; color: #ef4444 !important; }
+
+/* ── Django Messages ── */
+.django-messages {
+    padding: 0 24px;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.django-message {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+.django-message-success { background: #d5f5e3; color: #1e8449; border-left: 4px solid #2ecc71; }
+.django-message-error   { background: #fde8d8; color: #c0392b; border-left: 4px solid #e74c3c; }
+.django-message-warning { background: #fff3cd; color: #856404; border-left: 4px solid #f39c12; }
+.django-message-info    { background: #dbeafe; color: #1e40af; border-left: 4px solid #3498db; }
+.message-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: inherit;
+    opacity: 0.6;
+    padding: 0 4px;
+}
+.message-close:hover { opacity: 1; }
+
+/* ── Active nav link ── */
+.nav-link.active {
+    color: #151A2D !important;
+    background: #EEF2FF !important;
+}
