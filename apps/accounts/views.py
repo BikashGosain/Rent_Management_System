@@ -81,10 +81,11 @@ def password_change_view(request):
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 def redirect_by_role(user):
-    """Send each role to their own dashboard after login/register."""
-    if user.is_admin() or user.is_superuser:
-        return redirect('dashboard:admin')
-    elif user.is_owner():
-        return redirect('dashboard:owner')
-    else:
-        return redirect('dashboard:tenant')
+    # """Send each role to their own dashboard after login/register."""
+    # if user.is_admin() or user.is_superuser:
+    #     return redirect('dashboard:admin')
+    # elif user.is_owner():
+    #     return redirect('dashboard:owner')
+    # else:
+    #     return redirect('dashboard:tenant')
+    return redirect('core:home')

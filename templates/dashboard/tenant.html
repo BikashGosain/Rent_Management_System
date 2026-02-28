@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Tenant Dashboard — RentMS{% endblock %}
 
 {% block content %}
@@ -7,99 +7,192 @@
 
     <div class="dashboard-header">
         <h2>Tenant Dashboard</h2>
-        <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+        <p>Welcome back, {{ request.user.get_full_name|default:request.user.username }}</p>
     </div>
 
-    <div class="dashboard-section">
-        <h3>My Current Property</h3>
-        {% if current_property %}
-            <p>Property details will show here.</p>
-        {% else %}
-            <div class="empty-state">
-                <p>You are not renting any property yet.</p>
-                <a href="{% url 'search:results' %}" class="btn btn-primary">Search Properties</a>
+    <!-- ── Quick Actions ── -->
+    <div class="quick-actions">
+        <a href="{% url 'search:results' %}" class="quick-action-btn">🔍 Search Properties</a>
+        <a href="{% url 'bookings:my_bookings' %}" class="quick-action-btn">📋 My Bookings</a>
+        <a href="{% url 'agreements:tenant_agreements' %}" class="quick-action-btn">📄 Agreements</a>
+        <a href="{% url 'payments:tenant_payments' %}" class="quick-action-btn">💰 Payments</a>
+        <a href="{% url 'complaints:my_complaints' %}" class="quick-action-btn">⚠️ Complaints</a>
+    </div>
+
+    <!-- ── Stats Cards ── -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_bookings }}</div>
+            <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ pending_bookings }}</div>
+            <div class="stat-label">Pending Bookings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_agreements }}</div>
+            <div class="stat-label">Agreements</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number {% if overdue_payments > 0 %}text-danger{% endif %}">{{ overdue_payments }}</div>
+            <div class="stat-label">Overdue Payments</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">Rs. {{ total_paid }}</div>
+            <div class="stat-label">Total Paid</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ open_complaints }}</div>
+            <div class="stat-label">Open Complaints</div>
+        </div>
+    </div>
+
+    <div class="dashboard-two-col">
+
+        <!-- ── Left Column ── -->
+        <div class="dashboard-col">
+
+            <!-- Current Property -->
+            <div class="dashboard-section">
+                <h3>🏠 Current Property</h3>
+                {% if active_agreement %}
+                <div class="current-property-card">
+                    <p class="dash-item-title">{{ active_agreement.get_target_name }}</p>
+                    <p class="property-meta">Owner: {{ active_agreement.owner.get_full_name|default:active_agreement.owner.username }}</p>
+                    <p class="property-meta">{{ active_agreement.start_date }} → {{ active_agreement.end_date }}</p>
+                    <p class="property-price">Rs. {{ active_agreement.rent_amount }}/month</p>
+                    <a href="{% url 'agreements:detail' active_agreement.pk %}" class="btn btn-primary" style="margin-top:0.75rem;">View Agreement</a>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <p>You are not renting any property yet.</p>
+                    <a href="{% url 'search:results' %}" class="btn btn-primary">Search Properties</a>
+                </div>
+                {% endif %}
             </div>
-        {% endif %}
-    </div>
 
-    <div class="dashboard-section">
-        <div class="section-header">
-            <h3>My Booking Status</h3>
-            <a href="{% url 'bookings:my_bookings' %}" class="btn btn-primary">View All Bookings</a>
+            <!-- Upcoming Rent -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>💰 Upcoming Rent</h3>
+                    <a href="{% url 'payments:tenant_payments' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                {% if upcoming_rent %}
+                <div class="upcoming-payment">
+                    <p><strong>{{ upcoming_rent.get_payment_type_display }}{% if upcoming_rent.month and upcoming_rent.year %} — {{ upcoming_rent.get_month_display_name }}{% endif %}</strong></p>
+                    <p class="payment-amount">Rs. {{ upcoming_rent.amount }}</p>
+                    <p class="property-meta">Due: {{ upcoming_rent.due_date }}</p>
+                    <span class="payment-status payment-status-{{ upcoming_rent.status }}">{{ upcoming_rent.get_status_display }}</span>
+                </div>
+                {% else %}
+                <div class="empty-state"><p>No upcoming payments.</p></div>
+                {% endif %}
+            </div>
+
+            <!-- My Bookings -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>📋 My Bookings</h3>
+                    <a href="{% url 'bookings:my_bookings' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                {% if bookings %}
+                    {% for booking in bookings %}
+                    <div class="dash-item">
+                        <div>
+                            <p class="dash-item-title">{{ booking.get_target_name }}</p>
+                            <p class="property-meta">Move in: {{ booking.move_in_date }}</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.5rem;">
+                            <span class="booking-status booking-status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                            <a href="{% url 'bookings:detail' booking.pk %}" class="btn btn-secondary btn-sm">View</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-state"><p>No bookings yet.</p>
+                <a href="{% url 'search:results' %}" class="btn btn-primary">Search Properties</a></div>
+                {% endif %}
+            </div>
+
         </div>
-        {% if booking_status %}
-            <p>Latest: {{ booking_status.get_target_name }} — 
-               <span class="booking-status booking-status-{{ booking_status.status }}">
-                   {{ booking_status.get_status_display }}
-               </span>
-            </p>
-        {% else %}
-            <div class="empty-state"><p>No active bookings.</p></div>
-        {% endif %}
-    </div>
 
-<div class="dashboard-section">
-    <div class="section-header">
-        <h3>Upcoming Rent Due</h3>
-        <a href="{% url 'payments:tenant_payments' %}" class="btn btn-secondary">View All</a>
-    </div>
-    {% if upcoming_rent %}
-        <p>{{ upcoming_rent.get_payment_type_display }}
-           {% if upcoming_rent.month and upcoming_rent.year %} — {{ upcoming_rent.get_month_display_name }}{% endif %}
-           — <strong>Rs. {{ upcoming_rent.amount }}</strong>
-           due on <strong>{{ upcoming_rent.due_date }}</strong>
-           <span class="payment-status payment-status-{{ upcoming_rent.status }}">{{ upcoming_rent.get_status_display }}</span>
-        </p>
-    {% else %}
-        <div class="empty-state"><p>No upcoming rent due.</p></div>
-    {% endif %}
-</div>
+        <!-- ── Right Column ── -->
+        <div class="dashboard-col">
 
-<div class="dashboard-section">
-    <div class="section-header">
-        <h3>My Agreements</h3>
-        <a href="{% url 'agreements:tenant_agreements' %}" class="btn btn-secondary">View All</a>
-    </div>
-    {% if agreements %}
-        {% for agreement in agreements %}
-        <p>
-            {{ agreement.get_target_name }} —
-            <span class="agreement-status agreement-status-{{ agreement.status }}">
-                {{ agreement.get_status_display }}
-            </span>
-            <a href="{% url 'agreements:detail' agreement.pk %}">View</a>
-            {% if not agreement.tenant_signed %}
-                <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary">✍ Sign</a>
-            {% endif %}
-        </p>
-        {% endfor %}
-    {% else %}
-        <div class="empty-state"><p>No agreements yet.</p></div>
-    {% endif %}
-</div>
+            <!-- Recent Activity -->
+            <div class="dashboard-section">
+                <h3>⚡ Recent Activity</h3>
+                {% if activity %}
+                <div class="activity-feed">
+                    {% for item in activity %}
+                    <a href="{{ item.link }}" class="activity-item">
+                        <span class="activity-icon">{{ item.icon }}</span>
+                        <div class="activity-content">
+                            <p class="activity-text">{{ item.text }}</p>
+                            <p class="activity-time">{{ item.time|timesince }} ago</p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state"><p>No recent activity.</p></div>
+                {% endif %}
+            </div>
 
-<div class="dashboard-section">
-    <div class="section-header">
-        <h3>My Complaints</h3>
-        <a href="{% url 'complaints:submit' %}" class="btn btn-secondary">+ Submit</a>
-    </div>
-    {% if complaints %}
-        {% for complaint in complaints %}
-        <p>
-            <span class="priority-badge priority-{{ complaint.priority }}">{{ complaint.get_priority_display }}</span>
-            {{ complaint.title }} —
-            <span class="complaint-status complaint-status-{{ complaint.status }}">{{ complaint.get_status_display }}</span>
-            <a href="{% url 'complaints:detail' complaint.pk %}">View</a>
-        </p>
-        {% endfor %}
-        <a href="{% url 'complaints:my_complaints' %}" class="btn btn-secondary">View All</a>
-    {% else %}
-        <div class="empty-state">
-            <p>No complaints submitted.</p>
-            <a href="{% url 'complaints:submit' %}" class="btn btn-secondary">Submit a Complaint</a>
+            <!-- Agreements -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>📄 My Agreements</h3>
+                    <a href="{% url 'agreements:tenant_agreements' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                {% if agreements %}
+                    {% for agreement in agreements %}
+                    <div class="dash-item">
+                        <div>
+                            <p class="dash-item-title">{{ agreement.get_target_name }}</p>
+                            <p class="property-meta">{{ agreement.start_date }} → {{ agreement.end_date }}</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.5rem;">
+                            <span class="agreement-status agreement-status-{{ agreement.status }}">{{ agreement.get_status_display }}</span>
+                            {% if not agreement.tenant_signed %}
+                            <a href="{% url 'agreements:sign' agreement.pk %}" class="btn btn-primary btn-sm">Sign</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-state"><p>No agreements yet.</p></div>
+                {% endif %}
+            </div>
+
+            <!-- Complaints -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>⚠️ My Complaints</h3>
+                    <a href="{% url 'complaints:my_complaints' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                {% if complaints %}
+                    {% for complaint in complaints %}
+                    <div class="dash-item">
+                        <div>
+                            <p class="dash-item-title">{{ complaint.title }}</p>
+                            <p class="property-meta">{{ complaint.get_category_display }}</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.5rem;">
+                            <span class="complaint-status complaint-status-{{ complaint.status }}">{{ complaint.get_status_display }}</span>
+                            <a href="{% url 'complaints:detail' complaint.pk %}" class="btn btn-secondary btn-sm">View</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <p>No complaints.</p>
+                    <a href="{% url 'complaints:submit' %}" class="btn btn-secondary">Submit Complaint</a>
+                </div>
+                {% endif %}
+            </div>
+
         </div>
-    {% endif %}
-</div>
-
+    </div>
 </div>
 {% endblock %}
