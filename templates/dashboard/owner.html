@@ -3,7 +3,7 @@
 {% block title %}Owner Dashboard — RentMS{% endblock %}
 {% block page_title %}Owner Dashboard{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -24,50 +24,7 @@
         <a href="{% url 'core:recycle_bin' %}" class="quick-action-btn">🗑 Recycle Bin</a>
     </div>
 
-    <!-- ── Stats Cards ── -->
-     <!-- My Properties (Full List) -->
-<div class="dashboard-section">
-    <div class="section-header">
-        <h3>📋 All My Properties</h3>
-        <a href="{% url 'properties:add' %}" class="btn btn-primary btn-sm">+ Add New</a>
-    </div>
-    {% if all_properties %}
-        {% for p in all_properties %}
-        <div class="dash-item">
-            <div>
-                <p class="dash-item-title">{{ p.title }}</p>
-                <p class="property-meta">
-                    {{ p.get_type_display }} · {{ p.city }}
-                </p>
-                <p class="property-meta">
-                    {% if p.rent_type == 'whole' %}
-                    <span class="result-tag" style="font-size:0.75rem; padding:0.1rem 0.5rem;">🏠 Whole Property</span>
-                    Rs. {{ p.rent_price }}/month
-                    {% else %}
-                    <span class="result-tag"
-                        style="font-size:0.75rem; padding:0.1rem 0.5rem; background:#f3e8ff; color:#6b21a8;">🚪 Individual
-                        Rooms</span>
-                    {{ p.available_rooms.count }}/{{ p.total_rooms }} rooms available
-                    {% endif %}
-                </p>
-            </div>
-            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                <span class="status-badge status-{{ p.status }}">{{ p.get_status_display }}</span>
-                <a href="{% url 'properties:detail' p.pk %}" class="btn btn-secondary btn-sm">View</a>
-                <a href="{% url 'properties:edit' p.pk %}" class="btn btn-secondary btn-sm">Edit</a>
-            </div>
-        </div>
-        {% endfor %}
-        <div style="margin-top:0.75rem;">
-            <a href="{% url 'properties:list' %}" class="btn btn-secondary">View Full Properties Page →</a>
-        </div>
-    {% else %}
-        <div class="empty-state">
-            <p>No properties yet.</p>
-            <a href="{% url 'properties:add' %}" class="btn btn-primary">Add Your First Property</a>
-        </div>
-    {% endif %}
-</div>
+    <!-- ── Stats Grid ── -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-number">{{ total_whole }}</div>
@@ -95,6 +52,46 @@
         </div>
     </div>
 
+    <!-- ── All My Properties ── -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h3>📋 All My Properties</h3>
+            <a href="{% url 'properties:add' %}" class="btn btn-primary btn-sm">+ Add New</a>
+        </div>
+        {% if all_properties %}
+            {% for p in all_properties %}
+            <div class="dash-item">
+                <div>
+                    <p class="dash-item-title">{{ p.title }}</p>
+                    <p class="property-meta">{{ p.get_type_display }} · {{ p.city }}</p>
+                    <p class="property-meta">
+                        {% if p.rent_type == 'whole' %}
+                        <span class="result-tag" style="font-size:0.75rem; padding:0.1rem 0.5rem;">🏠 Whole Property</span>
+                        Rs. {{ p.rent_price }}/month
+                        {% else %}
+                        <span class="result-tag" style="font-size:0.75rem; padding:0.1rem 0.5rem; background:#f3e8ff; color:#6b21a8;">🚪 Individual Rooms</span>
+                        {{ p.available_rooms.count }}/{{ p.total_rooms }} rooms available
+                        {% endif %}
+                    </p>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                    <span class="status-badge status-{{ p.status }}">{{ p.get_status_display }}</span>
+                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-secondary btn-sm">View</a>
+                    <a href="{% url 'properties:edit' p.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+                </div>
+            </div>
+            {% endfor %}
+            <div style="margin-top:0.75rem;">
+                <a href="{% url 'properties:list' %}" class="btn btn-secondary">View Full Properties Page →</a>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No properties yet.</p>
+                <a href="{% url 'properties:add' %}" class="btn btn-primary">Add Your First Property</a>
+            </div>
+        {% endif %}
+    </div>
+
     <div class="dashboard-two-col">
 
         <!-- ── Left Column ── -->
@@ -104,7 +101,7 @@
             <div class="dashboard-section">
                 <div class="section-header">
                     <h3>🏠 Whole Properties ({{ total_whole }})</h3>
-                    <a href="{% url 'properties:list' %}" class="btn btn-secondary btn-sm">View All</a>
+                    <a href="{% url 'properties:list' %}?rent_type=whole" class="btn btn-secondary btn-sm">View All</a>
                 </div>
                 {% if whole_properties %}
                     {% for p in whole_properties %}
@@ -120,8 +117,10 @@
                     </div>
                     {% endfor %}
                 {% else %}
-                    <div class="empty-state"><p>No whole properties yet.</p>
-                    <a href="{% url 'properties:add' %}" class="btn btn-primary">Add Property</a></div>
+                    <div class="empty-state">
+                        <p>No whole properties yet.</p>
+                        <a href="{% url 'properties:add' %}" class="btn btn-primary">Add Property</a>
+                    </div>
                 {% endif %}
             </div>
 
@@ -129,7 +128,7 @@
             <div class="dashboard-section">
                 <div class="section-header">
                     <h3>🚪 Room Properties ({{ total_room_props }})</h3>
-                    <a href="{% url 'properties:list' %}" class="btn btn-secondary btn-sm">View All</a>
+                    <a href="{% url 'properties:list' %}?rent_type=rooms" class="btn btn-secondary btn-sm">View All</a>
                 </div>
                 {% if room_properties %}
                     {% for p in room_properties %}
