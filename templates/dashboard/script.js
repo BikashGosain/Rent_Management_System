@@ -1,4 +1,4 @@
-// ===================== SIDEBAR DROPDOWN (nav items) =====================
+// ===================== SIDEBAR NAV DROPDOWNS =====================
 const toggleDropdown = (dropdown, menu, isOpen) => {
   dropdown.classList.toggle("open", isOpen);
   menu.style.height = isOpen ? `${menu.scrollHeight}px` : 0;
@@ -24,85 +24,81 @@ document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
 });
 
 // ===================== SIDEBAR TOGGLE =====================
-const sidebar = document.querySelector(".sidebar");
-const overlay = document.querySelector(".sidebar-overlay");
+// The sidebar is ALWAYS visible on screen at every screen size.
+// On desktop (>768px): toggle between full (270px) and icon-only (85px) using "collapsed" class.
+// On mobile (≤768px): starts icon-only, toggle between icon-only (85px) and full (270px) using "expanded" class.
 
+const sidebar = document.querySelector(".sidebar");
 const isMobile = () => window.innerWidth <= 768;
 
-// The button inside the header (always visible)
-document.getElementById("sidebarToggleBtn").addEventListener("click", () => {
-  closeAllDropdowns();
-  if (isMobile()) {
-    // Mobile: slide in/out
-    const isOpen = sidebar.classList.contains("mobile-open");
-    sidebar.classList.toggle("mobile-open", !isOpen);
-    overlay.classList.toggle("active", !isOpen);
-  } else {
-    // Desktop/tablet: collapse to icon-only
-    sidebar.classList.toggle("collapsed");
-  }
-});
-
-// The chevron button inside the sidebar itself
+// The chevron button inside the sidebar is the ONLY toggle
 document.querySelectorAll(".sidebar-toggler").forEach((btn) => {
   btn.addEventListener("click", () => {
     closeAllDropdowns();
     if (isMobile()) {
-      // Close the sidebar on mobile
-      sidebar.classList.remove("mobile-open");
-      overlay.classList.remove("active");
+      // On mobile: toggle expanded (full width) vs default (icon-only)
+      sidebar.classList.toggle("expanded");
     } else {
+      // On desktop: toggle collapsed (icon-only) vs default (full width)
       sidebar.classList.toggle("collapsed");
     }
   });
 });
 
-// Close sidebar when clicking overlay (mobile)
-overlay.addEventListener("click", () => {
-  sidebar.classList.remove("mobile-open");
-  overlay.classList.remove("active");
-});
-
-// Auto-collapse on tablet (769–1024px), leave mobile alone
-if (window.innerWidth > 768 && window.innerWidth <= 1024) {
-  sidebar.classList.add("collapsed");
+// On page load: collapse on tablet, icon-only on mobile
+function initSidebar() {
+  if (window.innerWidth <= 768) {
+    sidebar.classList.remove("collapsed");
+    sidebar.classList.remove("expanded");
+    // Mobile starts as icon-only — CSS handles this via media query default
+  } else if (window.innerWidth <= 1024) {
+    sidebar.classList.add("collapsed");
+    sidebar.classList.remove("expanded");
+  } else {
+    sidebar.classList.remove("collapsed");
+    sidebar.classList.remove("expanded");
+  }
 }
 
-// Handle window resize
+initSidebar();
+
+// Re-init on resize
 let resizeTimer;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
-    if (!isMobile()) {
-      // Clean up mobile state when resizing to desktop
-      sidebar.classList.remove("mobile-open");
-      overlay.classList.remove("active");
-    } else {
-      // Clean up desktop collapsed state when resizing to mobile
-      sidebar.classList.remove("collapsed");
-    }
-  }, 150);
+  resizeTimer = setTimeout(initSidebar, 150);
 });
 
 // ===================== PROFILE DROPDOWN =====================
 const profileToggle = document.getElementById("profileToggle");
 const profileWrapper = document.getElementById("profileWrapper");
 
-profileToggle.addEventListener("click", (e) => {
-  e.stopPropagation();
-  profileWrapper.classList.toggle("open");
-});
+if (profileToggle && profileWrapper) {
+  const profileDropdown = document.getElementById("profileDropdown");
 
-// Close when clicking anywhere outside
-document.addEventListener("click", (e) => {
-  if (!profileWrapper.contains(e.target)) {
-    profileWrapper.classList.remove("open");
-  }
-});
+  profileToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = profileWrapper.classList.contains("open");
+    if (!isOpen) {
+      // Position dropdown just below the button using fixed coords
+      const rect = profileToggle.getBoundingClientRect();
+      profileDropdown.style.top = (rect.bottom + 8) + "px";
+      profileDropdown.style.right = (window.innerWidth - rect.right) + "px";
+    }
+    profileWrapper.classList.toggle("open");
+  });
 
-// Close on Escape
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    profileWrapper.classList.remove("open");
-  }
-});
+  // Close when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!profileWrapper.contains(e.target)) {
+      profileWrapper.classList.remove("open");
+    }
+  });
+
+  // Close on Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      profileWrapper.classList.remove("open");
+    }
+  });
+}
