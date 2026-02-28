@@ -5,49 +5,124 @@
 
 {% block content %}
 <div class="agreement-container">
-    <h2>Create Rental Agreement</h2>
+    <div class="agreement-card">
+        <h2>Create Rental Agreement</h2>
 
-    <div class="booking-target">
-        <p class="booking-target-title">{{ booking.get_target_name }}</p>
-        <p class="booking-target-meta">Tenant: {{ booking.tenant.get_full_name|default:booking.tenant.username }}</p>
-        <p class="booking-target-meta">Move in: {{ booking.move_in_date }}</p>
+        <div class="booking-target">
+            <p class="booking-target-title">{{ booking.get_target_name }}</p>
+            <p class="booking-target-meta">Tenant: {{ booking.tenant.get_full_name|default:booking.tenant.username }}</p>
+            <p class="booking-target-meta">Move in: {{ booking.move_in_date }}</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Rental Type -->
+            <div class="form-card">
+                <h3>Rental Type</h3>
+                <div class="form-group">
+                    <label>Rental Duration Type</label>
+                    {{ form.rental_type }}
+                </div>
+
+                <!-- Short term options (shown via JS) -->
+                <div id="short-term-fields" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Duration Unit</label>
+                            {{ form.short_term_unit }}
+                        </div>
+                        <div class="form-group">
+                            <label>Duration (number)</label>
+                            {{ form.short_term_duration }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Month-to-month options -->
+                <div id="month-fields">
+                    <div class="form-group">
+                        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                            {{ form.auto_renew }} Auto-renew monthly
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dates -->
+            <div class="form-card">
+                <h3>Dates</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        {{ form.start_date }}
+                        {% for e in form.start_date.errors %}<small class="error-text">{{ e }}</small>{% endfor %}
+                    </div>
+                    <div id="end-date-field" class="form-group">
+                        <label>End Date <small>(leave blank for month-to-month)</small></label>
+                        {{ form.end_date }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notice Period (days)</label>
+                    {{ form.notice_period_days }}
+                </div>
+            </div>
+
+            <!-- Financial -->
+            <div class="form-card">
+                <h3>Financial Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rent Amount (Rs./month)</label>
+                        {{ form.rent_amount }}
+                    </div>
+                    <div class="form-group">
+                        <label>Security Deposit (Rs.)</label>
+                        {{ form.security_deposit }}
+                    </div>
+                    <div class="form-group">
+                        <label>Advance Amount (Rs.)</label>
+                        {{ form.advance_amount }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terms -->
+            <div class="form-card">
+                <h3>Terms & Conditions</h3>
+                <div class="form-group">
+                    {{ form.terms_conditions }}
+                </div>
+                <div class="form-group">
+                    <label>Upload Agreement Document (optional)</label>
+                    {{ form.document }}
+                </div>
+            </div>
+
+            {% for error in form.non_field_errors %}
+            <small class="error-text">{{ error }}</small>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary">Create Agreement</button>
+            <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-secondary">Cancel</a>
+        </form>
     </div>
-
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        <div class="form-card">
-            <h3>Agreement Dates</h3>
-            <div class="form-row">
-                <div class="form-group"><label>Start Date</label>{{ form.start_date }}{% for e in form.start_date.errors %}<small class="error-text">{{ e }}</small>{% endfor %}</div>
-                <div class="form-group"><label>End Date</label>{{ form.end_date }}{% for e in form.end_date.errors %}<small class="error-text">{{ e }}</small>{% endfor %}</div>
-            </div>
-        </div>
-
-        <div class="form-card">
-            <h3>Financial Details</h3>
-            <div class="form-row">
-                <div class="form-group"><label>Rent Amount/month (Rs.)</label>{{ form.rent_amount }}</div>
-                <div class="form-group"><label>Security Deposit (Rs.)</label>{{ form.security_deposit }}</div>
-                <div class="form-group"><label>Advance Amount (Rs.)</label>{{ form.advance_amount }}</div>
-            </div>
-            <div class="form-row">
-                <div class="form-group"><label>Notice Period (days)</label>{{ form.notice_period_days }}</div>
-            </div>
-        </div>
-
-        <div class="form-card">
-            <h3>Terms & Conditions</h3>
-            <div class="form-group">{{ form.terms_conditions }}</div>
-        </div>
-
-        <div class="form-card">
-            <h3>Upload Agreement Document (optional)</h3>
-            <div class="form-group">{{ form.document }}</div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Create Agreement</button>
-        <a href="{% url 'bookings:owner_bookings' %}" class="btn btn-secondary">Cancel</a>
-    </form>
 </div>
+
+<script>
+const rentalType  = document.querySelector('[name="rental_type"]');
+const shortFields = document.getElementById('short-term-fields');
+const monthFields = document.getElementById('month-fields');
+const endField    = document.getElementById('end-date-field');
+
+function updateFields() {
+    const val = rentalType.value;
+    shortFields.style.display = val === 'short' ? 'block' : 'none';
+    monthFields.style.display = val === 'month' ? 'block' : 'none';
+    endField.style.display    = val === 'month' ? 'none'  : 'block';
+}
+rentalType.addEventListener('change', updateFields);
+updateFields();
+</script>
 {% endblock %}

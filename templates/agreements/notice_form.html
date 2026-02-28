@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/agreements.css' %}">{% endblock %}
+{% block title %}Submit Notice — RentMS{% endblock %}
+
+{% block content %}
+<div class="agreement-container">
+    <div class="agreement-card">
+        <h2>📢 Submit Notice</h2>
+
+        <div class="booking-target">
+            <p class="booking-target-title">{{ agreement.get_target_name }}</p>
+            <p class="booking-target-meta">Notice Period: {{ agreement.notice_period_days }} days</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% for e in field.errors %}<small class="error-text">{{ e }}</small>{% endfor %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit Notice</button>
+            <a href="{% url 'agreements:detail' agreement.pk %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

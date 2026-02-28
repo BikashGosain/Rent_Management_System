@@ -97,3 +97,85 @@
     .agreement-parties { grid-template-columns: 1fr; }
     .agreement-item { flex-direction: column; }
 }
+
+/* ── Rental Type Banner ── */
+.rental-type-banner {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+.rental-type-fixed  { background: #dbeafe; color: #1e40af; border-left: 4px solid #3498db; }
+.rental-type-month  { background: #d5f5e3; color: #1e8449; border-left: 4px solid #2ecc71; }
+.rental-type-short  { background: #fde8d8; color: #c0392b; border-left: 4px solid #e74c3c; }
+
+/* ── Notice Section ── */
+.notice-section { border-top: 2px solid #f0f0f0; padding-top: 1.5rem; }
+
+/* ── Notice Card ── */
+.notice-card {
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-top: 0.75rem;
+}
+.notice-pending  { background: #fff3cd; border-left: 4px solid #f39c12; }
+.notice-approved { background: #d5f5e3; border-left: 4px solid #2ecc71; }
+.notice-rejected { background: #f8d7da; border-left: 4px solid #e74c3c; }
+
+.notice-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+.notice-type-badge {
+    background: #2c3e50;
+    color: #fff;
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.notice-status-badge {
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.notice-status-badge.pending  { background: #fff3cd; color: #856404; }
+.notice-status-badge.approved { background: #d5f5e3; color: #1e8449; }
+.notice-status-badge.rejected { background: #f8d7da; color: #721c24; }
+
+/* ── Countdown ── */
+.notice-countdown {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 1rem 0 0.5rem;
+}
+.countdown-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #f39c12;
+    line-height: 1;
+}
+.countdown-number.urgent { color: #e74c3c; }
+.countdown-label { font-size: 0.9rem; color: #888; }
+
+/* ── Progress Bar ── */
+.notice-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+.notice-progress-fill {
+    height: 100%;
+    background: #f39c12;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+.notice-progress-fill.approved { background: #2ecc71; }
