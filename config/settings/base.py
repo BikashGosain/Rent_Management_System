@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'apps.reviews',
     'apps.core',
+    'apps.bookmarks',
 ]
 
 # Middleware
@@ -63,6 +64,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'apps.notifications.context_processors.unread_notifications',
+                'apps.bookmarks.context_processors.user_bookmarks',
             ],
         },
     },

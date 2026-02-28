@@ -1,0 +1,102 @@
+/* ── Bookmark Heart Button ── */
+.bookmark-heart {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 0.2rem;
+    transition: transform 0.2s;
+    line-height: 1;
+}
+.bookmark-heart:hover { transform: scale(1.3); }
+.bookmark-heart.bookmarked { animation: heartPop 0.3s ease; }
+
+@keyframes heartPop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+
+/* ── Bookmarks Grid ── */
+.bookmarks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+.bookmark-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+}
+.bookmark-card:hover  { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.bookmark-selected    { border-color: #3498db; box-shadow: 0 0 0 3px rgba(52,152,219,0.2); }
+.bookmark-img         { width: 100%; height: 180px; object-fit: cover; }
+.bookmark-img-placeholder {
+    width: 100%; height: 180px;
+    background: #f0f0f0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem;
+}
+.bookmark-body    { padding: 1.1rem; }
+.bookmark-body h4 { margin: 0.4rem 0 0.35rem; color: #2c3e50; font-size: 0.95rem; }
+.bookmark-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.75rem; }
+
+/* ── Compare Banner ── */
+.compare-banner {
+    background: #dbeafe;
+    border: 1px solid #93c5fd;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    color: #1e40af;
+}
+.compare-banner a { color: #1e40af; font-weight: 700; }
+.compare-count-badge {
+    background: #3498db;
+    color: #fff;
+    padding: 0.2rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* ── Compare Table ── */
+.compare-table-wrapper { overflow-x: auto; }
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+}
+.compare-table thead th {
+    background: #2c3e50;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+    min-width: 200px;
+}
+.compare-label-col { min-width: 130px !important; background: #34495e !important; }
+.compare-header { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.compare-thumb  { width: 80px; height: 60px; object-fit: cover; border-radius: 6px; }
+.compare-thumb-placeholder {
+    width: 80px; height: 60px;
+    background: #555;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+}
+.compare-name { font-size: 0.85rem; text-align: center; }
+.compare-row td { padding: 0.85rem 1rem; text-align: center; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
+.compare-row-alt td { background: #f9f9f9; }
+.compare-label { font-weight: 700; color: #2c3e50; text-align: left !important; background: #f5f6fa !important; }
+.compare-price { font-weight: 700; color: #2ecc71; font-size: 1rem; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .bookmarks-grid { grid-template-columns: 1fr; }
+}

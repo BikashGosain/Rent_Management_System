@@ -17,6 +17,15 @@
                 <h2>{{ property.title }}</h2>
                 <p class="property-meta">{{ property.get_type_display }} · {{ property.city }}, {{ property.state }}</p>
                 {% if property.landmark %}<p class="property-meta">📍 Near {{ property.landmark }}</p>{% endif %}
+                
+                {% if request.user.is_authenticated %}
+                <form method="post" action="{% url 'bookmarks:toggle_property' property.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary">
+                        {% if property.pk in bookmarked_property_ids %}❤️ Saved{% else %}🤍 Save{% endif %}
+                    </button>
+                </form>
+                {% endif %}
             </div>
             <div>
                 {% if property.is_whole %}
