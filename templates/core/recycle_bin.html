@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/recycle_bin.css' %}">{% endblock %}
+{% block title %}Recycle Bin — RentMS{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+    <div class="section-header">
+        <h2>🗑 Recycle Bin</h2>
+        <span class="notif-count-badge total">{{ total_deleted }} item(s)</span>
+    </div>
+
+    <p class="property-meta" style="margin-bottom:1.5rem;">
+        Items you removed from your lists. You can restore them or permanently delete them.
+    </p>
+{% if total_deleted > 0 %}
+<div class="recycle-bulk-actions">
+    <!-- Restore All -->
+    <form method="post" action="{% url 'core:restore_all' %}"
+          onsubmit="return confirm('Restore all {{ total_deleted }} deleted items back to your lists?');">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">♻️ Restore All ({{ total_deleted }})</button>
+    </form>
+
+    <!-- Delete All Forever -->
+    <form method="post" action="{% url 'core:permanent_delete_all' %}"
+          onsubmit="return confirm('PERMANENTLY delete all {{ total_deleted }} items? This cannot be undone!');">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">🗑 Delete All Forever ({{ total_deleted }})</button>
+    </form>
+</div>
+{% endif %}
+    <!-- ── Deleted Bookings ── -->
+    <div class="recycle-section">
+        <h3>📋 Bookings ({{ deleted_bookings.count }})</h3>
+        {% if deleted_bookings %}
+        <div class="recycle-list">
+            {% for booking in deleted_bookings %}
+            <div class="recycle-item">
+                <div class="recycle-info">
+                    <p class="recycle-title">{{ booking.get_target_name }}</p>
+                    <p class="property-meta">
+                        Status: <span class="booking-status booking-status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                    </p>
+                    <p class="property-meta">Move in: {{ booking.move_in_date }}</p>
+                    {% if is_owner %}
+                    <p class="property-meta">Tenant: {{ booking.tenant.get_full_name|default:booking.tenant.username }}</p>
+                    <p class="property-meta recycle-deleted-at">Removed: {{ booking.owner_deleted_at|date:"d M Y, h:i A" }}</p>
+                    {% else %}
+                    <p class="property-meta recycle-deleted-at">Removed: {{ booking.tenant_deleted_at|date:"d M Y, h:i A" }}</p>
+                    {% endif %}
+                </div>
+                <div class="recycle-actions">
+                    <a href="{% url 'bookings:detail' booking.pk %}" class="btn btn-secondary btn-sm">👁 View</a>
+                    <form method="post" action="{% url 'core:restore' 'booking' booking.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-sm">♻️ Restore</button>
+                    </form>
+                    <form method="post" action="{% url 'core:permanent_delete' 'booking' booking.pk %}"
+                          onsubmit="return confirm('Permanently delete this booking? This cannot be undone.');"
+                          style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">🗑 Delete Forever</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="recycle-empty"><p>No deleted bookings.</p></div>
+        {% endif %}
+    </div>
+
+    <!-- ── Deleted Agreements ── -->
+    <div class="recycle-section">
+        <h3>📄 Agreements ({{ deleted_agreements.count }})</h3>
+        {% if deleted_agreements %}
+        <div class="recycle-list">
+            {% for agreement in deleted_agreements %}
+            <div class="recycle-item">
+                <div class="recycle-info">
+                    <p class="recycle-title">{{ agreement.get_target_name }}</p>
+                    <p class="property-meta">
+                        Status: <span class="agreement-status agreement-status-{{ agreement.status }}">{{ agreement.get_status_display }}</span>
+                    </p>
+                    <p class="property-meta">{{ agreement.start_date }} → {{ agreement.end_date }}</p>
+                    <p class="property-meta">Rent: Rs. {{ agreement.rent_amount }}/month</p>
+                    {% if is_owner %}
+                    <p class="property-meta">Tenant: {{ agreement.tenant.get_full_name|default:agreement.tenant.username }}</p>
+                    <p class="property-meta recycle-deleted-at">Removed: {{ agreement.owner_deleted_at|date:"d M Y, h:i A" }}</p>
+                    {% else %}
+                    <p class="property-meta recycle-deleted-at">Removed: {{ agreement.tenant_deleted_at|date:"d M Y, h:i A" }}</p>
+                    {% endif %}
+                </div>
+                <div class="recycle-actions">
+                    <a href="{% url 'agreements:detail' agreement.pk %}" class="btn btn-secondary btn-sm">👁 View</a>
+                    <form method="post" action="{% url 'core:restore' 'agreement' agreement.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-sm">♻️ Restore</button>
+                    </form>
+                    <form method="post" action="{% url 'core:permanent_delete' 'agreement' agreement.pk %}"
+                          onsubmit="return confirm('Permanently delete this agreement? This cannot be undone.');"
+                          style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">🗑 Delete Forever</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="recycle-empty"><p>No deleted agreements.</p></div>
+        {% endif %}
+    </div>
+
+    <!-- ── Deleted Payments (Owner only) ── -->
+    {% if is_owner %}
+    <div class="recycle-section">
+        <h3>💰 Payments ({{ deleted_payments.count }})</h3>
+        {% if deleted_payments %}
+        <div class="recycle-list">
+            {% for payment in deleted_payments %}
+            <div class="recycle-item">
+                <div class="recycle-info">
+                    <p class="recycle-title">{{ payment.get_payment_type_display }}{% if payment.month and payment.year %} — {{ payment.get_month_display_name }}{% endif %}</p>
+                    <p class="property-meta">
+                        Status: <span class="payment-status payment-status-{{ payment.status }}">{{ payment.get_status_display }}</span>
+                    </p>
+                    <p class="property-meta">Amount: Rs. {{ payment.amount }}</p>
+                    <p class="property-meta">Tenant: {{ payment.tenant.get_full_name|default:payment.tenant.username }}</p>
+                    <p class="property-meta recycle-deleted-at">Removed: {{ payment.owner_deleted_at|date:"d M Y, h:i A" }}</p>
+                </div>
+                <div class="recycle-actions">
+                    <a href="{% url 'payments:detail' payment.pk %}" class="btn btn-secondary btn-sm">👁 View</a>
+                    <form method="post" action="{% url 'core:restore' 'payment' payment.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-sm">♻️ Restore</button>
+                    </form>
+                    <form method="post" action="{% url 'core:permanent_delete' 'payment' payment.pk %}"
+                          onsubmit="return confirm('Permanently delete this payment? This cannot be undone.');"
+                          style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">🗑 Delete Forever</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="recycle-empty"><p>No deleted payments.</p></div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- ── Deleted Complaints ── -->
+    <div class="recycle-section">
+        <h3>⚠️ Complaints ({{ deleted_complaints.count }})</h3>
+        {% if deleted_complaints %}
+        <div class="recycle-list">
+            {% for complaint in deleted_complaints %}
+            <div class="recycle-item">
+                <div class="recycle-info">
+                    <p class="recycle-title">{{ complaint.title }}</p>
+                    <p class="property-meta">
+                        Status: <span class="complaint-status complaint-status-{{ complaint.status }}">{{ complaint.get_status_display }}</span>
+                    </p>
+                    <p class="property-meta">{{ complaint.get_category_display }} · {{ complaint.get_target_name }}</p>
+                    {% if is_owner %}
+                    <p class="property-meta">Tenant: {{ complaint.tenant.get_full_name|default:complaint.tenant.username }}</p>
+                    <p class="property-meta recycle-deleted-at">Removed: {{ complaint.owner_deleted_at|date:"d M Y, h:i A" }}</p>
+                    {% else %}
+                    <p class="property-meta recycle-deleted-at">Removed: {{ complaint.tenant_deleted_at|date:"d M Y, h:i A" }}</p>
+                    {% endif %}
+                </div>
+                <div class="recycle-actions">
+                    <a href="{% url 'complaints:detail' complaint.pk %}" class="btn btn-secondary btn-sm">👁 View</a>
+                    <form method="post" action="{% url 'core:restore' 'complaint' complaint.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-sm">♻️ Restore</button>
+                    </form>
+                    <form method="post" action="{% url 'core:permanent_delete' 'complaint' complaint.pk %}"
+                          onsubmit="return confirm('Permanently delete this complaint? This cannot be undone.');"
+                          style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">🗑 Delete Forever</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="recycle-empty"><p>No deleted complaints.</p></div>
+        {% endif %}
+    </div>
+
+    {% if total_deleted == 0 %}
+    <div class="empty-state">
+        <p>🎉 Recycle bin is empty.</p>
+        <a href="{% url 'core:home' %}" class="btn btn-secondary">Go Home</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

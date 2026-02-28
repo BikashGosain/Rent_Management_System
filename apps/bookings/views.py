@@ -141,7 +141,7 @@ def owner_bookings(request):
 @login_required
 def booking_detail(request, pk):
     """Owner or tenant views booking detail."""
-    booking = get_object_or_404(Booking, pk=pk)
+    booking = get_object_or_404(Booking.all_objects, pk=pk)
 
     # Only owner or tenant can view
     is_owner  = booking.get_owner() == request.user

@@ -1,12 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Rent Management System{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
+
 <body>
 
     <nav class="navbar">
@@ -15,48 +17,50 @@
         </div>
         <div class="nav-links">
             {% if user.is_authenticated %}
-                <span class="nav-user">Hello, {{ user.first_name|default:user.username }}</span>
-                {% if user.role == 'admin' or user.is_superuser %}
-                    <a href="{% url 'dashboard:admin' %}">Dashboard</a>
-                {% elif user.role == 'owner' %}
-                    <a href="{% url 'dashboard:owner' %}">Dashboard</a>
-                {% else %}
-                    <a href="{% url 'dashboard:tenant' %}">Dashboard</a>
-                {% endif %}
-                {% if user.is_authenticated and user.role == 'tenant' %}
-    <a href="{% url 'search:results' %}">Search</a>
-{% endif %}
-{% if user.is_authenticated and user.role == 'tenant' %}
-    <a href="{% url 'agreements:tenant_agreements' %}">My Agreements</a>
-{% elif user.is_authenticated and user.role == 'owner' %}
-    <a href="{% url 'agreements:owner_agreements' %}">Agreements</a>
-{% endif %}
-
-                <a href="{% url 'accounts:profile' %}">Profile</a>
-                <a href="{% url 'accounts:logout' %}">Logout</a>
+            <span class="nav-user">Hello, {{ user.first_name|default:user.username }}</span>
+            {% if user.role == 'admin' or user.is_superuser %}
+            <a href="{% url 'dashboard:admin' %}">Dashboard</a>
+            {% elif user.role == 'owner' %}
+            <a href="{% url 'dashboard:owner' %}">Dashboard</a>
             {% else %}
-                <a href="{% url 'accounts:login' %}">Login</a>
-                <a href="{% url 'accounts:register' %}">Register</a>
+            <a href="{% url 'dashboard:tenant' %}">Dashboard</a>
+            {% endif %}
+            {% if user.is_authenticated and user.role == 'tenant' %}
+            <a href="{% url 'search:results' %}">Search</a>
+            {% endif %}
+            {% if user.is_authenticated and user.role == 'tenant' %}
+            <a href="{% url 'agreements:tenant_agreements' %}">My Agreements</a>
+            {% elif user.is_authenticated and user.role == 'owner' %}
+            <a href="{% url 'agreements:owner_agreements' %}">Agreements</a>
+            {% endif %}
+
+            <a href="{% url 'accounts:profile' %}">Profile</a>
+            <a href="{% url 'accounts:logout' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}">Login</a>
+            <a href="{% url 'accounts:register' %}">Register</a>
             {% endif %}
         </div>
         {% if user.is_authenticated %}
-<a href="{% url 'notifications:list' %}" class="notif-bell">
-    🔔
-    {% if unread_notifications_count > 0 %}
-        <span class="notif-badge">{{ unread_notifications_count }}</span>
-    {% endif %}
-</a>
+        <a href="{% url 'notifications:list' %}" class="notif-bell">
+            🔔
+            {% if unread_notifications_count > 0 %}
+            <span class="notif-badge">{{ unread_notifications_count }}</span>
+            {% endif %}
+        </a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'reviews:my_reviews' %}">My Reviews</a>
+        {% endif %}
 {% if user.is_authenticated %}
-    <a href="{% url 'reviews:my_reviews' %}">My Reviews</a>
+    <a href="{% url 'core:recycle_bin' %}">🗑 Recycle Bin</a>
 {% endif %}
-
-{% endif %}
+        {% endif %}
     </nav>
 
     {% if messages %}
     <div class="messages">
         {% for message in messages %}
-            <div class="message message-{{ message.tags }}">{{ message }}</div>
+        <div class="message message-{{ message.tags }}">{{ message }}</div>
         {% endfor %}
     </div>
     {% endif %}
@@ -70,4 +74,5 @@
     </footer>
 
 </body>
+
 </html>

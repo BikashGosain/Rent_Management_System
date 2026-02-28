@@ -99,7 +99,7 @@ def tenant_agreements(request):
 @login_required
 def agreement_detail(request, pk):
     """Owner or tenant views agreement detail."""
-    agreement = get_object_or_404(Agreement, pk=pk)
+    agreement = get_object_or_404(Agreement.all_objects, pk=pk)
 
     is_owner  = agreement.owner  == request.user
     is_tenant = agreement.tenant == request.user
