@@ -45,6 +45,13 @@
                 <span class="complaint-status complaint-status-{{ complaint.status }}">{{ complaint.get_status_display }}</span>
                 <div class="complaint-actions">
                     <a href="{% url 'complaints:detail' complaint.pk %}" class="btn btn-secondary">View & Respond</a>
+                                {% if complaint.status == 'resolved' or complaint.status == 'closed' %}
+                                <form method="post" action="{% url 'complaints:delete' complaint.pk %}"
+                                    onsubmit="return confirm('Remove this complaint from your list?');" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">🗑 Remove</button>
+                                </form>
+                                {% endif %}
                 </div>
             </div>
         </div>

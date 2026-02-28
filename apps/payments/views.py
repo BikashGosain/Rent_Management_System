@@ -173,3 +173,18 @@ def payment_detail(request, pk):
     return render(request, 'payments/payment_detail.html', {
         'payment': payment, 'is_owner': is_owner, 'is_tenant': is_tenant
     })
+
+@login_required
+def delete_payment(request, pk):
+    payment = get_object_or_404(Payment, pk=pk, owner=request.user)
+
+    if payment.status != 'cancelled':
+        messages.error(request, 'Only cancelled payments can be removed.')
+        return redirect('payments:owner_payments')
+
+    if request.method == 'POST':
+        payment.soft_delete()
+        messages.success(request, 'Payment removed from your list.')
+        return redirect('payments:owner_payments')
+
+    return render(request, 'base_delete_confirm.html', {'object': payment, 'type': 'Payment'})

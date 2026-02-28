@@ -5,8 +5,9 @@ from apps.agreements.models import Agreement
 User = get_user_model()
 
 
-class Payment(models.Model):
+from apps.core.models import SoftDeleteModel
 
+class Payment(SoftDeleteModel):
     PAYMENT_TYPES = [
         ('rent',     'Rent Payment'),
         ('deposit',  'Security Deposit'),

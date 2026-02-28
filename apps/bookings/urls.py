@@ -16,4 +16,6 @@ urlpatterns = [
     path('<int:pk>/accept/',                                 views.accept_booking,    name='accept'),
     path('<int:pk>/reject/',                                 views.reject_booking,    name='reject'),
     path('<int:pk>/owner-cancel/',                           views.owner_cancel_booking, name='owner_cancel'),
+
+    path('<int:pk>/delete/', views.delete_booking, name='delete'),
 ]

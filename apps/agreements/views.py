@@ -191,3 +191,27 @@ def terminate_agreement(request, pk):
         return redirect('agreements:tenant_agreements')
 
     return render(request, 'agreements/terminate_confirm.html', {'agreement': agreement})
+
+@login_required
+def delete_agreement(request, pk):
+    agreement = get_object_or_404(Agreement, pk=pk)
+
+    is_owner  = agreement.owner  == request.user
+    is_tenant = agreement.tenant == request.user
+
+    if not (is_owner or is_tenant):
+        return HttpResponseForbidden('Access denied.')
+
+    allowed = ['terminated', 'expired']
+    if agreement.status not in allowed:
+        messages.error(request, f'Cannot delete an active agreement.')
+        return redirect('agreements:owner_agreements' if is_owner else 'agreements:tenant_agreements')
+
+    if request.method == 'POST':
+        agreement.soft_delete()
+        messages.success(request, 'Agreement removed from your list.')
+        if is_owner:
+            return redirect('agreements:owner_agreements')
+        return redirect('agreements:tenant_agreements')
+
+    return render(request, 'base_delete_confirm.html', {'object': agreement, 'type': 'Agreement'})

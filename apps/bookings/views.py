@@ -256,3 +256,28 @@ def owner_cancel_booking(request, pk):
         return redirect('bookings:owner_bookings')
 
     return render(request, 'bookings/booking_cancel_confirm.html', {'booking': booking})
+
+@login_required
+def delete_booking(request, pk):
+    booking = get_object_or_404(Booking, pk=pk)
+
+    is_owner  = booking.get_owner() == request.user
+    is_tenant = booking.tenant == request.user
+
+    if not (is_owner or is_tenant):
+        return HttpResponseForbidden('Access denied.')
+
+    # Only allow delete for inactive statuses
+    allowed = ['cancelled', 'rejected']
+    if booking.status not in allowed:
+        messages.error(request, f'Cannot delete a booking with status: {booking.get_status_display()}')
+        return redirect('bookings:my_bookings')
+
+    if request.method == 'POST':
+        booking.soft_delete()
+        messages.success(request, 'Booking removed from your list.')
+        if is_owner:
+            return redirect('bookings:owner_bookings')
+        return redirect('bookings:my_bookings')
+
+    return render(request, 'bookings/delete_confirm.html', {'object': booking, 'type': 'Booking'})

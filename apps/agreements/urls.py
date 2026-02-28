@@ -15,4 +15,6 @@ urlpatterns = [
     path('<int:pk>/',                       views.agreement_detail,  name='detail'),
     path('<int:pk>/sign/',                  views.sign_agreement,    name='sign'),
     path('<int:pk>/terminate/',             views.terminate_agreement, name='terminate'),
+
+    path('<int:pk>/delete/', views.delete_agreement, name='delete'),
 ]

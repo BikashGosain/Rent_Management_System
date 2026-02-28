@@ -6,8 +6,9 @@ from apps.agreements.models import Agreement
 User = get_user_model()
 
 
-class Complaint(models.Model):
+from apps.core.models import SoftDeleteModel
 
+class Complaint(SoftDeleteModel):
     CATEGORIES = [
         ('maintenance',  'Maintenance Issue'),
         ('noise',        'Noise Complaint'),

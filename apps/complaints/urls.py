@@ -17,4 +17,6 @@ urlpatterns = [
 
     # Shared
     path('<int:pk>/',     views.complaint_detail, name='detail'),
+
+    path('<int:pk>/delete/', views.delete_complaint, name='delete'),
 ]

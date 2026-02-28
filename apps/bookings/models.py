@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from apps.properties.models import Property, Room
+from apps.core.models import SoftDeleteModel
 
 User = get_user_model()
 
 
-class Booking(models.Model):
+class Booking(SoftDeleteModel):
 
     STATUS_CHOICES = [
         ('pending',   'Pending'),
