@@ -163,7 +163,7 @@ def tenant_payments(request):
 @login_required
 def payment_detail(request, pk):
     """Owner or tenant views payment detail."""
-    payment   = get_object_or_404(Payment, pk=pk)
+    payment   = get_object_or_404(Payment.all_objects, pk=pk)
     is_owner  = payment.owner  == request.user
     is_tenant = payment.tenant == request.user
 

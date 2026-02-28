@@ -101,7 +101,7 @@ def owner_complaints(request):
 @login_required
 def complaint_detail(request, pk):
     """Owner or tenant views complaint detail and responses."""
-    complaint = get_object_or_404(Complaint, pk=pk)
+    complaint = get_object_or_404(Complaint.all_objects, pk=pk)
 
     is_owner  = complaint.owner  == request.user
     is_tenant = complaint.tenant == request.user
