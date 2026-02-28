@@ -1,4 +1,4 @@
-// ===================== SIDEBAR DROPDOWN =====================
+// ===================== SIDEBAR DROPDOWN (nav items) =====================
 const toggleDropdown = (dropdown, menu, isOpen) => {
   dropdown.classList.toggle("open", isOpen);
   menu.style.height = isOpen ? `${menu.scrollHeight}px` : 0;
@@ -15,21 +15,40 @@ document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggle) => {
     e.preventDefault();
     const dropdown = dropdownToggle.closest(".dropdown-container");
     const menu = dropdown.querySelector(".dropdown-menu");
-    const isOpen = dropdown.classList.contains("open");
+    const wasOpen = dropdown.classList.contains("open");
     closeAllDropdowns();
-    toggleDropdown(dropdown, menu, !isOpen);
+    if (!wasOpen) {
+      toggleDropdown(dropdown, menu, true);
+    }
   });
 });
 
 // ===================== SIDEBAR TOGGLE =====================
 const sidebar = document.querySelector(".sidebar");
 const overlay = document.querySelector(".sidebar-overlay");
+
 const isMobile = () => window.innerWidth <= 768;
 
-document.querySelectorAll(".sidebar-toggler").forEach((button) => {
-  button.addEventListener("click", () => {
+// The button inside the header (always visible)
+document.getElementById("sidebarToggleBtn").addEventListener("click", () => {
+  closeAllDropdowns();
+  if (isMobile()) {
+    // Mobile: slide in/out
+    const isOpen = sidebar.classList.contains("mobile-open");
+    sidebar.classList.toggle("mobile-open", !isOpen);
+    overlay.classList.toggle("active", !isOpen);
+  } else {
+    // Desktop/tablet: collapse to icon-only
+    sidebar.classList.toggle("collapsed");
+  }
+});
+
+// The chevron button inside the sidebar itself
+document.querySelectorAll(".sidebar-toggler").forEach((btn) => {
+  btn.addEventListener("click", () => {
     closeAllDropdowns();
     if (isMobile()) {
+      // Close the sidebar on mobile
       sidebar.classList.remove("mobile-open");
       overlay.classList.remove("active");
     } else {
@@ -38,53 +57,50 @@ document.querySelectorAll(".sidebar-toggler").forEach((button) => {
   });
 });
 
-document.querySelector(".sidebar-menu-button").addEventListener("click", () => {
-  closeAllDropdowns();
-  sidebar.classList.toggle("mobile-open");
-  overlay.classList.toggle("active");
-});
-
-// Close sidebar when overlay is clicked (mobile)
+// Close sidebar when clicking overlay (mobile)
 overlay.addEventListener("click", () => {
   sidebar.classList.remove("mobile-open");
   overlay.classList.remove("active");
 });
 
-// Collapse on medium screens by default
-if (window.innerWidth <= 1024 && window.innerWidth > 768) {
+// Auto-collapse on tablet (769–1024px), leave mobile alone
+if (window.innerWidth > 768 && window.innerWidth <= 1024) {
   sidebar.classList.add("collapsed");
 }
 
-// Handle resize
+// Handle window resize
 let resizeTimer;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
     if (!isMobile()) {
+      // Clean up mobile state when resizing to desktop
       sidebar.classList.remove("mobile-open");
       overlay.classList.remove("active");
+    } else {
+      // Clean up desktop collapsed state when resizing to mobile
+      sidebar.classList.remove("collapsed");
     }
   }, 150);
 });
 
 // ===================== PROFILE DROPDOWN =====================
 const profileToggle = document.getElementById("profileToggle");
-const profileDropdown = document.getElementById("profileDropdown");
-const profileWrapper = profileToggle.closest(".user-profile-wrapper");
+const profileWrapper = document.getElementById("profileWrapper");
 
 profileToggle.addEventListener("click", (e) => {
   e.stopPropagation();
   profileWrapper.classList.toggle("open");
 });
 
-// Close profile dropdown when clicking outside
+// Close when clicking anywhere outside
 document.addEventListener("click", (e) => {
   if (!profileWrapper.contains(e.target)) {
     profileWrapper.classList.remove("open");
   }
 });
 
-// Close profile dropdown on Escape key
+// Close on Escape
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     profileWrapper.classList.remove("open");
