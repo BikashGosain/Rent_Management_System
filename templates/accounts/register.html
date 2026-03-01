@@ -1,31 +1,77 @@
 {% extends 'base.html' %}
-
 {% block title %}Register — RentMS{% endblock %}
-
 {% block content %}
 <div class="auth-container">
     <div class="auth-card">
-        <h2>Create Account</h2>
-        <p class="auth-subtitle">Join as a House Owner or Tenant</p>
+        <div class="auth-logo">🏠</div>
+        <h1 class="auth-title">Create Account</h1>
+        <p class="auth-subtitle">Join RentMS and find your perfect home</p>
+
+        <!-- Google OAuth -->
+        <a href="{% url 'social:begin' 'google-oauth2' %}" class="google-btn">
+            <svg width="18" height="18" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.3 30.3 0 24 0 14.8 0 6.9 5.4 3 13.3l7.9 6.1C12.8 13 17.9 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.6 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.2-10.1 7.2-17z"/>
+                <path fill="#FBBC05" d="M10.9 28.6A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6L2.4 13.3A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.4 10.7l8.5-6.1z"/>
+                <path fill="#34A853" d="M24 48c6.3 0 11.6-2.1 15.5-5.7l-7.5-5.8c-2.1 1.4-4.8 2.2-8 2.2-6.1 0-11.2-3.5-13.1-8.5l-8 6.1C6.9 42.6 14.8 48 24 48z"/>
+            </svg>
+            Continue with Google
+        </a>
+
+        <div class="auth-divider"><span>or register with email</span></div>
 
         <form method="post">
             {% csrf_token %}
-            {% for field in form %}
+            <div class="form-row-2">
                 <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.help_text %}
-                        <small class="help-text">{{ field.help_text }}</small>
-                    {% endif %}
-                    {% for error in field.errors %}
-                        <small class="error-text">{{ error }}</small>
-                    {% endfor %}
+                    <label>First Name</label>
+                    {{ form.first_name }}
+                    {% for e in form.first_name.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
                 </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    {{ form.last_name }}
+                    {% for e in form.last_name.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                {{ form.username }}
+                {% for e in form.username.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                {{ form.email }}
+                {% for e in form.email.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                {{ form.phone }}
+                {% for e in form.phone.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+            </div>
+            <div class="form-group">
+                <label>I am a</label>
+                {{ form.role }}
+                {% for e in form.role.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                {{ form.password1 }}
+                {% for e in form.password1.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                {{ form.password2 }}
+                {% for e in form.password2.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+            </div>
+            {% for e in form.non_field_errors %}
+            <span class="field-error">{{ e }}</span>
             {% endfor %}
-            <button type="submit" class="btn btn-primary">Create Account</button>
+
+            <button type="submit" class="auth-btn">Create Account →</button>
         </form>
 
-        <p class="auth-link">Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
+        <p class="auth-switch">Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
     </div>
 </div>
 {% endblock %}

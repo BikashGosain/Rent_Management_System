@@ -1,36 +1,142 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}My Profile — RentMS{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="profile-container">
-    <div class="profile-card">
-        <div class="profile-header">
-            {% if user.photo %}
-                <img src="{{ user.photo.url }}" alt="Profile Photo" class="profile-photo">
-            {% else %}
-                <div class="profile-photo-placeholder">{{ user.username|first|upper }}</div>
-            {% endif %}
-            <div>
-                <h2>{{ user.get_full_name|default:user.username }}</h2>
-                <span class="role-badge role-{{ user.role }}">{{ user.get_role_display }}</span>
+<div class="auth-container" style="align-items:flex-start; padding-top:2rem;">
+<div style="width:100%; max-width:700px; margin:0 auto; display:flex; flex-direction:column; gap:1.25rem;">
+
+    <!-- ── Profile Header Card ── -->
+    <div class="profile-view-card">
+        <div class="profile-view-header">
+
+            <!-- Avatar -->
+            <div class="profile-view-avatar-wrap">
+                {% if user.photo %}
+                    <img src="{{ user.photo.url }}" alt="Profile Photo" class="profile-view-avatar" />
+                {% else %}
+                    <div class="profile-view-avatar profile-view-avatar-ph">{{ user.username|first|upper }}</div>
+                {% endif %}
+                {% if user.is_verified %}
+                <span class="profile-verified-badge" title="Verified">✓</span>
+                {% endif %}
             </div>
+
+            <!-- Info -->
+            <div class="profile-view-info">
+                <h2 class="profile-view-name">{{ user.get_full_name|default:user.username }}</h2>
+                <p class="profile-view-username">@{{ user.username }}</p>
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.4rem;">
+                    <span class="role-badge role-{{ user.role }}">
+                        {% if user.role == 'owner' %}🏠{% elif user.role == 'tenant' %}🔑{% else %}⚙️{% endif %}
+                        {{ user.get_role_display }}
+                    </span>
+                    {% if user.is_google %}
+                    <span class="profile-google-badge">
+                        <svg width="13" height="13" viewBox="0 0 48 48" style="vertical-align:middle;">
+                            <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.3 30.3 0 24 0 14.8 0 6.9 5.4 3 13.3l7.9 6.1C12.8 13 17.9 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.6 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.2-10.1 7.2-17z"/>
+                            <path fill="#FBBC05" d="M10.9 28.6A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6L2.4 13.3A23.9 23.9 0 0 0 0 24c0 3.8.9 7.4 2.4 10.7l8.5-6.1z"/>
+                            <path fill="#34A853" d="M24 48c6.3 0 11.6-2.1 15.5-5.7l-7.5-5.8c-2.1 1.4-4.8 2.2-8 2.2-6.1 0-11.2-3.5-13.1-8.5l-8 6.1C6.9 42.6 14.8 48 24 48z"/>
+                        </svg>
+                        Google Account
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Edit Button -->
+            <a href="{% url 'accounts:edit_profile' %}" class="profile-edit-btn">
+                ✏️ Edit Profile
+            </a>
         </div>
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% for error in field.errors %}
-                        <small class="error-text">{{ error }}</small>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">Update Profile</button>
-            <a href="{% url 'accounts:password_change' %}" class="btn btn-secondary">Change Password</a>
-        </form>
+        <!-- Bio -->
+        {% if user.bio %}
+        <p class="profile-bio">{{ user.bio }}</p>
+        {% endif %}
     </div>
+
+    <!-- ── Details Card ── -->
+    <div class="profile-view-card">
+        <h3 class="profile-section-title">Contact Information</h3>
+        <div class="profile-details-grid">
+            <div class="profile-detail-item">
+                <span class="profile-detail-icon">📧</span>
+                <div>
+                    <p class="profile-detail-label">Email</p>
+                    <p class="profile-detail-value">{{ user.email|default:"—" }}</p>
+                </div>
+            </div>
+            <div class="profile-detail-item">
+                <span class="profile-detail-icon">📱</span>
+                <div>
+                    <p class="profile-detail-label">Phone</p>
+                    <p class="profile-detail-value">{{ user.phone|default:"—" }}</p>
+                </div>
+            </div>
+            <div class="profile-detail-item">
+                <span class="profile-detail-icon">📍</span>
+                <div>
+                    <p class="profile-detail-label">Address</p>
+                    <p class="profile-detail-value">{{ user.address|default:"—" }}</p>
+                </div>
+            </div>
+            <div class="profile-detail-item">
+                <span class="profile-detail-icon">📅</span>
+                <div>
+                    <p class="profile-detail-label">Member Since</p>
+                    <p class="profile-detail-value">{{ user.date_joined|date:"d M Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Quick Actions Card ── -->
+    <div class="profile-view-card">
+        <h3 class="profile-section-title">Account Actions</h3>
+        <div class="profile-actions-grid">
+            <a href="{% url 'accounts:edit_profile' %}" class="profile-action-btn">
+                <span>✏️</span> Edit Profile
+            </a>
+            {% if not user.is_google %}
+            <a href="{% url 'accounts:password_change' %}" class="profile-action-btn">
+                <span>🔒</span> Change Password
+            </a>
+            {% endif %}
+            {% if user.is_owner %}
+            <a href="{% url 'properties:list' %}" class="profile-action-btn">
+                <span>🏠</span> My Properties
+            </a>
+            <a href="{% url 'bookings:owner_bookings' %}" class="profile-action-btn">
+                <span>📋</span> Bookings
+            </a>
+            {% elif user.is_tenant %}
+            <a href="{% url 'bookmarks:list' %}" class="profile-action-btn">
+                <span>❤️</span> Favorites
+            </a>
+            <a href="{% url 'bookings:my_bookings' %}" class="profile-action-btn">
+                <span>📋</span> My Bookings
+            </a>
+            {% endif %}
+            <a href="{% url 'notifications:list' %}" class="profile-action-btn">
+                <span>🔔</span> Notifications
+                {% if unread_notifications_count > 0 %}
+                <span class="pub-badge pub-badge-red">{{ unread_notifications_count }}</span>
+                {% endif %}
+            </a>
+            <a href="{% url 'core:recycle_bin' %}" class="profile-action-btn">
+                <span>🗑</span> Recycle Bin
+            </a>
+            <a href="{% url 'accounts:logout' %}" class="profile-action-btn profile-action-logout">
+                <span>🚪</span> Logout
+            </a>
+        </div>
+    </div>
+
+</div>
 </div>
 {% endblock %}

@@ -1,0 +1,517 @@
+/* =====================================================
+   profile.css
+   Full styles for profile.html and edit_profile.html
+   ===================================================== */
+
+/* ── Page Background ── */
+.auth-container {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #f1f3ff, #e8eaff);
+}
+
+/* ── Auth Card (used in edit_profile) ── */
+.auth-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 8px 40px rgba(99, 102, 241, 0.12);
+    border: 1px solid #e5e7eb;
+}
+
+/* ── Form Groups ── */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.9rem;
+}
+
+.form-group label {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 9px;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
+    color: #1f2937;
+    background: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.field-error {
+    font-size: 0.78rem;
+    color: #ef4444;
+    display: block;
+    margin-top: 2px;
+}
+
+/* ── Auth Button ── */
+.auth-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.auth-btn:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+}
+
+/* ── Profile View Card ── */
+.profile-view-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.2s;
+}
+
+.profile-view-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.09);
+}
+
+/* ── Profile Header ── */
+.profile-view-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+/* ── Avatar Wrapper ── */
+.profile-view-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profile-view-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-view-avatar-ph {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: 800;
+    user-select: none;
+}
+
+.profile-verified-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 22px;
+    height: 22px;
+    background: #2ecc71;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+}
+
+/* ── Profile Info ── */
+.profile-view-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.profile-view-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #1f2937;
+    margin: 0 0 0.1rem;
+}
+
+.profile-view-username {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* ── Google Badge ── */
+.profile-google-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.6rem;
+    border-radius: 20px;
+}
+
+/* ── Edit Button ── */
+.profile-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    background: #6366f1;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.84rem;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.profile-edit-btn:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+}
+
+/* ── Bio ── */
+.profile-bio {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+    font-size: 0.9rem;
+    color: #4b5563;
+    line-height: 1.7;
+}
+
+/* ── Section Title ── */
+.profile-section-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 1rem;
+}
+
+/* ── Details Grid ── */
+.profile-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+}
+
+.profile-detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.85rem;
+    background: #f8f9fc;
+    border-radius: 10px;
+    border: 1px solid #f0f0f0;
+    transition: background 0.2s;
+}
+
+.profile-detail-item:hover {
+    background: #eef2ff;
+}
+
+.profile-detail-icon {
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.profile-detail-label {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.2rem;
+}
+
+.profile-detail-value {
+    font-size: 0.88rem;
+    color: #1f2937;
+    font-weight: 500;
+    margin: 0;
+    word-break: break-word;
+}
+
+/* ── Actions Grid ── */
+.profile-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.profile-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    background: #f8f9fc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #374151;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.profile-action-btn:hover {
+    background: #eef2ff;
+    border-color: #6366f1;
+    color: #6366f1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+}
+
+.profile-action-logout {
+    color: #ef4444;
+}
+
+.profile-action-logout:hover {
+    background: #fff5f5;
+    border-color: #ef4444;
+    color: #ef4444;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+}
+
+/* ── Edit Profile — Avatar Section ── */
+.edit-avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1rem;
+    background: #f8f9fc;
+    border-radius: 12px;
+    margin-bottom: 1.25rem;
+    border: 1px solid #e5e7eb;
+}
+
+.edit-avatar-preview {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e5e7eb;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+}
+
+.edit-avatar-preview:hover {
+    border-color: #6366f1;
+}
+
+.edit-avatar-placeholder {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.edit-photo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0.4rem 0.9rem;
+    background: #fff;
+    border: 1.5px solid #6366f1;
+    border-radius: 8px;
+    color: #6366f1;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.edit-photo-btn:hover {
+    background: #eef2ff;
+    transform: translateY(-1px);
+}
+
+/* ── Role Badges ── */
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.role-owner  { background: #dbeafe; color: #1e40af; }
+.role-tenant { background: #d5f5e3; color: #1e8449; }
+.role-admin  { background: #fde8d8; color: #c0392b; }
+
+/* ── Pub Badge (notification count) ── */
+.pub-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #6366f1;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 10px;
+    line-height: 1;
+    margin-left: auto;
+}
+
+.pub-badge-red { background: #ef4444; }
+
+/* ── Page Load Animation ── */
+.profile-view-card {
+    animation: cardSlideIn 0.3s ease both;
+}
+/* ── Add these to static/css/profile.css ── */
+
+/* pw-field: password inputs rendered manually in password_change.html */
+.pw-field {
+    width: 100%;
+    padding: 0.65rem 2.6rem 0.65rem 0.9rem; /* right padding for eye icon */
+    border: 1.5px solid #e5e7eb;
+    border-radius: 9px;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
+    color: #1f2937;
+    background: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.pw-field:focus {
+    outline: none;
+    border-color: #6366f1;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* input-error: red border when field has validation errors */
+.input-error {
+    border-color: #ef4444 !important;
+    background: #fff5f5 !important;
+}
+
+.input-error:focus {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.profile-view-card:nth-child(1) { animation-delay: 0s; }
+.profile-view-card:nth-child(2) { animation-delay: 0.05s; }
+.profile-view-card:nth-child(3) { animation-delay: 0.1s; }
+
+@keyframes cardSlideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .profile-details-grid {
+        grid-template-columns: 1fr;
+    }
+    .profile-actions-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-view-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .profile-edit-btn {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+    .edit-avatar-section {
+        flex-direction: column;
+        text-align: center;
+    }
+    .auth-card {
+        padding: 1.75rem 1.25rem;
+    }
+    .form-row-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 400px) {
+    .profile-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    .profile-view-name {
+        font-size: 1.1rem;
+    }
+}
+

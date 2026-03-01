@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Verify OTP — RentMS{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">🔐</div>
+        <h1 class="auth-title">Verify OTP</h1>
+        <p class="auth-subtitle">
+            We sent a 6-digit code to<br>
+            <strong>{{ masked_email }}</strong>
+            {% if masked_phone %}and <strong>{{ masked_phone }}</strong>{% endif %}
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="otp-group">
+                {{ form.code }}
+                {% for e in form.code.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
+            </div>
+
+            <button type="submit" class="auth-btn">Verify Code →</button>
+        </form>
+
+        <!-- Resend -->
+        <div class="resend-section" id="resendSection">
+            <p class="resend-text">
+                Didn't receive code?
+                <span id="resendTimer">Wait <span id="countdown">{{ resend_wait }}</span>s</span>
+                <a href="{% url 'accounts:resend_otp' %}" id="resendBtn" style="display:none;">Resend OTP</a>
+            </p>
+        </div>
+
+        {% if purpose == 'register' %}
+        <p class="auth-switch"><a href="{% url 'accounts:register' %}">← Back to Register</a></p>
+        {% else %}
+        <p class="auth-switch"><a href="{% url 'accounts:forgot_password' %}">← Back</a></p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+(function() {
+    let seconds = {{ resend_wait }};
+    const timer   = document.getElementById('countdown');
+    const timerEl = document.getElementById('resendTimer');
+    const btn     = document.getElementById('resendBtn');
+
+    if (seconds <= 0) {
+        timerEl.style.display = 'none';
+        btn.style.display = 'inline';
+        return;
+    }
+
+    const interval = setInterval(() => {
+        seconds--;
+        if (timer) timer.textContent = seconds;
+        if (seconds <= 0) {
+            clearInterval(interval);
+            timerEl.style.display = 'none';
+            btn.style.display = 'inline';
+        }
+    }, 1000);
+})();
+</script>
+{% endblock %}
