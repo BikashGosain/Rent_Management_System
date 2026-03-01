@@ -11,7 +11,7 @@ class User(AbstractUser):
         ('tenant', 'Tenant'),
         ('admin',  'Admin'),
     ]
-    role        = models.CharField(max_length=10, choices=ROLE_CHOICES, default='tenant')
+    role        = models.CharField(max_length=10, choices=ROLE_CHOICES)
     phone       = models.CharField(max_length=20, blank=True)
     photo       = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
     address     = models.TextField(blank=True)
