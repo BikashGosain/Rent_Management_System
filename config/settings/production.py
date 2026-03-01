@@ -1,20 +1,17 @@
 from .base import *
+import dj_database_url
 from decouple import config
  
 DEBUG = False
-ALLOWED_HOSTS = [config('ALLOWED_HOSTS', default='yourdomain.com').split(',')]
+ALLOWED_HOSTS = [config('ALLOWED_HOSTS', default='Rent_Management_System.onrender.com').split(',')]
  
 # PostgreSQL — switch simply by deploying with this settings file
 # All credentials come from .env (never hardcoded)
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':     config('DB_NAME'),
-        'USER':     config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST':     config('DB_HOST', default='localhost'),
-        'PORT':     config('DB_PORT', default='5432'),
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
  
 # Static files served by whitenoise (no nginx needed for static)
