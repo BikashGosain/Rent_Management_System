@@ -12,12 +12,9 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='rent-management-system-1wyn.onr
 # Database
 DATABASES = {
     'default': {
-        **dj_database_url.config(
-            default=os.getenv('DATABASE_URL'),
-            conn_max_age=600
-        ),
+        **dj_database_url.config(default=os.getenv('DATABASE_URL')),
         'OPTIONS': {
-            'options': '-c search_path=project3'
+            'options': '-c search_path=project1'
         }
     }
 }
