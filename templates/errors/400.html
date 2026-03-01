@@ -14,10 +14,10 @@
             <h2 class="ep-error-title">Bad Request</h2>
             <p class="ep-error-message">Your request is invalid. Please check and try again.</p>
             <div class="ep-error-actions">
-                <a href="javascript:history.length > 1 ? history.back() : '{% url 'home' %}'" class="ep-btn ep-btn-secondary">
+                <a href="javascript:history.length > 1 ? history.back() : '{% url 'core:home' %}'" class="ep-btn ep-btn-secondary">
                     ← Go Back
                 </a>
-                <a href="{% url 'home' %}" class="ep-btn ep-btn-primary">
+                <a href="{% url 'core:home' %}" class="ep-btn ep-btn-primary">
                     🏠 Go to Home
                 </a>
             </div>
