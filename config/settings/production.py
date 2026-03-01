@@ -1,9 +1,14 @@
 from .base import *
+import os
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 import dj_database_url
 from decouple import config
  
 DEBUG = False
-ALLOWED_HOSTS = [config('ALLOWED_HOSTS', default='Rent_Management_System.onrender.com').split(',')]
+ALLOWED_HOSTS = [config('ALLOWED_HOSTS', default='https://Rent_Management_System.onrender.com').split(',')]
  
 # PostgreSQL — switch simply by deploying with this settings file
 # All credentials come from .env (never hardcoded)
@@ -13,6 +18,7 @@ DATABASES = {
         default=config('DATABASE_URL')
     )
 }
+ 
  
 # Static files served by whitenoise (no nginx needed for static)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
