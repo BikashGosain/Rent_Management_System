@@ -1,16 +1,25 @@
 from .base import *
 import os
-import dj_database_url
+
 from decouple import config
+import dj_database_url
 
 DEBUG = False
 
 # ALLOWED_HOSTS must be flat strings, no protocol
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='rent-management-system-1wyn.onrender.com,www.bikashgosain.com.np,bikashgosain.com.np').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='rent-management-system-1wyn.onrender.com,www.bikashgosain.com.np,bikashgosain.com.np,127.0.0.1,localhost,.onrender.com').split(',')
 
 # Database
 DATABASES = {
-    'default': dj_database_url.config(default=config('DATABASE_URL'))
+    'default': {
+        **dj_database_url.config(
+            default=os.getenv('DATABASE_URL'),
+            conn_max_age=600
+        ),
+        'OPTIONS': {
+            'options': '-c search_path=project3'
+        }
+    }
 }
 
 # Static files
