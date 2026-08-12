@@ -11,12 +11,9 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='rent-management-system-1wyn.onr
 
 # Database
 DATABASES = {
-    'default': {
-        **dj_database_url.config(default=config('DATABASE_URL')),
-        'OPTIONS': {
-            'options': '-c search_path=project1,public'
-        }
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
 
 # Static files
