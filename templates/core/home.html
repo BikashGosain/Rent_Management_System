@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
 {% block title %}RentMS — Find Your Perfect Home{% endblock %}
 
 {% block content %}
@@ -93,9 +92,9 @@
             {% for p in featured_whole %}
             <div class="featured-card">
                 {% if p.photos.first %}
-                <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="featured-img">
+                    <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="featured-img">
                 {% else %}
-                <div class="featured-img-placeholder">🏠</div>
+                    <div class="featured-img-placeholder">🏠</div>
                 {% endif %}
                 <div class="featured-card-body">
                     <span class="result-tag">{{ p.get_type_display }}</span>
@@ -107,8 +106,7 @@
                         <span>🚿 {{ p.total_bathrooms }} Bath</span>
                         <span>{{ p.get_furnishing_display }}</span>
                     </div>
-                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-primary"
-                        style="margin-top:0.75rem; display:block; text-align:center;">View Details</a>
+                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-primary" style="margin-top:0.75rem; display:block; text-align:center;">View Details</a>
                 </div>
             </div>
             {% endfor %}
@@ -129,9 +127,9 @@
             {% for p in featured_rooms %}
             <div class="featured-card">
                 {% if p.photos.first %}
-                <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="featured-img">
+                    <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="featured-img">
                 {% else %}
-                <div class="featured-img-placeholder">🚪</div>
+                    <div class="featured-img-placeholder">🚪</div>
                 {% endif %}
                 <div class="featured-card-body">
                     <span class="result-tag" style="background:#f3e8ff; color:#6b21a8;">Individual Rooms</span>
@@ -142,8 +140,7 @@
                         <span>🏠 {{ p.total_rooms }} Total Rooms</span>
                         <span>{{ p.get_furnishing_display }}</span>
                     </div>
-                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-primary"
-                        style="margin-top:0.75rem; display:block; text-align:center;">View Rooms</a>
+                    <a href="{% url 'properties:detail' p.pk %}" class="btn btn-primary" style="margin-top:0.75rem; display:block; text-align:center;">View Rooms</a>
                 </div>
             </div>
             {% endfor %}
@@ -161,17 +158,14 @@
             {% for review in testimonials %}
             <div class="testimonial-card">
                 <div class="testimonial-stars">
-                    {% for i in review.get_filled_stars %}★{% endfor %}{% for i in review.get_empty_stars %}☆{% endfor
-                    %}
+                    {% for i in review.get_filled_stars %}★{% endfor %}{% for i in review.get_empty_stars %}☆{% endfor %}
                 </div>
                 <p class="testimonial-comment">"{{ review.comment|truncatewords:20 }}"</p>
                 <div class="testimonial-author">
                     <div class="testimonial-avatar">{{ review.reviewer.username|first|upper }}</div>
                     <div>
-                        <p class="testimonial-name">{{ review.reviewer.get_full_name|default:review.reviewer.username }}
-                        </p>
-                        {% if review.property %}<p class="testimonial-property">{{ review.property.title }}</p>{% endif
-                        %}
+                        <p class="testimonial-name">{{ review.reviewer.get_full_name|default:review.reviewer.username }}</p>
+                        {% if review.property %}<p class="testimonial-property">{{ review.property.title }}</p>{% endif %}
                     </div>
                 </div>
             </div>
@@ -198,8 +192,7 @@
                 {% if not request.user.is_authenticated %}
                 <h3>Get Started Today</h3>
                 <p>Join thousands of happy tenants and owners.</p>
-                <a href="{% url 'accounts:register' %}" class="btn btn-primary" style="margin-right:0.5rem;">Register
-                    Now</a>
+                <a href="{% url 'accounts:register' %}" class="btn btn-primary" style="margin-right:0.5rem;">Register Now</a>
                 <a href="{% url 'accounts:login' %}" class="btn btn-secondary">Login</a>
                 {% else %}
                 <h3>Welcome back!</h3>

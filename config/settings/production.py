@@ -7,7 +7,10 @@ import dj_database_url
 DEBUG = False
 
 # ALLOWED_HOSTS must be flat strings, no protocol
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='rent-management-system-1wyn.onrender.com,www.bikashgosain.com.np,bikashgosain.com.np,127.0.0.1,localhost,.onrender.com').split(',')
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='rent-management-system-1wyn.onrender.com,www.bikashgosain.com.np,bikashgosain.com.np,127.0.0.1,localhost,.onrender.com'
+).split(',')
 
 # Database
 DATABASES = {
