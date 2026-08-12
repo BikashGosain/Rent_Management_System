@@ -3,11 +3,10 @@
 import os
 import sys
 
-
 def main():
     """Run administrative tasks."""
-    # Use production settings for Render deployment
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')
+    # Use development settings for local development
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.development')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

@@ -1,0 +1,15 @@
+id,property_id,room_number,room_type,description,bedrooms,bathroom_type,kitchen_type,floor_number,area_sqft,furnishing,rent_price,security_deposit,advance_months,status,created_at,updated_at
+1,2,A101,single,Cozy single room on 1st floor with attached bathroom.,1,attached,shared,1,180,furnished,8000,8000,1,occupied,2025-01-15,2025-01-15
+2,2,A102,double,"Spacious double room, ideal for couples.",1,shared,shared,1,220,semi,10000,10000,1,available,2025-01-15,2025-01-15
+3,2,A103,single,Budget single room with shared bathroom.,1,shared,shared,1,150,unfurnished,6500,6500,1,available,2025-01-15,2025-01-15
+4,2,B201,double,2nd floor double room with balcony.,1,attached,shared,2,240,furnished,12000,12000,1,occupied,2025-01-15,2025-01-15
+5,2,B202,triple,Large triple room suitable for 3 occupants.,1,shared,shared,2,320,semi,14000,14000,1,available,2025-01-15,2025-01-15
+6,2,C301,studio,Top floor studio with city view.,1,attached,attached,3,300,furnished,16000,16000,1,available,2025-01-15,2025-01-15
+7,3,GF-1,single,Ground floor room near main entrance.,1,shared,shared,1,160,unfurnished,5500,5500,1,available,2025-01-20,2025-01-20
+8,3,GF-2,single,Ground floor room with window.,1,shared,shared,1,160,unfurnished,5500,5500,1,occupied,2025-01-20,2025-01-20
+9,3,FF-1,double,First floor double room.,1,shared,shared,2,200,semi,8000,8000,1,available,2025-01-20,2025-01-20
+10,3,FF-2,double,First floor room with balcony access.,1,attached,shared,2,210,semi,9000,9000,1,occupied,2025-01-20,2025-01-20
+11,6,101,single,Ground floor heritage-style room.,1,shared,shared,1,180,semi,6000,6000,1,available,2025-02-15,2025-02-15
+12,6,102,double,Spacious ground floor room.,1,shared,shared,1,220,semi,8000,8000,1,available,2025-02-15,2025-02-15
+13,6,201,single,First floor room with courtyard view.,1,attached,shared,2,175,semi,7000,7000,1,occupied,2025-02-15,2025-02-15
+14,6,202,double,First floor double room.,1,shared,shared,2,230,unfurnished,7500,7500,1,available,2025-02-15,2025-02-15

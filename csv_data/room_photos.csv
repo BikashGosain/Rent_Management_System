@@ -1,0 +1,14 @@
+id,room_id,image,caption,is_cover,uploaded_at
+1,1,rooms/r1_main.jpg,Room Main View,True,2025-01-15
+2,1,rooms/r1_bath.jpg,Attached Bathroom,False,2025-01-15
+3,2,rooms/r2_main.jpg,Double Room View,True,2025-01-15
+4,3,rooms/r3_main.jpg,Budget Room,True,2025-01-15
+5,4,rooms/r4_balcony.jpg,Balcony View,True,2025-01-15
+6,4,rooms/r4_main.jpg,Room Interior,False,2025-01-15
+7,5,rooms/r5_main.jpg,Triple Room View,True,2025-01-15
+8,6,rooms/r6_studio.jpg,Studio View,True,2025-01-15
+9,6,rooms/r6_kitchen.jpg,Attached Kitchen,False,2025-01-15
+10,7,rooms/r7_main.jpg,Ground Floor Room,True,2025-01-20
+11,9,rooms/r9_main.jpg,Double Room,True,2025-01-20
+12,11,rooms/r11_heritage.jpg,Heritage Room,True,2025-02-15
+13,12,rooms/r12_main.jpg,Large Double Room,True,2025-02-15
