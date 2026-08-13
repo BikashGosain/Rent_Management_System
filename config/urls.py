@@ -31,11 +31,13 @@ urlpatterns = [
     path("properties/", include("apps.properties.urls")),
     path("api/", include("apps.properties.api_urls")),
     path("search/", include("apps.search.urls")),
+    path('api/search/',     include('apps.search.api_urls')),
     path("bookings/", include("apps.bookings.urls")),
     path("api/bookings/", include("apps.bookings.api_urls")),
     path("agreements/", include("apps.agreements.urls")),
     path("payments/", include("apps.payments.urls")),
     path("complaints/", include("apps.complaints.urls")),
+    path('api/complaints/', include('apps.complaints.api_urls')),
     path("notifications/", include("apps.notifications.urls")),
     path("reviews/", include("apps.reviews.urls")),
     
