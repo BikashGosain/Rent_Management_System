@@ -105,6 +105,7 @@
 
         <div class="detail-actions">
             <a href="{% url 'properties:detail' property.pk %}" class="btn btn-secondary">← Back to Property</a>
+            <a href="{% url 'properties:detail' property.pk %}" class="btn btn-primary">View Other Available Rooms</a>
             {% if request.user == property.owner %}
                 <a href="{% url 'properties:room_edit' property.pk room.pk %}" class="btn btn-primary">Edit Room</a>
                 <a href="{% url 'properties:room_delete' property.pk room.pk %}" class="btn btn-danger">Delete Room</a>

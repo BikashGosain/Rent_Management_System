@@ -145,8 +145,6 @@
     {% if property.is_available %}
         {% if property.rent_type == "whole" %}
             <a href="{% url 'bookings:book_property' property.pk %}" class="btn btn-primary">Book Entire Property</a>
-        {% elif property.rent_type == "rooms" %}
-            <a href="{% url 'properties:detail' property.pk %}" class="btn btn-primary">View Available Rooms</a>
         {% endif %}
     {% else %}
         <span class="btn btn-secondary">Not Available</span>
