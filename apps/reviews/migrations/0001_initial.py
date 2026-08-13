@@ -7,36 +7,116 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('agreements', '0003_alter_agreement_booking'),
-        ('properties', '0003_remove_room_electricity_included_remove_room_has_ac_and_more'),
+        ("agreements", "0003_alter_agreement_booking"),
+        (
+            "properties",
+            "0003_remove_room_electricity_included_remove_room_has_ac_and_more",
+        ),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Review',
+            name="Review",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('review_type', models.CharField(choices=[('property', 'Property Review'), ('room', 'Room Review'), ('owner', 'Owner Review'), ('tenant', 'Tenant Review')], max_length=10)),
-                ('rating', models.PositiveIntegerField(help_text='Rating from 1 to 5', validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(5)])),
-                ('title', models.CharField(max_length=200)),
-                ('comment', models.TextField()),
-                ('photo', models.ImageField(blank=True, null=True, upload_to='reviews/')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('agreement', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reviews', to='agreements.agreement')),
-                ('property', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reviews', to='properties.property')),
-                ('reviewee', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reviews_received', to=settings.AUTH_USER_MODEL)),
-                ('reviewer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reviews_given', to=settings.AUTH_USER_MODEL)),
-                ('room', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reviews', to='properties.room')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "review_type",
+                    models.CharField(
+                        choices=[
+                            ("property", "Property Review"),
+                            ("room", "Room Review"),
+                            ("owner", "Owner Review"),
+                            ("tenant", "Tenant Review"),
+                        ],
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "rating",
+                    models.PositiveIntegerField(
+                        help_text="Rating from 1 to 5",
+                        validators=[
+                            django.core.validators.MinValueValidator(1),
+                            django.core.validators.MaxValueValidator(5),
+                        ],
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("comment", models.TextField()),
+                (
+                    "photo",
+                    models.ImageField(blank=True, null=True, upload_to="reviews/"),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "agreement",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="reviews",
+                        to="agreements.agreement",
+                    ),
+                ),
+                (
+                    "property",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="reviews",
+                        to="properties.property",
+                    ),
+                ),
+                (
+                    "reviewee",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="reviews_received",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "reviewer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reviews_given",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "room",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="reviews",
+                        to="properties.room",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
-                'unique_together': {('reviewer', 'property', 'agreement'), ('reviewer', 'reviewee', 'agreement'), ('reviewer', 'room', 'agreement')},
+                "ordering": ["-created_at"],
+                "unique_together": {
+                    ("reviewer", "property", "agreement"),
+                    ("reviewer", "reviewee", "agreement"),
+                    ("reviewer", "room", "agreement"),
+                },
             },
         ),
     ]

@@ -5,151 +5,276 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('properties', '0001_initial'),
+        ("properties", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='property',
-            old_name='bathrooms',
-            new_name='bathrooms_per_floor',
+            model_name="property",
+            old_name="bathrooms",
+            new_name="bathrooms_per_floor",
         ),
         migrations.RenameField(
-            model_name='property',
-            old_name='bedrooms',
-            new_name='total_bathrooms',
+            model_name="property",
+            old_name="bedrooms",
+            new_name="total_bathrooms",
         ),
         migrations.RemoveField(
-            model_name='property',
-            name='floor_number',
+            model_name="property",
+            name="floor_number",
         ),
         migrations.AddField(
-            model_name='property',
-            name='advance_months',
-            field=models.PositiveIntegerField(default=1, help_text='Advance payment in months'),
+            model_name="property",
+            name="advance_months",
+            field=models.PositiveIntegerField(
+                default=1, help_text="Advance payment in months"
+            ),
         ),
         migrations.AddField(
-            model_name='property',
-            name='area_sqft',
-            field=models.PositiveIntegerField(blank=True, help_text='Total area in sq ft', null=True),
+            model_name="property",
+            name="area_sqft",
+            field=models.PositiveIntegerField(
+                blank=True, help_text="Total area in sq ft", null=True
+            ),
         ),
         migrations.AddField(
-            model_name='property',
-            name='has_balcony',
+            model_name="property",
+            name="has_balcony",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='property',
-            name='has_electricity_backup',
+            model_name="property",
+            name="has_electricity_backup",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='property',
-            name='has_garden',
+            model_name="property",
+            name="has_garden",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='property',
-            name='has_internet',
+            model_name="property",
+            name="has_internet",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='property',
-            name='has_parking',
+            model_name="property",
+            name="has_parking",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='property',
-            name='has_water_supply',
+            model_name="property",
+            name="has_water_supply",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='property',
-            name='landmark',
-            field=models.CharField(blank=True, help_text='e.g. Near bus stop, Near school', max_length=200),
+            model_name="property",
+            name="landmark",
+            field=models.CharField(
+                blank=True, help_text="e.g. Near bus stop, Near school", max_length=200
+            ),
         ),
         migrations.AddField(
-            model_name='property',
-            name='rent_type',
-            field=models.CharField(choices=[('whole', 'Whole Property'), ('rooms', 'Individual Rooms')], default='whole', max_length=10),
+            model_name="property",
+            name="rent_type",
+            field=models.CharField(
+                choices=[("whole", "Whole Property"), ("rooms", "Individual Rooms")],
+                default="whole",
+                max_length=10,
+            ),
         ),
         migrations.AddField(
-            model_name='property',
-            name='security_deposit',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True),
+            model_name="property",
+            name="security_deposit",
+            field=models.DecimalField(
+                blank=True, decimal_places=2, max_digits=10, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='property',
-            name='total_bedrooms',
+            model_name="property",
+            name="total_bedrooms",
             field=models.PositiveIntegerField(default=1),
         ),
         migrations.AddField(
-            model_name='property',
-            name='total_floors',
+            model_name="property",
+            name="total_floors",
             field=models.PositiveIntegerField(default=1),
         ),
         migrations.AddField(
-            model_name='property',
-            name='total_kitchens',
+            model_name="property",
+            name="total_kitchens",
             field=models.PositiveIntegerField(default=1),
         ),
         migrations.AddField(
-            model_name='property',
-            name='total_rooms',
+            model_name="property",
+            name="total_rooms",
             field=models.PositiveIntegerField(default=1),
         ),
         migrations.AlterField(
-            model_name='property',
-            name='rent_price',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True),
+            model_name="property",
+            name="rent_price",
+            field=models.DecimalField(
+                blank=True, decimal_places=2, max_digits=10, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='property',
-            name='type',
-            field=models.CharField(choices=[('house', 'House'), ('apartment', 'Apartment'), ('villa', 'Villa'), ('studio', 'Studio'), ('flat', 'Flat'), ('shop', 'Shop/Commercial'), ('office', 'Office Space'), ('warehouse', 'Warehouse'), ('other', 'Other')], max_length=20),
+            model_name="property",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("house", "House"),
+                    ("apartment", "Apartment"),
+                    ("villa", "Villa"),
+                    ("studio", "Studio"),
+                    ("flat", "Flat"),
+                    ("shop", "Shop/Commercial"),
+                    ("office", "Office Space"),
+                    ("warehouse", "Warehouse"),
+                    ("other", "Other"),
+                ],
+                max_length=20,
+            ),
         ),
         migrations.CreateModel(
-            name='Room',
+            name="Room",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('room_number', models.CharField(help_text='e.g. 101, A1, Ground Floor Room', max_length=20)),
-                ('room_type', models.CharField(choices=[('single', 'Single Room'), ('double', 'Double Room'), ('triple', 'Triple Room'), ('studio', 'Studio'), ('suite', 'Suite'), ('other', 'Other')], default='single', max_length=20)),
-                ('description', models.TextField(blank=True)),
-                ('bedrooms', models.PositiveIntegerField(default=1)),
-                ('bathroom_type', models.CharField(choices=[('attached', 'Attached'), ('shared', 'Shared')], default='shared', max_length=20)),
-                ('kitchen_type', models.CharField(choices=[('attached', 'Attached'), ('shared', 'Shared'), ('none', 'No Kitchen')], default='shared', max_length=20)),
-                ('floor_number', models.PositiveIntegerField(default=1)),
-                ('area_sqft', models.PositiveIntegerField(blank=True, help_text='Area in sq ft', null=True)),
-                ('furnishing', models.CharField(choices=[('furnished', 'Furnished'), ('unfurnished', 'Unfurnished'), ('semi', 'Semi-Furnished')], default='unfurnished', max_length=20)),
-                ('has_ac', models.BooleanField(default=False)),
-                ('has_balcony', models.BooleanField(default=False)),
-                ('wifi_included', models.BooleanField(default=False)),
-                ('water_included', models.BooleanField(default=True)),
-                ('electricity_included', models.BooleanField(default=False)),
-                ('rent_price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('security_deposit', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
-                ('advance_months', models.PositiveIntegerField(default=1)),
-                ('status', models.CharField(choices=[('available', 'Available'), ('occupied', 'Occupied'), ('unavailable', 'Unavailable')], default='available', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('property', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to='properties.property')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "room_number",
+                    models.CharField(
+                        help_text="e.g. 101, A1, Ground Floor Room", max_length=20
+                    ),
+                ),
+                (
+                    "room_type",
+                    models.CharField(
+                        choices=[
+                            ("single", "Single Room"),
+                            ("double", "Double Room"),
+                            ("triple", "Triple Room"),
+                            ("studio", "Studio"),
+                            ("suite", "Suite"),
+                            ("other", "Other"),
+                        ],
+                        default="single",
+                        max_length=20,
+                    ),
+                ),
+                ("description", models.TextField(blank=True)),
+                ("bedrooms", models.PositiveIntegerField(default=1)),
+                (
+                    "bathroom_type",
+                    models.CharField(
+                        choices=[("attached", "Attached"), ("shared", "Shared")],
+                        default="shared",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "kitchen_type",
+                    models.CharField(
+                        choices=[
+                            ("attached", "Attached"),
+                            ("shared", "Shared"),
+                            ("none", "No Kitchen"),
+                        ],
+                        default="shared",
+                        max_length=20,
+                    ),
+                ),
+                ("floor_number", models.PositiveIntegerField(default=1)),
+                (
+                    "area_sqft",
+                    models.PositiveIntegerField(
+                        blank=True, help_text="Area in sq ft", null=True
+                    ),
+                ),
+                (
+                    "furnishing",
+                    models.CharField(
+                        choices=[
+                            ("furnished", "Furnished"),
+                            ("unfurnished", "Unfurnished"),
+                            ("semi", "Semi-Furnished"),
+                        ],
+                        default="unfurnished",
+                        max_length=20,
+                    ),
+                ),
+                ("has_ac", models.BooleanField(default=False)),
+                ("has_balcony", models.BooleanField(default=False)),
+                ("wifi_included", models.BooleanField(default=False)),
+                ("water_included", models.BooleanField(default=True)),
+                ("electricity_included", models.BooleanField(default=False)),
+                ("rent_price", models.DecimalField(decimal_places=2, max_digits=10)),
+                (
+                    "security_deposit",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=10, null=True
+                    ),
+                ),
+                ("advance_months", models.PositiveIntegerField(default=1)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("available", "Available"),
+                            ("occupied", "Occupied"),
+                            ("unavailable", "Unavailable"),
+                        ],
+                        default="available",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "property",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rooms",
+                        to="properties.property",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['floor_number', 'room_number'],
-                'unique_together': {('property', 'room_number')},
+                "ordering": ["floor_number", "room_number"],
+                "unique_together": {("property", "room_number")},
             },
         ),
         migrations.CreateModel(
-            name='RoomPhoto',
+            name="RoomPhoto",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='rooms/')),
-                ('caption', models.CharField(blank=True, max_length=100)),
-                ('is_cover', models.BooleanField(default=False)),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='photos', to='properties.room')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("image", models.ImageField(upload_to="rooms/")),
+                ("caption", models.CharField(blank=True, max_length=100)),
+                ("is_cover", models.BooleanField(default=False)),
+                ("uploaded_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="photos",
+                        to="properties.room",
+                    ),
+                ),
             ],
         ),
     ]

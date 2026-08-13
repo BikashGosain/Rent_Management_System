@@ -8,9 +8,9 @@ class PropertyPhotoInline(admin.TabularInline):
 
 
 class RoomInline(admin.TabularInline):
-    model  = Room
-    extra  = 0
-    fields = ['room_number', 'room_type', 'rent_price', 'status']
+    model = Room
+    extra = 0
+    fields = ["room_number", "room_type", "rent_price", "status"]
 
 
 class RoomPhotoInline(admin.TabularInline):
@@ -20,20 +20,20 @@ class RoomPhotoInline(admin.TabularInline):
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display  = ['title', 'type', 'rent_type', 'city', 'status', 'owner']
-    list_filter   = ['type', 'rent_type', 'status', 'city']
-    search_fields = ['title', 'address', 'city', 'owner__username']
+    list_display = ["title", "type", "rent_type", "city", "status", "owner"]
+    list_filter = ["type", "rent_type", "status", "city"]
+    search_fields = ["title", "address", "city", "owner__username"]
 
     def get_inlines(self, request, obj=None):
         """Show RoomInline only for properties with rent_type='rooms'."""
-        if obj and obj.rent_type == 'rooms':
+        if obj and obj.rent_type == "rooms":
             return [PropertyPhotoInline, RoomInline]
         return [PropertyPhotoInline]
 
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display  = ['room_number', 'property', 'room_type', 'rent_price', 'status']
-    list_filter   = ['status', 'room_type', 'furnishing']
-    search_fields = ['room_number', 'property__title', 'property__owner__username']
-    inlines       = [RoomPhotoInline]
+    list_display = ["room_number", "property", "room_type", "rent_price", "status"]
+    list_filter = ["status", "room_type", "furnishing"]
+    search_fields = ["room_number", "property__title", "property__owner__username"]
+    inlines = [RoomPhotoInline]

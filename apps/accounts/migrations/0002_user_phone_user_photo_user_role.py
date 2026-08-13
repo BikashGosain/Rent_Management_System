@@ -4,25 +4,32 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0001_initial'),
+        ("accounts", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='phone',
+            model_name="user",
+            name="phone",
             field=models.CharField(blank=True, max_length=15),
         ),
         migrations.AddField(
-            model_name='user',
-            name='photo',
-            field=models.ImageField(blank=True, null=True, upload_to='users/'),
+            model_name="user",
+            name="photo",
+            field=models.ImageField(blank=True, null=True, upload_to="users/"),
         ),
         migrations.AddField(
-            model_name='user',
-            name='role',
-            field=models.CharField(choices=[('admin', 'Admin'), ('owner', 'House Owner'), ('tenant', 'Tenant')], default='tenant', max_length=20),
+            model_name="user",
+            name="role",
+            field=models.CharField(
+                choices=[
+                    ("admin", "Admin"),
+                    ("owner", "House Owner"),
+                    ("tenant", "Tenant"),
+                ],
+                default="tenant",
+                max_length=20,
+            ),
         ),
     ]

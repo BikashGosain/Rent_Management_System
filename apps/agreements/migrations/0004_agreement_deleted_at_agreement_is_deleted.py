@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('agreements', '0003_alter_agreement_booking'),
+        ("agreements", "0003_alter_agreement_booking"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='agreement',
-            name='deleted_at',
+            model_name="agreement",
+            name="deleted_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='is_deleted',
+            model_name="agreement",
+            name="is_deleted",
             field=models.BooleanField(default=False),
         ),
     ]

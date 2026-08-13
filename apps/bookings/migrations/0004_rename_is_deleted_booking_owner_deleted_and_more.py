@@ -4,30 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('bookings', '0003_booking_deleted_at_booking_is_deleted'),
+        ("bookings", "0003_booking_deleted_at_booking_is_deleted"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='booking',
-            old_name='is_deleted',
-            new_name='owner_deleted',
+            model_name="booking",
+            old_name="is_deleted",
+            new_name="owner_deleted",
         ),
         migrations.RenameField(
-            model_name='booking',
-            old_name='deleted_at',
-            new_name='owner_deleted_at',
+            model_name="booking",
+            old_name="deleted_at",
+            new_name="owner_deleted_at",
         ),
         migrations.AddField(
-            model_name='booking',
-            name='tenant_deleted',
+            model_name="booking",
+            name="tenant_deleted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='booking',
-            name='tenant_deleted_at',
+            model_name="booking",
+            name="tenant_deleted_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

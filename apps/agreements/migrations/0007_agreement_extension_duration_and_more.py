@@ -6,61 +6,87 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('agreements', '0006_agreement_auto_renew_agreement_last_renewed_at_and_more'),
+        ("agreements", "0006_agreement_auto_renew_agreement_last_renewed_at_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='agreement',
-            name='extension_duration',
-            field=models.PositiveIntegerField(blank=True, help_text='Number of days or months to extend', null=True),
+            model_name="agreement",
+            name="extension_duration",
+            field=models.PositiveIntegerField(
+                blank=True, help_text="Number of days or months to extend", null=True
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='extension_new_end_date',
+            model_name="agreement",
+            name="extension_new_end_date",
             field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='extension_reason',
+            model_name="agreement",
+            name="extension_reason",
             field=models.TextField(blank=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='extension_requested_at',
+            model_name="agreement",
+            name="extension_requested_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='extension_requested_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='extension_requests', to=settings.AUTH_USER_MODEL),
+            model_name="agreement",
+            name="extension_requested_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="extension_requests",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='extension_responded_at',
+            model_name="agreement",
+            name="extension_responded_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='extension_responded_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='extension_responses', to=settings.AUTH_USER_MODEL),
+            model_name="agreement",
+            name="extension_responded_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="extension_responses",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='extension_response',
+            model_name="agreement",
+            name="extension_response",
             field=models.TextField(blank=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='extension_status',
-            field=models.CharField(choices=[('none', 'No Request'), ('pending', 'Extension Requested'), ('approved', 'Extension Approved'), ('rejected', 'Extension Rejected')], default='none', max_length=10),
+            model_name="agreement",
+            name="extension_status",
+            field=models.CharField(
+                choices=[
+                    ("none", "No Request"),
+                    ("pending", "Extension Requested"),
+                    ("approved", "Extension Approved"),
+                    ("rejected", "Extension Rejected"),
+                ],
+                default="none",
+                max_length=10,
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='extension_unit',
-            field=models.CharField(blank=True, choices=[('days', 'Days'), ('months', 'Months')], max_length=10),
+            model_name="agreement",
+            name="extension_unit",
+            field=models.CharField(
+                blank=True,
+                choices=[("days", "Days"), ("months", "Months")],
+                max_length=10,
+            ),
         ),
     ]

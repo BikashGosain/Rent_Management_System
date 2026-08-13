@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('complaints', '0001_initial'),
+        ("complaints", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='complaint',
-            name='submitted_by',
-            field=models.CharField(choices=[('tenant', 'Tenant'), ('owner', 'Owner')], default='tenant', max_length=10),
+            model_name="complaint",
+            name="submitted_by",
+            field=models.CharField(
+                choices=[("tenant", "Tenant"), ("owner", "Owner")],
+                default="tenant",
+                max_length=10,
+            ),
         ),
     ]

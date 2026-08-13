@@ -6,43 +6,129 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('bookings', '0002_booking_cancelled_by'),
-        ('properties', '0003_remove_room_electricity_included_remove_room_has_ac_and_more'),
+        ("bookings", "0002_booking_cancelled_by"),
+        (
+            "properties",
+            "0003_remove_room_electricity_included_remove_room_has_ac_and_more",
+        ),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Agreement',
+            name="Agreement",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
-                ('rent_amount', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('security_deposit', models.DecimalField(decimal_places=2, default=0, max_digits=10)),
-                ('advance_amount', models.DecimalField(decimal_places=2, default=0, max_digits=10)),
-                ('notice_period_days', models.PositiveIntegerField(default=30, help_text='Notice period in days')),
-                ('terms_conditions', models.TextField(help_text='Terms and conditions of the agreement')),
-                ('document', models.FileField(blank=True, help_text='Upload signed agreement PDF', null=True, upload_to='agreements/')),
-                ('owner_signed', models.BooleanField(default=False)),
-                ('tenant_signed', models.BooleanField(default=False)),
-                ('owner_signed_at', models.DateTimeField(blank=True, null=True)),
-                ('tenant_signed_at', models.DateTimeField(blank=True, null=True)),
-                ('status', models.CharField(choices=[('pending_owner', 'Pending Owner Signature'), ('pending_tenant', 'Pending Tenant Signature'), ('active', 'Active'), ('expired', 'Expired'), ('terminated', 'Terminated')], default='pending_owner', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('booking', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='agreement', to='bookings.booking')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='owner_agreements', to=settings.AUTH_USER_MODEL)),
-                ('property', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='agreements', to='properties.property')),
-                ('room', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='agreements', to='properties.room')),
-                ('tenant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tenant_agreements', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField()),
+                ("rent_amount", models.DecimalField(decimal_places=2, max_digits=10)),
+                (
+                    "security_deposit",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=10),
+                ),
+                (
+                    "advance_amount",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=10),
+                ),
+                (
+                    "notice_period_days",
+                    models.PositiveIntegerField(
+                        default=30, help_text="Notice period in days"
+                    ),
+                ),
+                (
+                    "terms_conditions",
+                    models.TextField(help_text="Terms and conditions of the agreement"),
+                ),
+                (
+                    "document",
+                    models.FileField(
+                        blank=True,
+                        help_text="Upload signed agreement PDF",
+                        null=True,
+                        upload_to="agreements/",
+                    ),
+                ),
+                ("owner_signed", models.BooleanField(default=False)),
+                ("tenant_signed", models.BooleanField(default=False)),
+                ("owner_signed_at", models.DateTimeField(blank=True, null=True)),
+                ("tenant_signed_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending_owner", "Pending Owner Signature"),
+                            ("pending_tenant", "Pending Tenant Signature"),
+                            ("active", "Active"),
+                            ("expired", "Expired"),
+                            ("terminated", "Terminated"),
+                        ],
+                        default="pending_owner",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "booking",
+                    models.OneToOneField(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="agreement",
+                        to="bookings.booking",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="owner_agreements",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "property",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="agreements",
+                        to="properties.property",
+                    ),
+                ),
+                (
+                    "room",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="agreements",
+                        to="properties.room",
+                    ),
+                ),
+                (
+                    "tenant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tenant_agreements",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
     ]

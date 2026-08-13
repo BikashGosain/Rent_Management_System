@@ -6,26 +6,31 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('agreements', '0001_initial'),
+        ("agreements", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='agreement',
-            name='terminated_at',
+            model_name="agreement",
+            name="terminated_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='terminated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='terminated_agreements', to=settings.AUTH_USER_MODEL),
+            model_name="agreement",
+            name="terminated_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="terminated_agreements",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='termination_reason',
+            model_name="agreement",
+            name="termination_reason",
             field=models.TextField(blank=True),
         ),
     ]

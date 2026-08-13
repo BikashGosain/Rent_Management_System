@@ -5,17 +5,23 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('agreements', '0003_alter_agreement_booking'),
-        ('properties', '0003_remove_room_electricity_included_remove_room_has_ac_and_more'),
-        ('reviews', '0001_initial'),
+        ("agreements", "0003_alter_agreement_booking"),
+        (
+            "properties",
+            "0003_remove_room_electricity_included_remove_room_has_ac_and_more",
+        ),
+        ("reviews", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='review',
-            unique_together={('reviewer', 'property', 'agreement', 'review_type'), ('reviewer', 'reviewee', 'agreement', 'review_type'), ('reviewer', 'room', 'agreement', 'review_type')},
+            name="review",
+            unique_together={
+                ("reviewer", "property", "agreement", "review_type"),
+                ("reviewer", "reviewee", "agreement", "review_type"),
+                ("reviewer", "room", "agreement", "review_type"),
+            },
         ),
     ]

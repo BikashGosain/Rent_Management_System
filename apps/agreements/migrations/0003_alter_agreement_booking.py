@@ -5,16 +5,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('agreements', '0002_agreement_terminated_at_agreement_terminated_by_and_more'),
-        ('bookings', '0002_booking_cancelled_by'),
+        ("agreements", "0002_agreement_terminated_at_agreement_terminated_by_and_more"),
+        ("bookings", "0002_booking_cancelled_by"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='agreement',
-            name='booking',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='agreements', to='bookings.booking'),
+            model_name="agreement",
+            name="booking",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="agreements",
+                to="bookings.booking",
+            ),
         ),
     ]

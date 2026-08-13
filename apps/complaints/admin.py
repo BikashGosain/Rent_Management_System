@@ -9,12 +9,20 @@ class ComplaintResponseInline(admin.TabularInline):
 
 @admin.register(Complaint)
 class ComplaintAdmin(admin.ModelAdmin):
-    list_display  = ['title', 'category', 'priority', 'status', 'tenant', 'owner', 'created_at']
-    list_filter   = ['status', 'category', 'priority']
-    search_fields = ['title', 'tenant__username', 'owner__username']
-    inlines       = [ComplaintResponseInline]
+    list_display = [
+        "title",
+        "category",
+        "priority",
+        "status",
+        "tenant",
+        "owner",
+        "created_at",
+    ]
+    list_filter = ["status", "category", "priority"]
+    search_fields = ["title", "tenant__username", "owner__username"]
+    inlines = [ComplaintResponseInline]
 
 
 @admin.register(ComplaintResponse)
 class ComplaintResponseAdmin(admin.ModelAdmin):
-    list_display = ['complaint', 'responder', 'created_at']
+    list_display = ["complaint", "responder", "created_at"]

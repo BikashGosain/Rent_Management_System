@@ -6,51 +6,170 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('agreements', '0003_alter_agreement_booking'),
-        ('properties', '0003_remove_room_electricity_included_remove_room_has_ac_and_more'),
+        ("agreements", "0003_alter_agreement_booking"),
+        (
+            "properties",
+            "0003_remove_room_electricity_included_remove_room_has_ac_and_more",
+        ),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Complaint',
+            name="Complaint",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('category', models.CharField(choices=[('maintenance', 'Maintenance Issue'), ('noise', 'Noise Complaint'), ('utility', 'Water/Electricity Problem'), ('security', 'Security Issue'), ('neighbor', 'Neighbor Dispute'), ('owner', 'Owner Dispute'), ('other', 'Other')], max_length=20)),
-                ('priority', models.CharField(choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('urgent', 'Urgent')], default='medium', max_length=10)),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('attachment', models.ImageField(blank=True, null=True, upload_to='complaints/')),
-                ('status', models.CharField(choices=[('open', 'Open'), ('in_progress', 'In Progress'), ('resolved', 'Resolved'), ('closed', 'Closed')], default='open', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('resolved_at', models.DateTimeField(blank=True, null=True)),
-                ('agreement', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='complaints', to='agreements.agreement')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='received_complaints', to=settings.AUTH_USER_MODEL)),
-                ('property', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='complaints', to='properties.property')),
-                ('room', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='complaints', to='properties.room')),
-                ('tenant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='complaints', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("maintenance", "Maintenance Issue"),
+                            ("noise", "Noise Complaint"),
+                            ("utility", "Water/Electricity Problem"),
+                            ("security", "Security Issue"),
+                            ("neighbor", "Neighbor Dispute"),
+                            ("owner", "Owner Dispute"),
+                            ("other", "Other"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "priority",
+                    models.CharField(
+                        choices=[
+                            ("low", "Low"),
+                            ("medium", "Medium"),
+                            ("high", "High"),
+                            ("urgent", "Urgent"),
+                        ],
+                        default="medium",
+                        max_length=10,
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                (
+                    "attachment",
+                    models.ImageField(blank=True, null=True, upload_to="complaints/"),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("open", "Open"),
+                            ("in_progress", "In Progress"),
+                            ("resolved", "Resolved"),
+                            ("closed", "Closed"),
+                        ],
+                        default="open",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("resolved_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "agreement",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="complaints",
+                        to="agreements.agreement",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="received_complaints",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "property",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="complaints",
+                        to="properties.property",
+                    ),
+                ),
+                (
+                    "room",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="complaints",
+                        to="properties.room",
+                    ),
+                ),
+                (
+                    "tenant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="complaints",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='ComplaintResponse',
+            name="ComplaintResponse",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('message', models.TextField()),
-                ('attachment', models.ImageField(blank=True, null=True, upload_to='complaint_responses/')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('complaint', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='responses', to='complaints.complaint')),
-                ('responder', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='complaint_responses', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("message", models.TextField()),
+                (
+                    "attachment",
+                    models.ImageField(
+                        blank=True, null=True, upload_to="complaint_responses/"
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "complaint",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="responses",
+                        to="complaints.complaint",
+                    ),
+                ),
+                (
+                    "responder",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="complaint_responses",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['created_at'],
+                "ordering": ["created_at"],
             },
         ),
     ]

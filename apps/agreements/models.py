@@ -9,145 +9,217 @@ User = get_user_model()
 
 
 class Agreement(SoftDeleteModel):
-
     RENTAL_TYPES = [
-        ('fixed',       'Fixed Term'),
-        ('month',       'Month-to-Month'),
-        ('short',       'Short Term (Daily/Weekly)'),
+        ("fixed", "Fixed Term"),
+        ("month", "Month-to-Month"),
+        ("short", "Short Term (Daily/Weekly)"),
     ]
 
     SHORT_TERM_UNIT = [
-        ('daily',  'Daily'),
-        ('weekly', 'Weekly'),
+        ("daily", "Daily"),
+        ("weekly", "Weekly"),
     ]
 
     REVIEW_TYPES = [
-        ('pending_owner',  'Pending Owner Signature'),
-        ('pending_tenant', 'Pending Tenant Signature'),
-        ('active',         'Active'),
-        ('expired',        'Expired'),
-        ('terminated',     'Terminated'),
+        ("pending_owner", "Pending Owner Signature"),
+        ("pending_tenant", "Pending Tenant Signature"),
+        ("active", "Active"),
+        ("expired", "Expired"),
+        ("terminated", "Terminated"),
     ]
 
     NOTICE_STATUS = [
-        ('none',      'No Notice'),
-        ('pending',   'Notice Submitted'),
-        ('approved',  'Notice Approved'),
-        ('rejected',  'Notice Rejected'),
-        ('mutual',    'Mutual Agreement'),
+        ("none", "No Notice"),
+        ("pending", "Notice Submitted"),
+        ("approved", "Notice Approved"),
+        ("rejected", "Notice Rejected"),
+        ("mutual", "Mutual Agreement"),
     ]
 
     EXTENSION_STATUS = [
-    ('none',     'No Request'),
-    ('pending',  'Extension Requested'),
-    ('approved', 'Extension Approved'),
-    ('rejected', 'Extension Rejected'),
+        ("none", "No Request"),
+        ("pending", "Extension Requested"),
+        ("approved", "Extension Approved"),
+        ("rejected", "Extension Rejected"),
     ]
 
     # Parties
-    owner     = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_agreements')
-    tenant    = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tenant_agreements')
-    property  = models.ForeignKey(Property, on_delete=models.SET_NULL, null=True, blank=True, related_name='agreements')
-    room      = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True, related_name='agreements')
-    booking   = models.ForeignKey('bookings.Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='agreements')
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="owned_agreements"
+    )
+    tenant = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="tenant_agreements"
+    )
+    property = models.ForeignKey(
+        Property,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="agreements",
+    )
+    room = models.ForeignKey(
+        Room,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="agreements",
+    )
+    booking = models.ForeignKey(
+        "bookings.Booking",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="agreements",
+    )
 
     # Rental type
-    rental_type    = models.CharField(max_length=10, choices=RENTAL_TYPES, default='fixed')
-    short_term_unit = models.CharField(max_length=10, choices=SHORT_TERM_UNIT, null=True, blank=True)
-    short_term_duration = models.PositiveIntegerField(null=True, blank=True, help_text='Number of days or weeks')
+    rental_type = models.CharField(max_length=10, choices=RENTAL_TYPES, default="fixed")
+    short_term_unit = models.CharField(
+        max_length=10, choices=SHORT_TERM_UNIT, null=True, blank=True
+    )
+    short_term_duration = models.PositiveIntegerField(
+        null=True, blank=True, help_text="Number of days or weeks"
+    )
 
     # Dates
     start_date = models.DateField()
-    end_date   = models.DateField(null=True, blank=True, help_text='Leave blank for month-to-month')
+    end_date = models.DateField(
+        null=True, blank=True, help_text="Leave blank for month-to-month"
+    )
 
     # Financial
-    rent_amount      = models.DecimalField(max_digits=10, decimal_places=2)
+    rent_amount = models.DecimalField(max_digits=10, decimal_places=2)
     security_deposit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    advance_amount   = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    advance_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     # Terms
     notice_period_days = models.PositiveIntegerField(default=30)
-    terms_conditions   = models.TextField(blank=True)
-    document           = models.FileField(upload_to='agreements/', null=True, blank=True)
+    terms_conditions = models.TextField(blank=True)
+    document = models.FileField(upload_to="agreements/", null=True, blank=True)
 
     # Signatures
-    owner_signed     = models.BooleanField(default=False)
-    tenant_signed    = models.BooleanField(default=False)
-    owner_signed_at  = models.DateTimeField(null=True, blank=True)
+    owner_signed = models.BooleanField(default=False)
+    tenant_signed = models.BooleanField(default=False)
+    owner_signed_at = models.DateTimeField(null=True, blank=True)
     tenant_signed_at = models.DateTimeField(null=True, blank=True)
 
     # Status
-    status = models.CharField(max_length=20, choices=REVIEW_TYPES, default='pending_owner')
+    status = models.CharField(
+        max_length=20, choices=REVIEW_TYPES, default="pending_owner"
+    )
 
     # Termination
-    terminated_by      = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='terminated_agreements')
-    terminated_at      = models.DateTimeField(null=True, blank=True)
+    terminated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="terminated_agreements",
+    )
+    terminated_at = models.DateTimeField(null=True, blank=True)
     termination_reason = models.TextField(blank=True)
 
     # ── Notice System ──────────────────────────────────
-    notice_status      = models.CharField(max_length=10, choices=NOTICE_STATUS, default='none')
-    notice_given_by    = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='notices_given')
-    notice_given_at    = models.DateTimeField(null=True, blank=True)
-    notice_vacate_date = models.DateField(null=True, blank=True, help_text='Expected vacate date')
-    notice_reason      = models.TextField(blank=True)
-    notice_type        = models.CharField(max_length=20, blank=True, choices=[
-        ('vacate',      'Notice to Vacate'),
-        ('early_term',  'Early Termination Request'),
-        ('owner_notice','Owner Notice to Tenant'),
-        ('mutual',      'Mutual Termination'),
-    ])
-    notice_response    = models.TextField(blank=True, help_text='Owner response to notice')
+    notice_status = models.CharField(
+        max_length=10, choices=NOTICE_STATUS, default="none"
+    )
+    notice_given_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="notices_given",
+    )
+    notice_given_at = models.DateTimeField(null=True, blank=True)
+    notice_vacate_date = models.DateField(
+        null=True, blank=True, help_text="Expected vacate date"
+    )
+    notice_reason = models.TextField(blank=True)
+    notice_type = models.CharField(
+        max_length=20,
+        blank=True,
+        choices=[
+            ("vacate", "Notice to Vacate"),
+            ("early_term", "Early Termination Request"),
+            ("owner_notice", "Owner Notice to Tenant"),
+            ("mutual", "Mutual Termination"),
+        ],
+    )
+    notice_response = models.TextField(blank=True, help_text="Owner response to notice")
     notice_responded_at = models.DateTimeField(null=True, blank=True)
 
-    extension_status       = models.CharField(max_length=10, choices=EXTENSION_STATUS, default='none')
-    extension_requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='extension_requests')
+    extension_status = models.CharField(
+        max_length=10, choices=EXTENSION_STATUS, default="none"
+    )
+    extension_requested_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="extension_requests",
+    )
     extension_requested_at = models.DateTimeField(null=True, blank=True)
-    extension_duration     = models.PositiveIntegerField(null=True, blank=True, help_text='Number of days or months to extend')
-    extension_unit         = models.CharField(max_length=10, blank=True, choices=[
-        ('days',   'Days'),
-        ('months', 'Months'),
-    ])
-    extension_reason       = models.TextField(blank=True)
+    extension_duration = models.PositiveIntegerField(
+        null=True, blank=True, help_text="Number of days or months to extend"
+    )
+    extension_unit = models.CharField(
+        max_length=10,
+        blank=True,
+        choices=[
+            ("days", "Days"),
+            ("months", "Months"),
+        ],
+    )
+    extension_reason = models.TextField(blank=True)
     extension_new_end_date = models.DateField(null=True, blank=True)
-    extension_response     = models.TextField(blank=True)
+    extension_response = models.TextField(blank=True)
     extension_responded_at = models.DateTimeField(null=True, blank=True)
-    extension_responded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='extension_responses')
+    extension_responded_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="extension_responses",
+    )
 
     # Month-to-month auto renewal
-    auto_renew       = models.BooleanField(default=True)
-    last_renewed_at  = models.DateField(null=True, blank=True)
+    auto_renew = models.BooleanField(default=True)
+    last_renewed_at = models.DateField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
-        return f'Agreement — {self.tenant.username} — {self.get_target_name()}'
+        return f"Agreement — {self.tenant.username} — {self.get_target_name()}"
 
     def get_target_name(self):
         if self.room:
-            return f'Room {self.room.room_number} — {self.room.property.title}'
-        return self.property.title if self.property else 'N/A'
+            return f"Room {self.room.room_number} — {self.room.property.title}"
+        return self.property.title if self.property else "N/A"
 
     def is_active(self):
-        return self.status == 'active'
+        return self.status == "active"
 
     def is_fully_signed(self):
         return self.owner_signed and self.tenant_signed
 
     def duration_months(self):
         if self.end_date and self.start_date:
-            return max(1, (self.end_date.year - self.start_date.year) * 12 +
-                       (self.end_date.month - self.start_date.month))
+            return max(
+                1,
+                (self.end_date.year - self.start_date.year) * 12
+                + (self.end_date.month - self.start_date.month),
+            )
         return None
 
     def is_month_to_month(self):
-        return self.rental_type == 'month'
+        return self.rental_type == "month"
 
     def is_short_term(self):
-        return self.rental_type == 'short'
+        return self.rental_type == "short"
 
     def notice_days_remaining(self):
         """Days remaining in notice period."""
@@ -164,32 +236,33 @@ class Agreement(SoftDeleteModel):
             if total > 0:
                 return min(100, int((elapsed / total) * 100))
         return 0
-    
+
     def calculate_extension_end_date(self):
         """Calculate new end date after extension."""
         from datetime import timedelta
         from dateutil.relativedelta import relativedelta
+
         base = self.end_date or timezone.now().date()
-        if self.extension_unit == 'days':
+        if self.extension_unit == "days":
             return base + timedelta(days=self.extension_duration)
-        elif self.extension_unit == 'months':
+        elif self.extension_unit == "months":
             return base + relativedelta(months=self.extension_duration)
         return base
 
     def get_rental_type_label(self):
-        if self.rental_type == 'fixed':
-            return f'Fixed Term ({self.duration_months()} months)'
-        elif self.rental_type == 'month':
-            return 'Month-to-Month'
-        elif self.rental_type == 'short':
-            return f'Short Term ({self.short_term_duration} {self.get_short_term_unit_display()})'
-        return ''
+        if self.rental_type == "fixed":
+            return f"Fixed Term ({self.duration_months()} months)"
+        elif self.rental_type == "month":
+            return "Month-to-Month"
+        elif self.rental_type == "short":
+            return f"Short Term ({self.short_term_duration} {self.get_short_term_unit_display()})"
+        return ""
 
     def calculate_short_term_end_date(self):
         """Calculate end date for short term rentals."""
-        if self.rental_type == 'short' and self.short_term_duration:
-            if self.short_term_unit == 'daily':
+        if self.rental_type == "short" and self.short_term_duration:
+            if self.short_term_unit == "daily":
                 return self.start_date + timedelta(days=self.short_term_duration)
-            elif self.short_term_unit == 'weekly':
+            elif self.short_term_unit == "weekly":
                 return self.start_date + timedelta(weeks=self.short_term_duration)
         return None

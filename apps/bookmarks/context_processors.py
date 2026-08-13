@@ -39,22 +39,18 @@ def user_bookmarks(request):
 
     if user is not None and user.is_authenticated:
         bookmarked_property_ids = list(
-            Bookmark.objects.filter(
-                user=user,
-                room=None
-            ).values_list("property_id", flat=True)
+            Bookmark.objects.filter(user=user, room=None).values_list(
+                "property_id", flat=True
+            )
         )
 
         bookmarked_room_ids = list(
-            Bookmark.objects.filter(
-                user=user,
-                property=None
-            ).values_list("room_id", flat=True)
+            Bookmark.objects.filter(user=user, property=None).values_list(
+                "room_id", flat=True
+            )
         )
 
-        bookmarks_count = Bookmark.objects.filter(
-            user=user
-        ).count()
+        bookmarks_count = Bookmark.objects.filter(user=user).count()
 
         compare_ids = request.session.get("compare_ids", [])
 

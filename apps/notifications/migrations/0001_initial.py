@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,19 +14,58 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Notification',
+            name="Notification",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('notif_type', models.CharField(choices=[('booking_received', 'Booking Request Received'), ('booking_accepted', 'Booking Accepted'), ('booking_rejected', 'Booking Rejected'), ('agreement_created', 'Agreement Created'), ('agreement_signed', 'Agreement Signed'), ('agreement_terminated', 'Agreement Terminated'), ('payment_due', 'Payment Due'), ('payment_received', 'Payment Received'), ('complaint_submitted', 'Complaint Submitted'), ('complaint_response', 'Complaint Response Received')], max_length=30)),
-                ('title', models.CharField(max_length=200)),
-                ('message', models.TextField()),
-                ('link', models.CharField(blank=True, help_text='URL to redirect when clicked', max_length=300)),
-                ('is_read', models.BooleanField(default=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('recipient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notifications', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "notif_type",
+                    models.CharField(
+                        choices=[
+                            ("booking_received", "Booking Request Received"),
+                            ("booking_accepted", "Booking Accepted"),
+                            ("booking_rejected", "Booking Rejected"),
+                            ("agreement_created", "Agreement Created"),
+                            ("agreement_signed", "Agreement Signed"),
+                            ("agreement_terminated", "Agreement Terminated"),
+                            ("payment_due", "Payment Due"),
+                            ("payment_received", "Payment Received"),
+                            ("complaint_submitted", "Complaint Submitted"),
+                            ("complaint_response", "Complaint Response Received"),
+                        ],
+                        max_length=30,
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("message", models.TextField()),
+                (
+                    "link",
+                    models.CharField(
+                        blank=True,
+                        help_text="URL to redirect when clicked",
+                        max_length=300,
+                    ),
+                ),
+                ("is_read", models.BooleanField(default=False)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "recipient",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="notifications",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
     ]

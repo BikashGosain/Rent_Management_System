@@ -19,37 +19,34 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     # path('', views.home_view, name='home'),
-    path('',               include('apps.core.urls')),
-    path('accounts/', include('apps.accounts.urls')),
-    path('auth/', include('social_django.urls', namespace='social')),
-    path('api/auth/',  include('apps.accounts.api_urls')),
-
-    path('dashboard/', include('apps.dashboard.urls')),
-
-    path('properties/',  include('apps.properties.urls')),
-    path('api/',      include('apps.properties.api_urls')),
-
-    path('search/',     include('apps.search.urls')),
-    path('bookings/',   include('apps.bookings.urls')),
-    path('agreements/',  include('apps.agreements.urls')),
-    path('payments/',   include('apps.payments.urls')),
-    path('complaints/',  include('apps.complaints.urls')),
-    path('notifications/', include('apps.notifications.urls')),
-    path('reviews/',       include('apps.reviews.urls')),
-    path('bookmarks/', include('apps.bookmarks.urls')),
+    path("", include("apps.core.urls")),
+    path("accounts/", include("apps.accounts.urls")),
+    path("auth/", include("social_django.urls", namespace="social")),
+    path("api/auth/", include("apps.accounts.api_urls")),
+    path("dashboard/", include("apps.dashboard.urls")),
+    path("properties/", include("apps.properties.urls")),
+    path("api/", include("apps.properties.api_urls")),
+    path("search/", include("apps.search.urls")),
+    path("bookings/", include("apps.bookings.urls")),
+    path("agreements/", include("apps.agreements.urls")),
+    path("payments/", include("apps.payments.urls")),
+    path("complaints/", include("apps.complaints.urls")),
+    path("notifications/", include("apps.notifications.urls")),
+    path("reviews/", include("apps.reviews.urls")),
+    path("bookmarks/", include("apps.bookmarks.urls")),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     import debug_toolbar
-    urlpatterns = [path('__debug__/', include(debug_toolbar.urls))] + urlpatterns
 
-handler404 = 'config.views.custom_404'
-handler400 = 'config.views.custom_400'
-handler403 = 'config.views.custom_403'
-handler500 = 'config.views.custom_500'
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+
+handler404 = "config.views.custom_404"
+handler400 = "config.views.custom_400"
+handler403 = "config.views.custom_403"
+handler500 = "config.views.custom_500"

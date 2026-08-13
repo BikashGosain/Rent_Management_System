@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('complaints', '0002_complaint_submitted_by'),
+        ("complaints", "0002_complaint_submitted_by"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='complaint',
-            name='deleted_at',
+            model_name="complaint",
+            name="deleted_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='complaint',
-            name='is_deleted',
+            model_name="complaint",
+            name="is_deleted",
             field=models.BooleanField(default=False),
         ),
     ]

@@ -6,101 +6,148 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('agreements', '0005_rename_is_deleted_agreement_owner_deleted_and_more'),
+        ("agreements", "0005_rename_is_deleted_agreement_owner_deleted_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='agreement',
-            name='auto_renew',
+            model_name="agreement",
+            name="auto_renew",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='last_renewed_at',
+            model_name="agreement",
+            name="last_renewed_at",
             field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='notice_given_at',
+            model_name="agreement",
+            name="notice_given_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='notice_given_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='notices_given', to=settings.AUTH_USER_MODEL),
+            model_name="agreement",
+            name="notice_given_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="notices_given",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='notice_reason',
+            model_name="agreement",
+            name="notice_reason",
             field=models.TextField(blank=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='notice_responded_at',
+            model_name="agreement",
+            name="notice_responded_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='notice_response',
-            field=models.TextField(blank=True, help_text='Owner response to notice'),
+            model_name="agreement",
+            name="notice_response",
+            field=models.TextField(blank=True, help_text="Owner response to notice"),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='notice_status',
-            field=models.CharField(choices=[('none', 'No Notice'), ('pending', 'Notice Submitted'), ('approved', 'Notice Approved'), ('rejected', 'Notice Rejected'), ('mutual', 'Mutual Agreement')], default='none', max_length=10),
+            model_name="agreement",
+            name="notice_status",
+            field=models.CharField(
+                choices=[
+                    ("none", "No Notice"),
+                    ("pending", "Notice Submitted"),
+                    ("approved", "Notice Approved"),
+                    ("rejected", "Notice Rejected"),
+                    ("mutual", "Mutual Agreement"),
+                ],
+                default="none",
+                max_length=10,
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='notice_type',
-            field=models.CharField(blank=True, choices=[('vacate', 'Notice to Vacate'), ('early_term', 'Early Termination Request'), ('owner_notice', 'Owner Notice to Tenant'), ('mutual', 'Mutual Termination')], max_length=20),
+            model_name="agreement",
+            name="notice_type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("vacate", "Notice to Vacate"),
+                    ("early_term", "Early Termination Request"),
+                    ("owner_notice", "Owner Notice to Tenant"),
+                    ("mutual", "Mutual Termination"),
+                ],
+                max_length=20,
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='notice_vacate_date',
-            field=models.DateField(blank=True, help_text='Expected vacate date', null=True),
+            model_name="agreement",
+            name="notice_vacate_date",
+            field=models.DateField(
+                blank=True, help_text="Expected vacate date", null=True
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='rental_type',
-            field=models.CharField(choices=[('fixed', 'Fixed Term'), ('month', 'Month-to-Month'), ('short', 'Short Term (Daily/Weekly)')], default='fixed', max_length=10),
+            model_name="agreement",
+            name="rental_type",
+            field=models.CharField(
+                choices=[
+                    ("fixed", "Fixed Term"),
+                    ("month", "Month-to-Month"),
+                    ("short", "Short Term (Daily/Weekly)"),
+                ],
+                default="fixed",
+                max_length=10,
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='short_term_duration',
-            field=models.PositiveIntegerField(blank=True, help_text='Number of days or weeks', null=True),
+            model_name="agreement",
+            name="short_term_duration",
+            field=models.PositiveIntegerField(
+                blank=True, help_text="Number of days or weeks", null=True
+            ),
         ),
         migrations.AddField(
-            model_name='agreement',
-            name='short_term_unit',
-            field=models.CharField(blank=True, choices=[('daily', 'Daily'), ('weekly', 'Weekly')], max_length=10, null=True),
+            model_name="agreement",
+            name="short_term_unit",
+            field=models.CharField(
+                blank=True,
+                choices=[("daily", "Daily"), ("weekly", "Weekly")],
+                max_length=10,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='agreement',
-            name='document',
-            field=models.FileField(blank=True, null=True, upload_to='agreements/'),
+            model_name="agreement",
+            name="document",
+            field=models.FileField(blank=True, null=True, upload_to="agreements/"),
         ),
         migrations.AlterField(
-            model_name='agreement',
-            name='end_date',
-            field=models.DateField(blank=True, help_text='Leave blank for month-to-month', null=True),
+            model_name="agreement",
+            name="end_date",
+            field=models.DateField(
+                blank=True, help_text="Leave blank for month-to-month", null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='agreement',
-            name='notice_period_days',
+            model_name="agreement",
+            name="notice_period_days",
             field=models.PositiveIntegerField(default=30),
         ),
         migrations.AlterField(
-            model_name='agreement',
-            name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='owned_agreements', to=settings.AUTH_USER_MODEL),
+            model_name="agreement",
+            name="owner",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="owned_agreements",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='agreement',
-            name='terms_conditions',
+            model_name="agreement",
+            name="terms_conditions",
             field=models.TextField(blank=True),
         ),
     ]

@@ -1,6 +1,6 @@
 def save_google_user(backend, user, response, *args, **kwargs):
     """Set verified + google flag. Never overwrite existing role."""
-    if backend.name != 'google-oauth2':
+    if backend.name != "google-oauth2":
         return
 
     changed = False
