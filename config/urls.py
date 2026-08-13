@@ -27,9 +27,13 @@ urlpatterns = [
     path('',               include('apps.core.urls')),
     path('accounts/', include('apps.accounts.urls')),
     path('auth/', include('social_django.urls', namespace='social')),
+    path('api/auth/',  include('apps.accounts.api_urls')),
 
     path('dashboard/', include('apps.dashboard.urls')),
+
     path('properties/',  include('apps.properties.urls')),
+    path('api/',      include('apps.properties.api_urls')),
+
     path('search/',     include('apps.search.urls')),
     path('bookings/',   include('apps.bookings.urls')),
     path('agreements/',  include('apps.agreements.urls')),
