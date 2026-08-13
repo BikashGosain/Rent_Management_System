@@ -1,15 +1,36 @@
 from .base import *
+from decouple import config
 
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 # SQLite — zero setup, file lives at project root as db.sqlite3
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# ── Database ─────────────────────────────────────────────────────────────────
+# Checks if DB_HOST is set in .env
+# If yes  → uses PostgreSQL (Docker mode)
+# If no   → uses SQLite (local mode, no Docker)
+
+DB_HOST = config('DB_HOST', default='')
+
+if DB_HOST:
+    DATABASES = {
+        'default': {
+            'ENGINE':   'django.db.backends.postgresql',
+            'NAME':     config('DB_NAME'),
+            'USER':     config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST':     DB_HOST,
+            'PORT':     config('DB_PORT'),
+        }
     }
-}
+else:
+    # Plain local dev — SQLite, no Docker needed
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME':   BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 INSTALLED_APPS += [
     "debug_toolbar",
@@ -18,6 +39,7 @@ INSTALLED_APPS += [
 MIDDLEWARE += [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
+INTERNAL_IPS  = ['127.0.0.1']
 
 # Emails print to terminal — no SMTP needed during development
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
