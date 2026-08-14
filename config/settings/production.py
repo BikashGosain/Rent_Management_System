@@ -1,5 +1,4 @@
-from .base import *
-
+from .base import *  # noqa: F403, F405
 import os
 
 from decouple import config
@@ -52,13 +51,10 @@ DATABASES = {
 # ============================================================
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # noqa: F405
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATICFILES_STORAGE = (
-    "whitenoise.storage.CompressedManifestStaticFilesStorage"
-)
-
-MIDDLEWARE.insert(
+MIDDLEWARE.insert(  # noqa: F405
     1,
     "whitenoise.middleware.WhiteNoiseMiddleware",
 )
@@ -96,7 +92,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
-DEFAULT_FROM_EMAIL = config(
-    "DEFAULT_FROM_EMAIL",
-    default="RentMS <your_gmail@gmail.com>",
-)
+DEFAULT_FROM_EMAIL = f"RentMS <{EMAIL_HOST_USER}>"
