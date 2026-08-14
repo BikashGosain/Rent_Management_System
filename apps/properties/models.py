@@ -122,8 +122,14 @@ class PropertyPhoto(models.Model):
     is_cover = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Photo — {self.property.title}"
+    def save(self, *args, **kwargs):
+        # If this photo is being set as cover,
+        # unset all other cover photos for the same property
+        if self.is_cover:
+            PropertyPhoto.objects.filter(property=self.property, is_cover=True).exclude(
+                pk=self.pk
+            ).update(is_cover=False)
+        super().save(*args, **kwargs)
 
 
 class Room(models.Model):
@@ -266,5 +272,11 @@ class RoomPhoto(models.Model):
     is_cover = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Photo — Room {self.room.room_number}"
+    def save(self, *args, **kwargs):
+        # If this photo is being set as cover,
+        # unset all other cover photos for the same room
+        if self.is_cover:
+            RoomPhoto.objects.filter(room=self.room, is_cover=True).exclude(
+                pk=self.pk
+            ).update(is_cover=False)
+        super().save(*args, **kwargs)
