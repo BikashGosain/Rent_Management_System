@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+import os
+from django.http import FileResponse, Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseForbidden
@@ -578,4 +580,52 @@ def delete_agreement(request, pk):
 
     return render(
         request, "base_delete_confirm.html", {"object": agreement, "type": "Agreement"}
+    )
+
+
+@login_required
+def download_agreement_document(request, pk):
+    agreement = get_object_or_404(Agreement, pk=pk)
+
+    # Only owner or tenant can download
+    if request.user != agreement.owner and request.user != agreement.tenant:
+        return HttpResponseForbidden("Access denied.")
+
+    if not agreement.document:
+        raise Http404("No document uploaded.")
+
+    file_path = agreement.document.path
+
+    if not os.path.exists(file_path):
+        raise Http404("File not found.")
+
+    # Force download — browser won't open inline
+    response = FileResponse(
+        open(file_path, 'rb'),
+        as_attachment=True,                        # ← this forces download
+        filename=os.path.basename(file_path)       # ← original filename
+    )
+    return response
+
+@login_required
+def edit_agreement(request, pk):
+    """Owner edits agreement — mainly to upload document."""
+    agreement = get_object_or_404(Agreement, pk=pk, owner=request.user)
+
+    if not request.user.is_owner():
+        return HttpResponseForbidden("Only owners can edit agreements.")
+
+    if request.method == "POST":
+        form = AgreementForm(request.POST, request.FILES, instance=agreement)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Agreement updated successfully!")
+            return redirect("agreements:detail", pk=pk)
+    else:
+        form = AgreementForm(instance=agreement)
+
+    return render(
+        request,
+        "agreements/agreement_form.html",
+        {"form": form, "agreement": agreement, "is_edit": True, "booking": agreement.booking},
     )

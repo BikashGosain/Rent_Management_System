@@ -32,6 +32,8 @@
         <!-- Center Links -->
         <div class="pub-nav-center">
             <a href="{% url 'core:home' %}" class="pub-nav-link">Home</a>
+            <a href="{% url 'search:results' %}?rent_type=whole" class="pub-nav-link">Whole Properties</a>
+            <a href="{% url 'search:results' %}?rent_type=rooms" class="pub-nav-link">Rooms</a>
             <a href="{% url 'search:results' %}" class="pub-nav-link">Search</a>
             {% if user.is_authenticated %}
                 {% if user.role == 'tenant' %}
@@ -260,6 +262,12 @@
     <div class="pub-mobile-menu" id="pubMobileMenu">
         <a href="{% url 'core:home' %}" class="pub-mobile-link">
             <span class="material-symbols-rounded">home</span> Home
+        </a>
+        <a href="{% url 'search:results' %}?rent_type=whole" class="pub-mobile-link">
+            <span class="material-symbols-rounded">home</span> Whole Properties
+        </a>
+        <a href="{% url 'search:results' %}?rent_type=rooms" class="pub-mobile-link">
+            <span class="material-symbols-rounded">bed</span> Rooms
         </a>
         <a href="{% url 'search:results' %}" class="pub-mobile-link">
             <span class="material-symbols-rounded">search</span> Search

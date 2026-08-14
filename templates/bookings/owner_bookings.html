@@ -15,7 +15,19 @@
         {% for booking in bookings %}
         <div class="booking-item status-border-{{ booking.status }}">
             <div class="booking-info">
-                <h4>{{ booking.get_target_name }}</h4>
+                <h4>{% if booking.room %}
+        <a href="{% url 'properties:room_detail' booking.room.property.pk booking.room.pk %}"
+           class="booking-target-link">
+            {{ booking.get_target_name }}
+        </a>
+    {% elif booking.property %}
+        <a href="{% url 'properties:detail' booking.property.pk %}"
+           class="booking-target-link">
+            {{ booking.get_target_name }}
+        </a>
+    {% else %}
+        {{ booking.get_target_name }}
+    {% endif %}</h4>
                 <p class="property-meta">Tenant: <strong>{{ booking.tenant.get_full_name|default:booking.tenant.username }}</strong></p>
                 <p class="property-meta">Move in: {{ booking.move_in_date }}</p>
                 {% if booking.move_out_date %}

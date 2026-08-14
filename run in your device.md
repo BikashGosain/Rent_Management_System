@@ -74,7 +74,7 @@ Docker version ...
 Docker Compose version ...
 
 # 2. Copy .env
-cp .env.example env
+cp .env.example .env
 # Edit .env — only needs to change SECRET_KEY
 # DB settings already match docker-compose.yml
 
@@ -120,6 +120,8 @@ and:
 
 <!-- Find your VM IP -->
 hostname -I
+or
+ipconfig
 
 For example:
 

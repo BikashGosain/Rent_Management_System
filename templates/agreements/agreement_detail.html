@@ -245,7 +245,38 @@
 </div>
 {% endif %}
         
+        <!-- Document -->
+        {% if agreement.document %}
+        <div class="detail-section">
+            <h3>📄 Agreement Document</h3>
+            <div class="sign-info">
+                <p>A signed agreement document has been uploaded.</p>
+                <a href="{{ agreement.document.url }}" 
+   target="_blank" 
+   class="btn btn-secondary">
+    👁️ View Document
+</a>
 
+<!-- Force download -->
+<a href="{% url 'agreements:download_document' agreement.pk %}" 
+   class="btn btn-primary">
+    📥 Download Document
+</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="detail-section">
+            <h3>📄 Agreement Document</h3>
+            <div class="sign-info">
+                <p class="property-meta">No document uploaded yet.</p>
+                {% if is_owner and agreement.is_active %}
+                <a href="{% url 'agreements:edit' agreement.pk %}" class="btn btn-secondary">
+                    📎 Upload Document
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
         <!-- Terms -->
         {% if agreement.terms_conditions %}
         <div class="detail-section">
@@ -309,6 +340,7 @@
                 <a href="{% url 'agreements:owner_agreements' %}" class="btn btn-secondary">← Back</a>
             {% else %}
                 <a href="{% url 'agreements:tenant_agreements' %}" class="btn btn-secondary">← Back</a>
+                <span class="btn btn-secondary btn-sm status-{{ agreement.status }}">{{ agreement.get_status_display }}</span>
             {% endif %}
         </div>
 
