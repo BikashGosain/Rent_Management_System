@@ -35,7 +35,6 @@ class Command(BaseCommand):
             for row in csv.DictReader(f):
                 if not User.objects.filter(username=row["username"]).exists():
                     User.objects.create_user(
-                        id=row["id"],
                         username=row["username"],
                         email=row["email"],
                         first_name=row["first_name"],
@@ -43,6 +42,8 @@ class Command(BaseCommand):
                         password="password123",
                         role=row["role"],
                         phone=row["phone"],
+                        is_active=row["is_active"] == "True",
+                        date_joined=row["date_joined"],
                     )
         self.stdout.write("  → Users loaded")
 

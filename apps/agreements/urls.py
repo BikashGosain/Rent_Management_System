@@ -20,6 +20,10 @@ urlpatterns = [
     path("<int:pk>/extend/", views.request_extension, name="request_extension"),
     path("<int:pk>/extend/respond/", views.respond_extension, name="respond_extension"),
     path("<int:pk>/extend/cancel/", views.cancel_extension, name="cancel_extension"),
-    path('<int:pk>/download/', views.download_agreement_document, name='download_document'),
-    path("<int:pk>/edit/",            views.edit_agreement,     name="edit"),
+    path(
+        "<int:pk>/download/",
+        views.download_agreement_document,
+        name="download_document",
+    ),
+    path("<int:pk>/edit/", views.edit_agreement, name="edit"),
 ]

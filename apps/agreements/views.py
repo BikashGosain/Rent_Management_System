@@ -483,7 +483,7 @@ def respond_extension(request, pk):
 
             if ext.extension_status == "approved":
                 # Update the actual end date
-                old_end = agreement.end_date
+                # old_end = agreement.end_date
                 ext.end_date = ext.extension_new_end_date
 
                 from apps.notifications.utils import send_notification
@@ -601,11 +601,12 @@ def download_agreement_document(request, pk):
 
     # Force download — browser won't open inline
     response = FileResponse(
-        open(file_path, 'rb'),
-        as_attachment=True,                        # ← this forces download
-        filename=os.path.basename(file_path)       # ← original filename
+        open(file_path, "rb"),
+        as_attachment=True,  # ← this forces download
+        filename=os.path.basename(file_path),  # ← original filename
     )
     return response
+
 
 @login_required
 def edit_agreement(request, pk):
@@ -627,5 +628,10 @@ def edit_agreement(request, pk):
     return render(
         request,
         "agreements/agreement_form.html",
-        {"form": form, "agreement": agreement, "is_edit": True, "booking": agreement.booking},
+        {
+            "form": form,
+            "agreement": agreement,
+            "is_edit": True,
+            "booking": agreement.booking,
+        },
     )

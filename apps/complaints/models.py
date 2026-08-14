@@ -2,11 +2,10 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from apps.properties.models import Property, Room
 from apps.agreements.models import Agreement
+from apps.core.models import SoftDeleteModel
+
 
 User = get_user_model()
-
-
-from apps.core.models import SoftDeleteModel
 
 
 class Complaint(SoftDeleteModel):

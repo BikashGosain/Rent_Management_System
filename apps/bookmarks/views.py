@@ -83,7 +83,8 @@ def remove_bookmark(request, pk):
 @login_required
 def toggle_compare(request, pk):
     """Add/remove bookmark from compare list (max 3)."""
-    bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
+    # bookmark = get_object_or_404(Bookmark, pk=pk, user=request.user)
+    get_object_or_404(Bookmark, pk=pk, user=request.user)
     compare_ids = request.session.get("compare_ids", [])
 
     if pk in compare_ids:
