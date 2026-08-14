@@ -1,4 +1,4 @@
-from .base import BASE_DIR, INSTALLED_APPS, MIDDLEWARE
+from .base import *
 from decouple import config
 
 DEBUG = True
