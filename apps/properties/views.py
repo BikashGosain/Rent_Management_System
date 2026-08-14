@@ -108,9 +108,16 @@ def property_detail(request, pk):
 
     # Owners see all rooms, tenants see only available rooms
     if request.user.is_owner() and prop.owner == request.user:
-        rooms = prop.rooms.all()
+        rooms = list(prop.rooms.prefetch_related("photos").all())
     else:
-        rooms = prop.rooms.filter(status="available")
+        rooms = list(prop.rooms.prefetch_related("photos").filter(status="available"))
+
+    # Attach cover photo to each room  ← only new thing
+    for room in rooms:
+        cover = room.photos.filter(is_cover=True).first()
+        if not cover:
+            cover = room.photos.first()
+        room.cover_photo = cover
 
     photos = prop.photos.all()
     return render(

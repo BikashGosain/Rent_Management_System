@@ -91,11 +91,15 @@
         <div class="featured-grid">
             {% for p in featured_whole %}
             <div class="featured-card">
-                {% if p.photos.first %}
-                    <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="featured-img">
-                {% else %}
-                    <div class="featured-img-placeholder">🏠</div>
-                {% endif %}
+                {% if p.cover_photo %}
+    <img src="{{ p.cover_photo.image.url }}"
+         alt="{{ p.title }}"
+         class="featured-img"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="featured-img-placeholder" style="display:none;">🏠</div>
+{% else %}
+    <div class="featured-img-placeholder">🏠</div>
+{% endif %}
                 <div class="featured-card-body">
                     <span class="result-tag">{{ p.get_type_display }}</span>
                     <h4>{{ p.title }}</h4>
@@ -126,11 +130,15 @@
         <div class="featured-grid">
             {% for p in featured_rooms %}
             <div class="featured-card">
-                {% if p.photos.first %}
-                    <img src="{{ p.photos.first.image.url }}" alt="{{ p.title }}" class="featured-img">
-                {% else %}
-                    <div class="featured-img-placeholder">🚪</div>
-                {% endif %}
+                {% if p.cover_photo %}
+    <img src="{{ p.cover_photo.image.url }}"
+         alt="{{ p.title }}"
+         class="featured-img"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="featured-img-placeholder" style="display:none;">🏠</div>
+{% else %}
+    <div class="featured-img-placeholder">🏠</div>
+{% endif %}
                 <div class="featured-card-body">
                     <span class="result-tag" style="background:#f3e8ff; color:#6b21a8;">Individual Rooms</span>
                     <h4>{{ p.title }}</h4>

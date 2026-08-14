@@ -8,12 +8,15 @@
 <div class="property-detail">
 
     {% if photos %}
-    <div class="photo-gallery">
-        {% for photo in photos %}
-            <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:property.title }}" class="gallery-img">
-        {% endfor %}
-    </div>
-    {% endif %}
+<div class="photo-gallery">
+    {% for photo in photos %}
+        <img src="{{ photo.image.url }}"
+             alt="{{ photo.caption|default:property.title }}"
+             class="gallery-img"
+             onerror="this.style.display='none';">
+    {% endfor %}
+</div>
+{% endif %}
 
     <div class="detail-card">
         <div class="detail-header">
@@ -99,11 +102,15 @@
             <div class="room-grid">
                 {% for room in rooms %}
                 <div class="room-card">
-                    {% if room.photos.first %}
-                        <img src="{{ room.photos.first.image.url }}" alt="Room {{ room.room_number }}" class="room-img">
-                    {% else %}
-                        <div class="room-img-placeholder">🚪</div>
-                    {% endif %}
+                    {% if room.cover_photo %}
+    <img src="{{ room.cover_photo.image.url }}"
+         alt="Room {{ room.room_number }}"
+         class="room-img"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="room-img-placeholder" style="display:none;">🚪</div>
+{% else %}
+    <div class="room-img-placeholder">🚪</div>
+{% endif %}
                     <div class="room-card-body">
                         <h4>Room {{ room.room_number }}</h4>
                         <p class="property-meta">{{ room.get_room_type_display }} · Floor {{ room.floor_number }}</p>

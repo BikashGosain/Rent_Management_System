@@ -14,17 +14,24 @@ def home(request):
     total_tenants = User.objects.filter(role="tenant").count()
 
     # Featured properties (latest 6 available)
-    featured_whole = (
+    featured_whole = list(
         Property.objects.filter(status="available", rent_type="whole")
         .prefetch_related("photos")
         .order_by("-created_at")[:3]
     )
 
-    featured_rooms = (
+    featured_rooms = list(
         Property.objects.filter(status="available", rent_type="rooms")
         .prefetch_related("photos", "rooms")
         .order_by("-created_at")[:3]
     )
+
+    # Attach cover photo to each property
+    for prop in featured_whole + featured_rooms:
+        cover = prop.photos.filter(is_cover=True).first()
+        if not cover:
+            cover = prop.photos.first()
+        prop.cover_photo = cover
 
     # Latest reviews with ratings
     testimonials = (
