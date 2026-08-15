@@ -29,7 +29,12 @@ Do not share this code with anyone.
         otp.save(update_fields=["sent_email"])
         return True
     except Exception as e:
-        print(f"Email OTP error: {e}")
+        import traceback
+
+        print(f"❌ Email OTP error: {e}")
+        print(traceback.format_exc())
+        otp.sent_email = False
+        otp.save(update_fields=["sent_email"])
         return False
 
 

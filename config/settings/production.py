@@ -21,6 +21,9 @@ ALLOWED_HOSTS = [
     for host in config(
         "ALLOWED_HOSTS",
         default=(
+            "bytechus.me,"
+            "www.bytechus.me,"
+            "32.192.187.101,"
             "rent-management-system-1wyn.onrender.com,"
             "www.bikashgosain.com.np,"
             "bikashgosain.com.np,"
