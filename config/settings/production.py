@@ -96,3 +96,21 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = f"RentMS <{EMAIL_HOST_USER}>"
+
+# ============================================================
+# CSRF TRUSTED ORIGINS
+# ============================================================
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in config(
+        "CSRF_TRUSTED_ORIGINS",
+        default=(
+            "https://bytechus.me,"
+            "https://www.bytechus.me,"
+            "http://bytechus.me,"
+            "http://www.bytechus.me"
+        ),
+    ).split(",")
+    if origin.strip()
+]
