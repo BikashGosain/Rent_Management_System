@@ -175,7 +175,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-DEFAULT_FROM_EMAIL = "whatisyourproblem1221@gmail.com"
+DEFAULT_FROM_EMAIL = config("EMAIL_HOST_USER")
 SITE_URL = "http://127.0.0.1:8000"
 
 # Login / Logout redirects
