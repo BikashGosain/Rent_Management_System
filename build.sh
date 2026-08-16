@@ -14,3 +14,6 @@ export SUPERUSER_USERNAME=$SUPERUSER_USERNAME
 export SUPERUSER_EMAIL=$SUPERUSER_EMAIL
 export SUPERUSER_PASSWORD=$SUPERUSER_PASSWORD
 python manage.py create_superuser_default --settings=config.settings.production
+
+# Load sample data
+python manage.py load_sample_data --settings=config.settings.production
